@@ -1,5 +1,7 @@
 import logo from "./logo.svg";
 import "./App.css";
+import { Outlet } from "react-router-dom";
+import Navbar from "./components/ui/layout/Navbar";
 
 function App() {
   return (
@@ -10,7 +12,17 @@ function App() {
     //     <Outlet />
     //   </AuthContextProvider>
     // </QueryClientProvider>
-    <div>hi</div>
+    <div>
+      <header>
+        <Navbar />
+        {/* 네비게이션 또는 다른 헤더 컴포넌트 추가 가능 */}
+      </header>
+
+      <main>
+        {/* 이곳에 자식 컴포넌트가 렌더링됩니다 */}
+        <Outlet />
+      </main>
+    </div>
   );
 }
 
