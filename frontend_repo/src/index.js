@@ -12,6 +12,8 @@ import MyCart from "./pages/MyCart";
 import NewProduct from "./pages/NewProduct";
 import ProductDetail from "./pages/ProductDetail";
 import ProtectedRoute from "./pages/ProtectedRoute";
+import Login from "./pages/login/Login";
+import Mypage from "./pages/Mypage";
 
 const router = createBrowserRouter([
   {
@@ -21,6 +23,9 @@ const router = createBrowserRouter([
     children: [
       { index: true, path: "/", element: <Home /> },
       { path: "/products", element: <AllProudcts /> },
+      { path: "/login", element: <Login /> },
+      { path: "/mypage", element: <Mypage /> },
+      { path: "/mypage", element: <Mypage /> },
       {
         path: "/products/new",
         element: (

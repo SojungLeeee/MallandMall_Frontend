@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { FiShoppingBag } from "react-icons/fi";
 import { BsFillPencilFill } from "react-icons/bs";
-import User from "../User";
+import User from "../member/User";
 import Button from "./ui/Button";
 import { useAuthContext } from "../context/AuthContext";
 import CartStatus from "../cart/CartStatus";
