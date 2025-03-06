@@ -5,15 +5,13 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import NotFound from "./pages/Notfound";
+import NotFound from "./pages/error/NotFound";
 import Home from "./pages/Home";
-import AllProudcts from "./pages/AllProducts";
-import MyCart from "./pages/MyCart";
-import NewProduct from "./pages/NewProduct";
-import ProductDetail from "./pages/ProductDetail";
-import ProtectedRoute from "./pages/ProtectedRoute";
+import AllProudcts from "./pages/product/AllProducts";
+
 import Login from "./pages/login/Login";
 import Mypage from "./pages/Mypage";
+import FindId from "./pages/login/FindId";
 
 const router = createBrowserRouter([
   {
@@ -22,27 +20,27 @@ const router = createBrowserRouter([
     errorElement: <NotFound />,
     children: [
       { index: true, path: "/", element: <Home /> },
-      { path: "/products", element: <AllProudcts /> },
+      //{ path: "/products", element: <AllProudcts /> },
       { path: "/login", element: <Login /> },
       { path: "/mypage", element: <Mypage /> },
-      { path: "/mypage", element: <Mypage /> },
-      {
-        path: "/products/new",
-        element: (
-          <ProtectedRoute requireAdmin>
-            <NewProduct />
-          </ProtectedRoute>
-        ),
-      },
-      { path: "/products/:id", element: <ProductDetail /> },
-      {
-        path: "/carts",
-        element: (
-          <ProtectedRoute>
-            <MyCart />
-          </ProtectedRoute>
-        ),
-      },
+      { path: "/findid", element: <FindId /> },
+      // {
+      //   path: "/products/new",
+      //   element: (
+      //     <ProtectedRoute requireAdmin>
+      //       <NewProduct />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // { path: "/products/:id", element: <ProductDetail /> },
+      // {
+      //   path: "/carts",
+      //   element: (
+      //     <ProtectedRoute>
+      //       <MyCart />
+      //     </ProtectedRoute>
+      //   ),
+      // },
     ],
   },
 ]);
