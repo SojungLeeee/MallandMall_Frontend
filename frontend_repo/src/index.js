@@ -1,6 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter } from "react-router-dom"; // ✅ BrowserRouter 추가
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
@@ -8,6 +7,10 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import NotFound from "./pages/error/NotFound";
 import Home from "./pages/Home";
 import AllProudcts from "./pages/product/AllProducts";
+
+import FoundId from "./pages/login/FoundId";
+import ResetPassword from "./pages/login/ResetPassword";
+
 import Login from "./pages/login/Login";
 import FindId from "./pages/login/FindId";
 import { action as authAction } from "./pages/login/Login";
@@ -18,11 +21,15 @@ import EditProfile, { loader as editProfileLoader } from "./pages/mypage/EditPro
 import Signup from "./pages/login/Signup";
 import { action as signUpAction } from "./pages/login/Signup";
 
+import { tokenProviderLoader } from "./auth/tokenProviderService";
+
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
     errorElement: <NotFound />,
+    id: "root",
+    loader: tokenProviderLoader, // 로그인 시 localStorage에 저장된 token과 userid 값을 제공하는 역할 담당
     children: [
       { index: true, path: "/", element: <Home /> },
       //{ path: "/products", element: <AllProudcts /> },
@@ -33,6 +40,12 @@ const router = createBrowserRouter([
       { path: "/mypage/delete", element: <DeleteAccount />, loader: deleteAccountLoader },
       { path: "/signup", element: <Signup />, action: signUpAction },
       { path: "/findid", element: <FindId /> },
+      { path: "/foundid/:id", element: <FoundId /> },
+      {
+        /* 쉼표 및 괄호 문제 해결 */
+      },
+      { path: "/findid", element: <FindId /> },
+      { path: "/reset-password", element: <ResetPassword /> },
       {},
       // {
       //   path: "/products/new",

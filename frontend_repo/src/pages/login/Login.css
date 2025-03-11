@@ -40,6 +40,13 @@ button {
   font-weight: bold;
 }
 
+.link-button {
+  all: unset;
+
+  cursor: pointer;
+  font-size: inherit;
+}
+
 form {
   width: 100%;
   margin-bottom: 20px;
@@ -53,8 +60,13 @@ form {
   margin-bottom: 15px; /* 각 a 태그들 사이에 15px 간격 추가 */
   color: #6c6c6c; /* 회색 색상 */
   text-decoration: none; /* 밑줄 제거 */
-  font-size: 1.1rem; /* 폰트 크기 */
+
   font-weight: 700;
+
+  all: unset;
+
+  cursor: pointer;
+  font-size: inherit;
 }
 
 img {

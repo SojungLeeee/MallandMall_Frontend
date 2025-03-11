@@ -1,13 +1,19 @@
 import "./Login.css";
 
-import { Form, redirect, json, useActionData } from "react-router-dom";
+import { Form, redirect, json, useActionData, useNavigate } from "react-router-dom";
+
 import { fetchAuthenticate } from "../../api/httpMemberService"; // 상대 경로로 가져오기
 import mart from "../../assets/images/mart.png";
 
 function Login() {
   // 예외처리
   const data = useActionData();
+
+  const navigate = useNavigate();
   console.log("useActionData:", data);
+  const handleResetPassword = () => {
+    navigate("/reset-password"); // 비밀번호 재설정 페이지로 이동
+  };
 
   return (
     <div className="container">
@@ -26,7 +32,10 @@ function Login() {
       </Form>
       <div className="plus">
         <a href="/findid">아이디 찾기</a> <br></br>
-        <a href="#">비밀번호 찾기</a> <br></br>
+        <button onClick={handleResetPassword} className="link-button">
+          비밀번호 재설정
+        </button>{" "}
+        <br></br>
         <a href="/signup">회원가입</a> <br></br>
       </div>
     </div>
