@@ -25,22 +25,40 @@ export async function fetchAuthenticate(authData) {
 }
 
 // 마이페이지 홈
-export async function fetchMyPageHome(token) {
-  return await instance.get(`/mypage/home`, {
-    headers: { Authorization: `Bearer ${token}` },
+export async function fetchMypageHome(token) {
+  const response = await instance.get(`/mypage/home`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
+
+  return response;
 }
 
 // 회원정보 수정
 export async function fetchUpdateProfile(userData, token) {
-  return await instance.post(`/mypage/memedit`, userData, {
-    headers: { Authorization: `Bearer ${token}` },
+  console.log(" fetchUpdateProfile 요청 URL:", "/mypage/memedit");
+  console.log(" 요청 데이터:", userData);
+  console.log(" 요청 토큰:", token);
+  const response = await instance.post(`/mypage/memedit`, userData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
+  console.log(" fetchUpdateProfile 응답:", response.data);
+  return response;
 }
 
 // 회원탈퇴
 export async function fetchDeleteAccount(token) {
-  return await instance.delete(`/mypage/delete`, {
-    headers: { Authorization: `Bearer ${token}` },
+  console.log(" 회원탈퇴 요청 URL:", "/mypage/delete");
+  console.log(" 요청 토큰:", token);
+
+  const response = await instance.delete(`/mypage/delete`, {
+    headers: {
+      Authorization: `Bearer ${token}`, //  JWT 토큰만 포함
+    },
   });
+
+  console.log(" fetchDeleteAccount 응답:", response);
 }
