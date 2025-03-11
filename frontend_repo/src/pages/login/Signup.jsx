@@ -29,24 +29,41 @@ function Signup() {
       <div className="signups">
         <div className="form">
           <Form method="post" autoComplete="off">
-            {responseErrorData && responseErrorData.message && <p>{responseErrorData.message}</p>}
+            {responseErrorData && responseErrorData.message && (
+              <p>{responseErrorData.message}</p>
+            )}
 
             {/* 아이디 입력란 */}
             <div className="input-group">
-              <label htmlFor="userid">아이디</label>
-              <input type="text" name="userid" id="userid" placeholder="아이디" />
+              <label htmlFor="userId">아이디</label>
+              <input
+                type="text"
+                name="userId"
+                id="userId"
+                placeholder="아이디"
+              />
             </div>
 
             {/* 비밀번호 입력란 */}
             <div className="input-group">
               <label htmlFor="passwd">비밀번호</label>
-              <input type="password" name="passwd" id="passwd" placeholder="비밀번호" />
+              <input
+                type="password"
+                name="passwd"
+                id="passwd"
+                placeholder="비밀번호"
+              />
             </div>
 
             {/* 사용자 이름 입력란 */}
             <div className="input-group">
               <label htmlFor="username">이름</label>
-              <input type="text" name="username" id="username" placeholder="이름" />
+              <input
+                type="text"
+                name="username"
+                id="username"
+                placeholder="이름"
+              />
             </div>
 
             {/* 우편번호 입력란 */}
@@ -99,13 +116,23 @@ function Signup() {
             {/* 전화번호 입력란 */}
             <div className="input-group">
               <label htmlFor="phoneNumber">전화번호</label>
-              <input type="text" name="phoneNumber" id="phoneNumber" placeholder="전화번호" />
+              <input
+                type="text"
+                name="phoneNumber"
+                id="phoneNumber"
+                placeholder="전화번호"
+              />
             </div>
 
             {/* 이메일 입력란 */}
             <div className="input-group">
               <label htmlFor="email">이메일</label>
-              <input type="email" name="email" id="email" placeholder="이메일" />
+              <input
+                type="email"
+                name="email"
+                id="email"
+                placeholder="이메일"
+              />
             </div>
 
             {/* 회원가입 버튼 */}
@@ -128,7 +155,7 @@ export async function action({ request }) {
   // 회원가입폼 데이터 얻기
   const data = await request.formData();
   const authData = {
-    userid: data.get("userid"),
+    userId: data.get("userId"),
     passwd: data.get("passwd"),
     username: data.get("username"),
     post: data.get("post"),
@@ -141,7 +168,7 @@ export async function action({ request }) {
 
   var response = null;
 
-  //boot에서 400(유효성에러) 또는 500(userid중복에러) 넘어옴
+  //boot에서 400(유효성에러) 또는 500(userId중복에러) 넘어옴
   // 이때 try~catch로 처리해서 useActionData() 이용해서 처리(화면이 안바뀜)
   // 만약 try~catch 사용안하면 errorElement:ErrorPage 처리됨(화면이 바뀜)
   try {

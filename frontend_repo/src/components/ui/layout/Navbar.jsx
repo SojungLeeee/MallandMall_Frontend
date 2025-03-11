@@ -19,14 +19,14 @@ export default function Navbar() {
           <Link to="/products">Products</Link>
 
           {/*user가 Admin일때 carts가 보이게*/}
-          {user && user.isAdmin && (
+          {user && user.role === "ADMIN" && (
             <Link to="/carts">
               <CartStatus />
             </Link>
           )}
 
           {/*user가 Admin일때 product/new가 보이게*/}
-          {user && user.isAdmin && (
+          {user && user.role === "ADMIN" && (
             <Link to="products/new" className="text-2xl">
               <BsFillPencilFill />
             </Link>

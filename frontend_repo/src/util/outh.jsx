@@ -1,7 +1,7 @@
 export function getAuthToken() {
   const token = localStorage.getItem("jwtAuthToken");
-  const userid = localStorage.getItem("userid");
-  return { token: token, userid: userid };
+  const userId = localStorage.getItem("userId");
+  return { token: token, userId: userId };
 }
 
 export function tokenProviderLoader() {

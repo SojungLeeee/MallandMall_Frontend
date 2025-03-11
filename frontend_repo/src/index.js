@@ -16,8 +16,12 @@ import FindId from "./pages/login/FindId";
 import { action as authAction } from "./pages/login/Login";
 
 import Mypage, { loader as mypageLoader } from "./pages/mypage/Mypage";
-import DeleteAccount, { loader as deleteAccountLoader } from "./pages/mypage/DeleteAccount";
-import EditProfile, { loader as editProfileLoader } from "./pages/mypage/EditProfile";
+import DeleteAccount, {
+  loader as deleteAccountLoader,
+} from "./pages/mypage/DeleteAccount";
+import EditProfile, {
+  loader as editProfileLoader,
+} from "./pages/mypage/EditProfile";
 import Signup from "./pages/login/Signup";
 import { action as signUpAction } from "./pages/login/Signup";
 
@@ -29,15 +33,23 @@ const router = createBrowserRouter([
     element: <App />,
     errorElement: <NotFound />,
     id: "root",
-    loader: tokenProviderLoader, // 로그인 시 localStorage에 저장된 token과 userid 값을 제공하는 역할 담당
+    loader: tokenProviderLoader, // 로그인 시 localStorage에 저장된 token과 userId 값을 제공하는 역할 담당
     children: [
       { index: true, path: "/", element: <Home /> },
       //{ path: "/products", element: <AllProudcts /> },
 
       { path: "/login", element: <Login />, action: authAction },
       { path: "/mypage", element: <Mypage />, loader: mypageLoader },
-      { path: "/mypage/edit", element: <EditProfile />, loader: editProfileLoader },
-      { path: "/mypage/delete", element: <DeleteAccount />, loader: deleteAccountLoader },
+      {
+        path: "/mypage/edit",
+        element: <EditProfile />,
+        loader: editProfileLoader,
+      },
+      {
+        path: "/mypage/delete",
+        element: <DeleteAccount />,
+        loader: deleteAccountLoader,
+      },
       { path: "/signup", element: <Signup />, action: signUpAction },
       { path: "/findid", element: <FindId /> },
       { path: "/foundid/:id", element: <FoundId /> },

@@ -5,7 +5,7 @@ import axios from "axios"; // axios import
 export default function ResetPassword() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    userid: "",
+    userId: "",
     phone: "",
     newPassword: "",
   });
@@ -22,7 +22,7 @@ export default function ResetPassword() {
     e.preventDefault();
 
     // 입력값 확인
-    if (!formData.userid || !formData.phone || !formData.newPassword) {
+    if (!formData.userId || !formData.phone || !formData.newPassword) {
       alert("모든 필드를 입력해 주세요.");
       return;
     }
@@ -31,7 +31,7 @@ export default function ResetPassword() {
       const response = await axios.post(
         "http://localhost:8090/emart/reset-password",
         {
-          userid: formData.userid,
+          userId: formData.userId,
           phoneNumber: formData.phone,
           newPassword: formData.newPassword,
         }
@@ -63,9 +63,9 @@ export default function ResetPassword() {
         <div style={{ marginBottom: "10px" }}>
           <input
             type="text"
-            name="userid"
+            name="userId"
             placeholder="아이디"
-            value={formData.userid}
+            value={formData.userId}
             onChange={handleChange}
             required
           />
