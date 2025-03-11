@@ -32,6 +32,6 @@ export default function Navbar() {
     //     {user && <Button text={"Logout"} onClick={logout} />}
     //   </nav>
     // </header>
-    <div>navbar</div>
+    <div>ㅇㅇㅇㅇ?</div>
   );
 }
