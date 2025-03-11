@@ -1,0 +1,10 @@
+[
+  {
+    "subscriptionId": 1,
+    "userid": "user001",
+    "productCode": "P002",
+    "subscriptionStartDate": "2025-03-09",
+    "subscriptionEndDate": "2026-03-09",
+    "subscriptionStatus": "활성"
+  }
+]

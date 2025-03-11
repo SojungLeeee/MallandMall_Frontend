@@ -1,0 +1,20 @@
+[
+  {
+    "cartId": 1,
+    "userid": "user001",
+    "productCode": "P001",
+    "productSize": "Large",
+    "productColor": "Black",
+    "quantity": 1,
+    "cartDate": "2025-03-09"
+  },
+  {
+    "cartId": 2,
+    "userid": "user001",
+    "productCode": "P002",
+    "productSize": "Medium",
+    "productColor": "White",
+    "quantity": 2,
+    "cartDate": "2025-03-09"
+  }
+]

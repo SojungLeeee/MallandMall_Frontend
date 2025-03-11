@@ -1,0 +1,16 @@
+[
+  {
+    "orderId": 1,
+    "userid": "user001",
+    "productCode": "P001",
+    "productSize": "Large",
+    "productColor": "Black",
+    "quantity": 1,
+    "recipientName": "John Doe",
+    "post": "12345",
+    "addr1": "123 Main St, City, Country",
+    "addr2": "Apt 4B",
+    "phoneNumber": "010-1234-5678",
+    "orderDate": "2025-03-09"
+  }
+]

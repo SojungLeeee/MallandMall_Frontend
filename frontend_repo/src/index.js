@@ -8,10 +8,15 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import NotFound from "./pages/error/NotFound";
 import Home from "./pages/Home";
 import AllProudcts from "./pages/product/AllProducts";
-
 import Login from "./pages/login/Login";
-import Mypage from "./pages/Mypage";
 import FindId from "./pages/login/FindId";
+import { action as authAction } from "./pages/login/Login";
+
+import Mypage, { loader as mypageLoader } from "./pages/mypage/Mypage";
+import DeleteAccount, { loader as deleteAccountLoader } from "./pages/mypage/DeleteAccount";
+import EditProfile, { loader as editProfileLoader } from "./pages/mypage/EditProfile";
+import Signup from "./pages/login/Signup";
+import { action as signUpAction } from "./pages/login/Signup";
 
 const router = createBrowserRouter([
   {
@@ -21,9 +26,14 @@ const router = createBrowserRouter([
     children: [
       { index: true, path: "/", element: <Home /> },
       //{ path: "/products", element: <AllProudcts /> },
-      { path: "/login", element: <Login /> },
-      { path: "/mypage", element: <Mypage /> },
+
+      { path: "/login", element: <Login />, action: authAction },
+      { path: "/mypage", element: <Mypage />, loader: mypageLoader },
+      { path: "/mypage/edit", element: <EditProfile />, loader: editProfileLoader },
+      { path: "/mypage/delete", element: <DeleteAccount />, loader: deleteAccountLoader },
+      { path: "/signup", element: <Signup />, action: signUpAction },
       { path: "/findid", element: <FindId /> },
+      {},
       // {
       //   path: "/products/new",
       //   element: (

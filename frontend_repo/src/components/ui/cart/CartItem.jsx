@@ -6,7 +6,7 @@ import useCart from "../hooks/useCart";
 const ICON_CLASS =
   "transition-all cursor-pointer hover:text-brand hover:scale-105 mx-1";
 
-export default function CartItem({
+export default function CartItem({ss
   product,
   product: { id, image, title, option, quantity, price },
 }) {

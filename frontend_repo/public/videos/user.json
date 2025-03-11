@@ -1,0 +1,26 @@
+[
+  {
+    "userid": "user001",
+    "passwd": "password123",
+    "username": "John Doe",
+    "post": "12345",
+    "addr1": "123 Main St, City, Country",
+    "addr2": "Apt 4B",
+    "phoneNumber": "010-1234-5678",
+    "email": "john.doe@example.com",
+    "role": "USER",
+    "createDate": "2025-03-09"
+  },
+  {
+    "userid": "admin001",
+    "passwd": "adminpassword",
+    "username": "Admin User",
+    "post": "54321",
+    "addr1": "456 Admin Rd, City, Country",
+    "addr2": "Building 5",
+    "phoneNumber": "010-9876-5432",
+    "email": "admin@example.com",
+    "role": "ADMIN",
+    "createDate": "2025-03-09"
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "productCode": "P001",
+    "category": "Electronics",
+    "productName": "Smartphone",
+    "description": "Latest model with 128GB storage and high-resolution camera.",
+    "price": 500000,
+    "imageUrl": "http://example.com/images/smartphone.jpg"
+  },
+  {
+    "productCode": "P002",
+    "category": "Home Appliance",
+    "productName": "Air Purifier",
+    "description": "Helps to keep your home air fresh and clean.",
+    "price": 150000,
+    "imageUrl": "http://example.com/images/airpurifier.jpg"
+  }
+]

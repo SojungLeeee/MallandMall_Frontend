@@ -1,0 +1,73 @@
+/* Signup form 스타일 */
+.signups {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  height: 100%;
+  background-color: #fff6e2;
+}
+
+.form {
+  width: 90%;
+}
+
+/* input-group을 flex로 배치하여 label과 input이 나란히 표시되도록 */
+.input-group {
+  display: flex;
+  justify-content: space-between; /* 양옆으로 여백을 분배 */
+  align-items: center;
+  margin-bottom: 15px;
+  width: 100%;
+}
+
+.input-group label {
+  font-size: 1rem;
+  margin-right: 10px; /* label과 input 사이 간격 */
+  font-weight: bold;
+  width: 25%; /* label의 너비를 조정 */
+}
+
+.input-group input {
+  width: 100%; /* input의 너비를 label보다 더 넓게 설정 */
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  border-radius: 20px;
+  height: 45px;
+}
+
+/* 버튼 스타일 */
+.signups .btn {
+  width: 100%;
+  background-color: #f9e687;
+  color: black;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  border-radius: 20px;
+}
+
+.flex-container .btnfind {
+  margin-left: 5px;
+  margin-top: 0;
+  font-size: 1rem;
+  width: 20%;
+  background-color: rgb(238, 186, 122);
+}
+
+.flex-container .postinput {
+  width: 80%;
+}
+
+.input-group .post {
+  font-size: 0.9rem;
+}
