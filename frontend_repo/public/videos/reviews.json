@@ -1,7 +1,7 @@
 [
   {
     "reviewId": 1,
-    "userid": "user001",
+    "userId": "user001",
     "productCode": "P001",
     "rating": 5,
     "reviewText": "Great phone! Highly recommend it.",
@@ -9,7 +9,7 @@
   },
   {
     "reviewId": 2,
-    "userid": "user001",
+    "userId": "user001",
     "productCode": "P002",
     "rating": 4,
     "reviewText": "Nice air purifier, but a bit loud.",

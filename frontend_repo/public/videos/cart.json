@@ -1,7 +1,7 @@
 [
   {
     "cartId": 1,
-    "userid": "user001",
+    "userId": "user001",
     "productCode": "P001",
     "productSize": "Large",
     "productColor": "Black",
@@ -10,7 +10,7 @@
   },
   {
     "cartId": 2,
-    "userid": "user001",
+    "userId": "user001",
     "productCode": "P002",
     "productSize": "Medium",
     "productColor": "White",

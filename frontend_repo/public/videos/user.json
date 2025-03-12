@@ -1,6 +1,6 @@
 [
   {
-    "userid": "user001",
+    "userId": "user001",
     "passwd": "password123",
     "username": "John Doe",
     "post": "12345",
@@ -12,7 +12,7 @@
     "createDate": "2025-03-09"
   },
   {
-    "userid": "admin001",
+    "userId": "admin001",
     "passwd": "adminpassword",
     "username": "Admin User",
     "post": "54321",
