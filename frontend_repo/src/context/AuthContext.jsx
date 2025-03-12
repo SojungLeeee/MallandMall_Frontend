@@ -42,7 +42,7 @@ export function AuthContextProvider({ children }) {
 
     if (token) {
       axios
-        .get("http://localhost:8090/emart/user/profile", {
+        .post("http://localhost:8090/emart/authenticate", {
           headers: { Authorization: `Bearer ${token}` }, // 인증된 요청
         })
         .then((response) => {
