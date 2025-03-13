@@ -29,14 +29,7 @@ export default function Navbar() {
         <nav className="flex items-center gap-3 ">
           {token && (
             <>
-              <div className="flex items-center gap-3">
-                <Link to="/carts">
-                  <BsCart2 className="text-3xl" />
-                </Link>
-                <Link to="/mypage">
-                  <VscAccount className="text-3xl" />
-                </Link>
-              </div>
+              <div className="flex items-center gap-3"></div>
               <Button
                 text={"Logout"}
                 onClick={handleLogout}
