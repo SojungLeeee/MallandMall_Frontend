@@ -1,8 +1,5 @@
-import { BsShop } from "react-icons/bs";
 import { Link, useNavigate, useRouteLoaderData } from "react-router-dom";
 import Button from "../Button";
-import { VscAccount } from "react-icons/vsc";
-import { BsCart2 } from "react-icons/bs";
 
 export default function Navbar() {
   const { token, userid } = useRouteLoaderData("root");
@@ -22,9 +19,8 @@ export default function Navbar() {
   return (
     <>
       <header className="flex justify-between  border-b border-gray-300 p-2">
-        <Link to="/" className="flex items-center text-4xl text-brand">
-          <BsShop />
-          <h1>Emart</h1>
+        <Link to="/" className="flex items-center">
+          <img src="/images/Logo.png" alt="Emart Logo" className="h-15 w-20" />
         </Link>
         <nav className="flex items-center gap-3 ">
           {token && (
