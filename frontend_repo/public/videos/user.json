@@ -2,7 +2,7 @@
   {
     "userId": "user001",
     "passwd": "password123",
-    "username": "John Doe",
+    "userName": "John Doe",
     "post": "12345",
     "addr1": "123 Main St, City, Country",
     "addr2": "Apt 4B",
@@ -14,7 +14,7 @@
   {
     "userId": "admin001",
     "passwd": "adminpassword",
-    "username": "Admin User",
+    "userName": "Admin User",
     "post": "54321",
     "addr1": "456 Admin Rd, City, Country",
     "addr2": "Building 5",

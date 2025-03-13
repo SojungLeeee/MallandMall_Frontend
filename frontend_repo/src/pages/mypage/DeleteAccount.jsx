@@ -8,7 +8,9 @@ const DeleteAccount = () => {
   const navigate = useNavigate();
 
   const handleDelete = async () => {
-    if (window.confirm(`${user?.username || "사용자"}님, 정말 탈퇴하시겠습니까?`)) {
+    if (
+      window.confirm(`${user?.userName || "사용자"}님, 정말 탈퇴하시겠습니까?`)
+    ) {
       try {
         const { token } = getAuthToken(); //
 
@@ -27,8 +29,11 @@ const DeleteAccount = () => {
   return (
     <div className="delete-account">
       <h2>회원탈퇴</h2>
-      <p>{user?.username || "사용자"}님, 정말 탈퇴하시겠습니까?</p>
-      <button onClick={handleDelete} style={{ backgroundColor: "red", color: "white" }}>
+      <p>{user?.userName || "사용자"}님, 정말 탈퇴하시겠습니까?</p>
+      <button
+        onClick={handleDelete}
+        style={{ backgroundColor: "red", color: "white" }}
+      >
         회원탈퇴
       </button>
       <button onClick={() => navigate("/mypage")}>취소</button>
