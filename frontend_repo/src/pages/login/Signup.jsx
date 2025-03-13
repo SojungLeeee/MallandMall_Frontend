@@ -22,7 +22,7 @@ function Signup() {
   };
 
   return (
-    <div className="bg-[#fff6e2] p-8 rounded-xl shadow-lg w-full max-w-md h-[671px] flex flex-col overflow-y-auto ">
+    <div className="bg-[#fff6e2] p-8 rounded-xl shadow-lg w-full max-w-md h-full flex flex-col overflow-y-auto ">
       <h2 className="text-2xl font-bold mb-5 text-center">회원가입</h2>
 
       {responseErrorData && responseErrorData.message && (

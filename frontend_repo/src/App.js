@@ -7,7 +7,7 @@ function App() {
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-      <main className="flex-grow">
+      <main className="flex-grow h-[506px]">
         <Outlet />
       </main>
       <FooterNav /> {/* 하단에 FooterNav 컴포넌트를 추가 */}

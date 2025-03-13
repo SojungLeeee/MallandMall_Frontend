@@ -8,7 +8,7 @@ export default function MyPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col items-center justify-center w-full max-w-[390px] h-[671px] text-xl bg-[#fff6e2]">
+    <div className="flex flex-col items-center justify-center w-full max-w-[390px] h-full text-xl bg-[#fff6e2]">
       {user && (
         <div className="text-center mb-6">
           <p className="text-2xl font-bold">{user.userName}님의 마이페이지</p>
