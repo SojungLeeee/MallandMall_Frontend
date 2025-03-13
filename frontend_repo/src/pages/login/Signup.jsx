@@ -23,7 +23,6 @@ function Signup() {
   };
 
   return (
-
     <div className="flex flex-col items-center justify-center bg-[#fff6e2] w-full max-w-[400px] h-screen p-5 rounded-xl shadow-lg">
       <div className="w-full">
         <Form method="post" autoComplete="off" className="space-y-6">
@@ -61,13 +60,13 @@ function Signup() {
 
           {/* 사용자 이름 입력란 */}
           <div className="flex justify-between items-center space-x-4">
-            <label htmlFor="username" className="font-bold w-1/4">
+            <label htmlFor="userName" className="font-bold w-1/4">
               이름
             </label>
             <input
               type="text"
-              name="username"
-              id="username"
+              name="userName"
+              id="userName"
               placeholder="이름"
               className="w-3/4 p-3 text-lg border border-gray-300 rounded-2xl"
             />
@@ -165,7 +164,6 @@ function Signup() {
             </button>
           </div>
         </Form>
-
       </div>
     </div>
   );
@@ -176,7 +174,7 @@ export async function action({ request }) {
   const authData = {
     userId: data.get("userId"),
     password: data.get("password"),
-    username: data.get("username"),
+    userName: data.get("userName"),
     post: data.get("post"),
     addr1: data.get("addr1"),
     addr2: data.get("addr2"),

@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { fetchMypageHome, fetchUpdateProfile } from "../../api/httpMemberService";
+import {
+  fetchMypageHome,
+  fetchUpdateProfile,
+} from "../../api/httpMemberService";
 import { useNavigate, useLoaderData } from "react-router-dom";
 import { getAuthToken } from "../../context/tokenProviderService";
 import "./EditProfile.css";
@@ -9,7 +12,7 @@ const EditProfile = () => {
   const navigate = useNavigate();
 
   // ✅ 상태 변수 초기화 (기본값: 빈 문자열)
-  const [username, setUsername] = useState("");
+  const [userName, setuserName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [post, setPost] = useState("");
@@ -19,7 +22,7 @@ const EditProfile = () => {
   // ✅ 회원 정보 불러와서 초기값 설정
   useEffect(() => {
     if (user) {
-      setUsername(user.username || ""); // ✅ username으로 변경
+      setuserName(user.userName || ""); // ✅ userName으로 변경
       setEmail(user.email || "");
       setPhoneNumber(user.phoneNumber || "");
       setPost(user.post || "");
@@ -42,16 +45,17 @@ const EditProfile = () => {
     try {
       const { token } = getAuthToken();
 
-      // ✅ username으로 변경
-      const updatedUsername = username.trim() === "" ? user.username : username;
+      // ✅ userName으로 변경
+      const updateduserName = userName.trim() === "" ? user.userName : userName;
       const updatedEmail = email.trim() === "" ? user.email : email;
-      const updatedPhone = phoneNumber.trim() === "" ? user.phoneNumber : phoneNumber;
+      const updatedPhone =
+        phoneNumber.trim() === "" ? user.phoneNumber : phoneNumber;
       const updatedPost = post.trim() === "" ? user.post : post;
       const updatedAddr1 = addr1.trim() === "" ? user.addr1 : addr1;
       const updatedAddr2 = addr2.trim() === "" ? user.addr2 : addr2;
 
       console.log("📢 회원정보 수정 API 호출 시도!", {
-        username: updatedUsername,
+        userName: updateduserName,
         email: updatedEmail,
         phoneNumber: updatedPhone,
         post: updatedPost,
@@ -61,7 +65,7 @@ const EditProfile = () => {
 
       await fetchUpdateProfile(
         {
-          username: updatedUsername,
+          userName: updateduserName,
           email: updatedEmail,
           phoneNumber: updatedPhone,
           post: updatedPost,
@@ -84,12 +88,22 @@ const EditProfile = () => {
 
       <div className="input-group">
         <label>이름:</label>
-        <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="이름" />
+        <input
+          type="text"
+          value={userName}
+          onChange={(e) => setuserName(e.target.value)}
+          placeholder="이름"
+        />
       </div>
 
       <div className="input-group">
         <label>이메일:</label>
-        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="이메일" />
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="이메일"
+        />
       </div>
 
       <div className="input-group">
@@ -119,7 +133,12 @@ const EditProfile = () => {
 
       <div className="input-group">
         <label>상세 주소:</label>
-        <input type="text" value={addr2} onChange={(e) => setAddr2(e.target.value)} placeholder="상세 주소" />
+        <input
+          type="text"
+          value={addr2}
+          onChange={(e) => setAddr2(e.target.value)}
+          placeholder="상세 주소"
+        />
       </div>
 
       <div className="button-group">

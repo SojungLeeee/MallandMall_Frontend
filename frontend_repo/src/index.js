@@ -23,7 +23,6 @@ import Signup from "./pages/login/Signup";
 import { action as signUpAction } from "./pages/login/Signup";
 import SelectCategory from "./pages/login/SelectCategory";
 
-
 import { tokenProviderLoader } from "./auth/tokenProviderService";
 
 const router = createBrowserRouter([
@@ -52,7 +51,7 @@ const router = createBrowserRouter([
       { path: "/signup", element: <Signup />, action: signUpAction },
       { path: "/carts", element: <MyCart /> },
       { path: "/findid", element: <FindId /> },
-      { path: "/foundid/:id", element: <FoundId /> },
+      { path: "/foundid", element: <FoundId /> },
       {
         /* 쉼표 및 괄호 문제 해결 */
       },
@@ -76,7 +75,6 @@ const router = createBrowserRouter([
       //     </ProtectedRoute>
       //   ),
       // },
-
     ],
   },
 ]);

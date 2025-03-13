@@ -12,7 +12,7 @@ function MyPage() {
     <div className="mypage-container">
       {user && (
         <div className="mypage-header">
-          <p className="username">{user.username}님의 마이페이지</p>
+          <p className="userName">{user.userName}님의 마이페이지</p>
         </div>
       )}
 
@@ -25,7 +25,10 @@ function MyPage() {
         주문내역
       </button>
       <button className="mypage-btn">내가 쓴 리뷰</button>
-      <button className="mypage-btn delete" onClick={() => navigate("/mypage/delete")}>
+      <button
+        className="mypage-btn delete"
+        onClick={() => navigate("/mypage/delete")}
+      >
         회원탈퇴
       </button>
     </div>
