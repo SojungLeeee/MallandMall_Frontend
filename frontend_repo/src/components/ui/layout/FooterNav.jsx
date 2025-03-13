@@ -20,6 +20,10 @@ const styles = `
     }
   }
 
+  .hover-pop-up {
+    transition: transform 0.5s ease-out, text-shadow 0.5s ease-out;
+  }
+
   .hover-pop-up:hover {
     animation: text-pop-up-top 0.5s ease-out forwards;
   }

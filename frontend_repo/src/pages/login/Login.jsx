@@ -6,7 +6,6 @@ import {
   useNavigate,
 } from "react-router-dom";
 import { fetchAuthenticate } from "../../api/httpMemberService"; // 상대 경로로 가져오기
-import mart from "../../assets/images/mart.png";
 
 function Login() {
   // 예외처리
@@ -20,8 +19,13 @@ function Login() {
 
   return (
     <div className="flex flex-col items-center justify-center w-full max-w-[390px] h-screen text-xl bg-[#fff6e2]">
-      <p>아래 사진은 그냥 로고 들어갈 자리..</p>
-      <img src={mart} width="350" height="200" className="mb-5" alt="logo" />
+      <img
+        src={"/images/Loginimage.png"}
+        width="350"
+        height="200"
+        className="mb-5"
+        alt="logo"
+      />
 
       {data && <p>{data.message}</p>}
       <Form method="post" className="w-full mb-5">
@@ -36,7 +40,6 @@ function Login() {
           <input
             type="password"
             name="password"
-
             placeholder="비밀번호"
             className="w-[70%] h-12 text-xl bg-[#eae1e1] border-[#eae1e1] rounded-2xl text-center font-bold"
           />
