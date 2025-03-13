@@ -23,6 +23,7 @@ function Signup() {
   };
 
   return (
+
     <div className="flex flex-col items-center justify-center bg-[#fff6e2] w-full max-w-[400px] h-screen p-5 rounded-xl shadow-lg">
       <div className="w-full">
         <Form method="post" autoComplete="off" className="space-y-6">
@@ -164,6 +165,7 @@ function Signup() {
             </button>
           </div>
         </Form>
+
       </div>
     </div>
   );

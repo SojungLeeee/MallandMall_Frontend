@@ -36,6 +36,7 @@ function Login() {
           <input
             type="password"
             name="password"
+
             placeholder="비밀번호"
             className="w-[70%] h-12 text-xl bg-[#eae1e1] border-[#eae1e1] rounded-2xl text-center font-bold"
           />

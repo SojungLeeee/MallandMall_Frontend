@@ -6,15 +6,12 @@ import reportWebVitals from "./reportWebVitals";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import NotFound from "./pages/error/NotFound";
 import Home from "./pages/Home";
-import AllProudcts from "./pages/product/AllProducts";
-
+import MyCart from "./pages/cart/MyCart";
 import FoundId from "./pages/login/FoundId";
 import ResetPassword from "./pages/login/ResetPassword";
-
 import Login from "./pages/login/Login";
 import FindId from "./pages/login/FindId";
 import { action as authAction } from "./pages/login/Login";
-
 import Mypage, { loader as mypageLoader } from "./pages/mypage/Mypage";
 import DeleteAccount, {
   loader as deleteAccountLoader,
@@ -25,6 +22,7 @@ import EditProfile, {
 import Signup from "./pages/login/Signup";
 import { action as signUpAction } from "./pages/login/Signup";
 import SelectCategory from "./pages/login/SelectCategory";
+
 
 import { tokenProviderLoader } from "./auth/tokenProviderService";
 
@@ -52,6 +50,7 @@ const router = createBrowserRouter([
         loader: deleteAccountLoader,
       },
       { path: "/signup", element: <Signup />, action: signUpAction },
+      { path: "/carts", element: <MyCart /> },
       { path: "/findid", element: <FindId /> },
       { path: "/foundid/:id", element: <FoundId /> },
       {
@@ -77,6 +76,7 @@ const router = createBrowserRouter([
       //     </ProtectedRoute>
       //   ),
       // },
+
     ],
   },
 ]);
