@@ -24,6 +24,7 @@ import EditProfile, {
 } from "./pages/mypage/EditProfile";
 import Signup from "./pages/login/Signup";
 import { action as signUpAction } from "./pages/login/Signup";
+import SelectCategory from "./pages/login/SelectCategory";
 
 import { tokenProviderLoader } from "./auth/tokenProviderService";
 
@@ -58,7 +59,7 @@ const router = createBrowserRouter([
       },
       { path: "/findid", element: <FindId /> },
       { path: "/reset-password", element: <ResetPassword /> },
-      {},
+      { path: "/selectCategory", element: <SelectCategory /> },
       // {
       //   path: "/products/new",
       //   element: (
