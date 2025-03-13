@@ -50,50 +50,66 @@ export default function ResetPassword() {
   };
 
   return (
-    <div
-      style={{
-        textAlign: "center",
-        padding: "50px",
-        height: "100vh",
-        backgroundColor: "white",
-      }}
-    >
-      <h2>비밀번호 재설정</h2>
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: "10px" }}>
-          <input
-            type="text"
-            name="userId"
-            placeholder="아이디"
-            value={formData.userId}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div style={{ marginBottom: "10px" }}>
-          <input
-            type="text"
-            name="phone"
-            placeholder="전화번호"
-            value={formData.phone}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div style={{ marginBottom: "10px" }}>
-          <input
-            type="password"
-            name="newPassword"
-            placeholder="새로운 비밀번호"
-            value={formData.newPassword}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <button type="submit">확인</button>
-      </form>
-      {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}{" "}
-      {/* 에러 메시지 표시 */}
+    <div className="flex justify-center items-center h-screen bg-[#fff6e2] p-5">
+      <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-6 text-center">비밀번호 재설정</h2>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* 아이디 입력란 */}
+          <div>
+            <input
+              type="text"
+              name="userId"
+              placeholder="아이디"
+              value={formData.userId}
+              onChange={handleChange}
+              required
+              className="w-full p-3 text-lg border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-yellow-400"
+            />
+          </div>
+
+          {/* 전화번호 입력란 */}
+          <div>
+            <input
+              type="text"
+              name="phone"
+              placeholder="전화번호"
+              value={formData.phone}
+              onChange={handleChange}
+              required
+              className="w-full p-3 text-lg border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-yellow-400"
+            />
+          </div>
+
+          {/* 새로운 비밀번호 입력란 */}
+          <div>
+            <input
+              type="password"
+              name="newPassword"
+              placeholder="새로운 비밀번호"
+              value={formData.newPassword}
+              onChange={handleChange}
+              required
+              className="w-full p-3 text-lg border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-yellow-400"
+            />
+          </div>
+
+          {/* 확인 버튼 */}
+          <div>
+            <button
+              type="submit"
+              className="w-full py-3 text-xl bg-[#f9e687] text-black font-bold rounded-2xl focus:outline-none hover:bg-[#e2d267]"
+            >
+              비밀번호 재설정
+            </button>
+          </div>
+        </form>
+
+        {/* 에러 메시지 */}
+        {errorMessage && (
+          <p className="text-red-600 text-center mt-4">{errorMessage}</p>
+        )}
+      </div>
     </div>
   );
 }
