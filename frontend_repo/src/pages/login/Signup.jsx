@@ -46,11 +46,11 @@ function Signup() {
 
             {/* 비밀번호 입력란 */}
             <div className="input-group">
-              <label htmlFor="passwd">비밀번호</label>
+              <label htmlFor="password">비밀번호</label>
               <input
                 type="password"
-                name="passwd"
-                id="passwd"
+                name="password"
+                id="password"
                 placeholder="비밀번호"
               />
             </div>
@@ -156,7 +156,7 @@ export async function action({ request }) {
   const data = await request.formData();
   const authData = {
     userId: data.get("userId"),
-    passwd: data.get("passwd"),
+    password: data.get("password"),
     username: data.get("username"),
     post: data.get("post"),
     addr1: data.get("addr1"),

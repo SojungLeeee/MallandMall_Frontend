@@ -30,7 +30,7 @@ function Login() {
       <Form method="post">
         <div className="inputs">
           <input type="text" name="userId" placeholder="아이디" /> <br></br>
-          <input type="password" name="passwd" placeholder="비밀번호" />
+          <input type="password" name="password" placeholder="비밀번호" />
           <button name="login" className="btn">
             로그인
           </button>
@@ -52,7 +52,7 @@ export async function action({ request }) {
   const data = await request.formData();
   const authData = {
     userId: data.get("userId"),
-    passwd: data.get("passwd"),
+    password: data.get("password"),
   };
   console.log("authData>>", authData);
 
