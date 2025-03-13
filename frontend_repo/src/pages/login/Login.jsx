@@ -19,7 +19,7 @@ function Login() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center w-full max-w-[390px] h-screen text-xl bg-[#f0efef]">
+    <div className="flex flex-col items-center justify-center w-full max-w-[390px] h-screen text-xl bg-[#fff6e2]">
       <p>아래 사진은 그냥 로고 들어갈 자리..</p>
       <img src={mart} width="350" height="200" className="mb-5" alt="logo" />
 
