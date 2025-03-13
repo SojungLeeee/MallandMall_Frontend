@@ -48,7 +48,7 @@ function Signup() {
             <div className="input-group">
               <label htmlFor="passwd">비밀번호</label>
               <input
-                type="password"
+                type="passwd"
                 name="passwd"
                 id="passwd"
                 placeholder="비밀번호"
