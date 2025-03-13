@@ -54,7 +54,7 @@ function SelectCategory() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center p-5">
+    <div className="flex flex-col items-center justify-center p-5 h-[671px]">
       {/* 나이 선택 드롭다운 */}
       <div className="mb-6">
         <label htmlFor="age" className="text-lg font-semibold text-xl">

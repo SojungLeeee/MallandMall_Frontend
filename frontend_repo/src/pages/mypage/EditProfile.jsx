@@ -12,7 +12,7 @@ const EditProfile = () => {
   const navigate = useNavigate();
 
   // ✅ 상태 변수 초기화 (기본값: 빈 문자열)
-  const [userName, setuserName] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [post, setPost] = useState("");
@@ -22,7 +22,7 @@ const EditProfile = () => {
   // ✅ 회원 정보 불러와서 초기값 설정
   useEffect(() => {
     if (user) {
-      setuserName(user.userName || ""); // ✅ userName으로 변경
+      setUsername(user.username || ""); // ✅ username으로 변경
       setEmail(user.email || "");
       setPhoneNumber(user.phoneNumber || "");
       setPost(user.post || "");
@@ -45,8 +45,8 @@ const EditProfile = () => {
     try {
       const { token } = getAuthToken();
 
-      // ✅ userName으로 변경
-      const updateduserName = userName.trim() === "" ? user.userName : userName;
+      // ✅ username으로 변경
+      const updatedUsername = username.trim() === "" ? user.username : username;
       const updatedEmail = email.trim() === "" ? user.email : email;
       const updatedPhone =
         phoneNumber.trim() === "" ? user.phoneNumber : phoneNumber;
@@ -55,7 +55,7 @@ const EditProfile = () => {
       const updatedAddr2 = addr2.trim() === "" ? user.addr2 : addr2;
 
       console.log("📢 회원정보 수정 API 호출 시도!", {
-        userName: updateduserName,
+        username: updatedUsername,
         email: updatedEmail,
         phoneNumber: updatedPhone,
         post: updatedPost,
@@ -65,7 +65,7 @@ const EditProfile = () => {
 
       await fetchUpdateProfile(
         {
-          userName: updateduserName,
+          username: updatedUsername,
           email: updatedEmail,
           phoneNumber: updatedPhone,
           post: updatedPost,
@@ -90,8 +90,8 @@ const EditProfile = () => {
         <label>이름:</label>
         <input
           type="text"
-          value={userName}
-          onChange={(e) => setuserName(e.target.value)}
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
           placeholder="이름"
         />
       </div>

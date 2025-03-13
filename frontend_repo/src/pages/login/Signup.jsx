@@ -22,158 +22,156 @@ function Signup() {
   };
 
   return (
-    <div className="flex items-center justify-center w-full h-screen bg-[#fff6e2] p-5 overflow-y-auto">
-      <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md h-full flex flex-col">
-        <h2 className="text-2xl font-bold mb-5 text-center">회원가입</h2>
+    <div className="bg-[#fff6e2] p-8 rounded-xl shadow-lg w-full max-w-md h-[671px] flex flex-col overflow-y-auto ">
+      <h2 className="text-2xl font-bold mb-5 text-center">회원가입</h2>
 
-        {responseErrorData && responseErrorData.message && (
-          <p className="text-red-600 text-center mb-4">
-            {responseErrorData.message}
-          </p>
-        )}
+      {responseErrorData && responseErrorData.message && (
+        <p className="text-red-600 text-center mb-4">
+          {responseErrorData.message}
+        </p>
+      )}
 
-        <Form
-          method="post"
-          autoComplete="off"
-          className="space-y-6 flex flex-col"
-        >
-          {/* 아이디 입력란 */}
-          <div className="flex items-center space-x-4">
-            <label htmlFor="userId" className="font-semibold w-1/3">
-              아이디
-            </label>
+      <Form
+        method="post"
+        autoComplete="off"
+        className="space-y-6 flex flex-col"
+      >
+        {/* 아이디 입력란 */}
+        <div className="flex items-center space-x-4">
+          <label htmlFor="userId" className="font-semibold w-1/3">
+            아이디
+          </label>
+          <input
+            type="text"
+            name="userId"
+            id="userId"
+            placeholder="아이디"
+            className="p-3 text-lg border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-yellow-400 w-2/3"
+          />
+        </div>
+
+        {/* 비밀번호 입력란 */}
+        <div className="flex items-center space-x-4">
+          <label htmlFor="password" className="font-semibold w-1/3">
+            비밀번호
+          </label>
+          <input
+            type="password"
+            name="password"
+            id="password"
+            placeholder="비밀번호"
+            className="p-3 text-lg border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-yellow-400 w-2/3"
+          />
+        </div>
+
+        {/* 사용자 이름 입력란 */}
+        <div className="flex items-center space-x-4">
+          <label htmlFor="userName" className="font-semibold w-1/3">
+            이름
+          </label>
+          <input
+            type="text"
+            name="userName"
+            id="userName"
+            placeholder="이름"
+            className="p-3 text-lg border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-yellow-400 w-2/3"
+          />
+        </div>
+
+        {/* 우편번호 입력란 */}
+        <div className="flex items-center space-x-4">
+          <label htmlFor="post" className="font-semibold w-1/3">
+            우편번호
+          </label>
+          <div className="flex items-center space-x-4 w-2/3">
             <input
               type="text"
-              name="userId"
-              id="userId"
-              placeholder="아이디"
-              className="p-3 text-lg border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-yellow-400 w-2/3"
-            />
-          </div>
-
-          {/* 비밀번호 입력란 */}
-          <div className="flex items-center space-x-4">
-            <label htmlFor="password" className="font-semibold w-1/3">
-              비밀번호
-            </label>
-            <input
-              type="password"
-              name="password"
-              id="password"
-              placeholder="비밀번호"
-              className="p-3 text-lg border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-yellow-400 w-2/3"
-            />
-          </div>
-
-          {/* 사용자 이름 입력란 */}
-          <div className="flex items-center space-x-4">
-            <label htmlFor="userName" className="font-semibold w-1/3">
-              이름
-            </label>
-            <input
-              type="text"
-              name="userName"
-              id="userName"
-              placeholder="이름"
-              className="p-3 text-lg border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-yellow-400 w-2/3"
-            />
-          </div>
-
-          {/* 우편번호 입력란 */}
-          <div className="flex items-center space-x-4">
-            <label htmlFor="post" className="font-semibold w-1/3">
-              우편번호
-            </label>
-            <div className="flex items-center space-x-4 w-2/3">
-              <input
-                type="text"
-                name="post"
-                id="post"
-                value={postcode}
-                placeholder="우편번호"
-                readOnly
-                className="p-3 text-lg border border-gray-300 rounded-2xl w-4/5"
-              />
-              <button
-                type="button"
-                onClick={handlePostcodeSearch}
-                className="w-[20%] p-3 bg-[#eeba7a] text-white rounded-2xl"
-              >
-                찾기
-              </button>
-            </div>
-          </div>
-
-          {/* 주소 1 입력란 */}
-          <div className="flex items-center space-x-4">
-            <label htmlFor="addr1" className="font-semibold w-1/3">
-              주소 1
-            </label>
-            <input
-              type="text"
-              name="addr1"
-              id="addr1"
-              value={addr1 ? `${addr1} (${addr2})` : ""}
-              placeholder="주소 1"
+              name="post"
+              id="post"
+              value={postcode}
+              placeholder="우편번호"
               readOnly
-              className="p-3 text-lg border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-yellow-400 w-2/3"
+              className="p-3 text-lg border border-gray-300 rounded-2xl w-4/5"
             />
-          </div>
-
-          {/* 주소 2 입력란 */}
-          <div className="flex items-center space-x-4">
-            <label htmlFor="addr2" className="font-semibold w-1/3">
-              주소 2
-            </label>
-            <input
-              type="text"
-              name="addr2"
-              id="addr2"
-              placeholder="주소 2"
-              className="p-3 text-lg border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-yellow-400 w-2/3"
-            />
-          </div>
-
-          {/* 전화번호 입력란 */}
-          <div className="flex items-center space-x-4">
-            <label htmlFor="phoneNumber" className="font-semibold w-1/3">
-              전화번호
-            </label>
-            <input
-              type="text"
-              name="phoneNumber"
-              id="phoneNumber"
-              placeholder="전화번호"
-              className="p-3 text-lg border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-yellow-400 w-2/3"
-            />
-          </div>
-
-          {/* 이메일 입력란 */}
-          <div className="flex items-center space-x-4">
-            <label htmlFor="email" className="font-semibold w-1/3">
-              이메일
-            </label>
-            <input
-              type="email"
-              name="email"
-              id="email"
-              placeholder="이메일"
-              className="p-3 text-lg border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-yellow-400 w-2/3"
-            />
-          </div>
-
-          {/* 회원가입 버튼 */}
-          <div className="mt-auto">
             <button
-              type="submit"
-              name="signup"
-              className="w-full py-3 text-xl bg-[#f9e687] text-black font-bold rounded-2xl focus:outline-none hover:bg-[#e2d267]"
+              type="button"
+              onClick={handlePostcodeSearch}
+              className="w-[20%] p-3 bg-[#eeba7a] text-white rounded-2xl"
             >
-              회원가입
+              찾기
             </button>
           </div>
-        </Form>
-      </div>
+        </div>
+
+        {/* 주소 1 입력란 */}
+        <div className="flex items-center space-x-4">
+          <label htmlFor="addr1" className="font-semibold w-1/3">
+            주소 1
+          </label>
+          <input
+            type="text"
+            name="addr1"
+            id="addr1"
+            value={addr1 ? `${addr1} (${addr2})` : ""}
+            placeholder="주소 1"
+            readOnly
+            className="p-3 text-lg border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-yellow-400 w-2/3"
+          />
+        </div>
+
+        {/* 주소 2 입력란 */}
+        <div className="flex items-center space-x-4">
+          <label htmlFor="addr2" className="font-semibold w-1/3">
+            주소 2
+          </label>
+          <input
+            type="text"
+            name="addr2"
+            id="addr2"
+            placeholder="주소 2"
+            className="p-3 text-lg border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-yellow-400 w-2/3"
+          />
+        </div>
+
+        {/* 전화번호 입력란 */}
+        <div className="flex items-center space-x-4">
+          <label htmlFor="phoneNumber" className="font-semibold w-1/3">
+            전화번호
+          </label>
+          <input
+            type="text"
+            name="phoneNumber"
+            id="phoneNumber"
+            placeholder="전화번호"
+            className="p-3 text-lg border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-yellow-400 w-2/3"
+          />
+        </div>
+
+        {/* 이메일 입력란 */}
+        <div className="flex items-center space-x-4">
+          <label htmlFor="email" className="font-semibold w-1/3">
+            이메일
+          </label>
+          <input
+            type="email"
+            name="email"
+            id="email"
+            placeholder="이메일"
+            className="p-3 text-lg border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-yellow-400 w-2/3"
+          />
+        </div>
+
+        {/* 회원가입 버튼 */}
+        <div className="mt-auto">
+          <button
+            type="submit"
+            name="signup"
+            className="w-full py-3 text-xl bg-[#f9e687] text-black font-bold rounded-2xl focus:outline-none hover:bg-[#e2d267]"
+          >
+            회원가입
+          </button>
+        </div>
+      </Form>
     </div>
   );
 }

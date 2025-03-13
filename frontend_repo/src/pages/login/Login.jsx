@@ -19,7 +19,7 @@ function Login() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center w-full max-w-[390px] h-screen text-xl bg-[#fff6e2]">
+    <div className="flex flex-col items-center justify-center w-full max-w-[390px] h-[671px] text-xl bg-[#fff6e2]">
       <p>아래 사진은 그냥 로고 들어갈 자리..</p>
       <img src={mart} width="350" height="200" className="mb-5" alt="logo" />
 
@@ -36,7 +36,6 @@ function Login() {
           <input
             type="password"
             name="password"
-
             placeholder="비밀번호"
             className="w-[70%] h-12 text-xl bg-[#eae1e1] border-[#eae1e1] rounded-2xl text-center font-bold"
           />
