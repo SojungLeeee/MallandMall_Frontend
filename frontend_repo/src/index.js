@@ -23,8 +23,8 @@ import Signup from "./pages/login/Signup";
 import { action as signUpAction } from "./pages/login/Signup";
 import SelectCategory from "./pages/login/SelectCategory";
 
-
 import { tokenProviderLoader } from "./auth/tokenProviderService";
+import CategoryList from "./pages/category/CategoryList";
 
 const router = createBrowserRouter([
   {
@@ -51,6 +51,7 @@ const router = createBrowserRouter([
       },
       { path: "/signup", element: <Signup />, action: signUpAction },
       { path: "/carts", element: <MyCart /> },
+      { path: "/categoryList", element: <CategoryList /> },
       { path: "/findid", element: <FindId /> },
       { path: "/foundid/:id", element: <FoundId /> },
       {
@@ -76,7 +77,6 @@ const router = createBrowserRouter([
       //     </ProtectedRoute>
       //   ),
       // },
-
     ],
   },
 ]);
