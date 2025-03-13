@@ -35,7 +35,8 @@ function Login() {
           <br />
           <input
             type="password"
-            name="passwd"
+            name="password"
+
             placeholder="비밀번호"
             className="w-[70%] h-12 text-xl bg-[#eae1e1] border-[#eae1e1] rounded-2xl text-center font-bold"
           />
@@ -78,7 +79,7 @@ export async function action({ request }) {
   const data = await request.formData();
   const authData = {
     userId: data.get("userId"),
-    passwd: data.get("passwd"),
+    password: data.get("password"),
   };
   console.log("authData>>", authData);
 
