@@ -1,17 +1,25 @@
 import React from "react";
-import fish from "../../assets/images/fish.jpg"; // 이미지를 import
+import fish from "../../assets/images/fish.png"; // 이미지를 import
+import meat from "../../assets/images/ham.png"; // 이미지를 import
+import milk from "../../assets/images/milk.png";
+import drink from "../../assets/images/drink.png";
+import vegetable from "../../assets/images/vegetable.png";
+import fruit from "../../assets/images/fruit.png";
+import snack from "../../assets/images/snack.png";
+import sauce from "../../assets/images/sauce.png";
+import pill from "../../assets/images/pill.png";
 
 // Define the category data (category name and image source)
 const categories = [
-  { name: "육류", image: "/images/meat.jpg" },
+  { name: "육류", image: meat },
   { name: "해산물", image: fish },
-  { name: "유제품", image: "/images/dairy.jpg" },
-  { name: "음료", image: "/images/drinks.jpg" },
-  { name: "채소", image: "/images/vegetables.jpg" },
-  { name: "과일", image: "/images/fruits.jpg" },
-  { name: "간식", image: "/images/snacks.jpg" },
-  { name: "조미료/소스", image: "/images/spices.jpg" },
-  { name: "건강식품", image: "/images/health.jpg" },
+  { name: "유제품", image: milk },
+  { name: "음료", image: drink },
+  { name: "채소", image: vegetable },
+  { name: "과일", image: fruit },
+  { name: "간식", image: snack },
+  { name: "조미료/소스", image: sauce },
+  { name: "건강식품", image: pill },
 ];
 
 export default function CategoryList() {
