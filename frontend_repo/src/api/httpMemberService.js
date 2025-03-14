@@ -44,3 +44,14 @@ export async function fetchDeleteAccount(token) {
     headers: { Authorization: `Bearer ${token}` },
   });
 }
+
+export async function fetchProductHome() {
+  const response = await instance.get(`/product/home`);
+  return response.data;
+}
+
+// 상품 상세 정보 가져오기 (새로 추가)
+export async function fetchProductDetail(productCode) {
+  const response = await instance.get(`/product/detail/${productCode}`);
+  return response.data;
+}

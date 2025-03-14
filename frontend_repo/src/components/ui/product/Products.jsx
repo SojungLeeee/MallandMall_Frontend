@@ -1,118 +1,56 @@
 import React, { useEffect, useState } from "react";
-import image1 from "../../../assets/images/choco.jpg"; // 이미지를 import
+import { Link } from "react-router-dom";
+import { fetchProductHome } from "../../../api/httpMemberService"; // API 호출
 
+// 백엔드에서 받아온 데이터 useState로 상태관리 해버리기
 const Products = () => {
-  const [products, setProducts] = useState([]); // 상품 데이터
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // 상품 데이터 가져오기 함수
-  const getProducts = async () => {
-    // 더미 데이터 (상품 10개로 늘림)
-    const dummyData = [
-      {
-        id: 1,
-        imageUrl: image1, // import한 이미지 사용 (변수로 사용)
-        productName: "상품1",
-        price: 10000,
-        rating: 4,
-      },
-      {
-        id: 2,
-        imageUrl: image1, // import한 이미지 사용
-        productName: "상품2",
-        price: 20000,
-        rating: 5,
-      },
-      {
-        id: 3,
-        imageUrl: image1, // import한 이미지 사용
-        productName: "상품3",
-        price: 15000,
-        rating: 3,
-      },
-      {
-        id: 4,
-        imageUrl: image1, // import한 이미지 사용
-        productName: "상품4",
-        price: 30000,
-        rating: 4,
-      },
-      {
-        id: 5,
-        imageUrl: image1, // import한 이미지 사용
-        productName: "상품5",
-        price: 12000,
-        rating: 2,
-      },
-      {
-        id: 6,
-        imageUrl: image1, // import한 이미지 사용
-        productName: "상품6",
-        price: 25000,
-        rating: 5,
-      },
-      {
-        id: 7,
-        imageUrl: image1, // import한 이미지 사용
-        productName: "상품7",
-        price: 18000,
-        rating: 3,
-      },
-      {
-        id: 8,
-        imageUrl: image1, // import한 이미지 사용
-        productName: "상품8",
-        price: 22000,
-        rating: 4,
-      },
-      {
-        id: 9,
-        imageUrl: image1, // import한 이미지 사용
-        productName: "상품9",
-        price: 28000,
-        rating: 5,
-      },
-      {
-        id: 10,
-        imageUrl: image1, // import한 이미지 사용
-        productName: "상품10",
-        price: 35000,
-        rating: 4,
-      },
-    ];
-
-    // 더미 데이터 설정
-    setProducts(dummyData);
-  };
-
+  /* 상품 데이터 가져오기, 비동기로 가져오기
+ 
+  */
   useEffect(() => {
-    getProducts(); // 컴포넌트가 마운트되면 상품 데이터 불러오기
+    const getProducts = async () => {
+      try {
+        setLoading(true);
+        const data = await fetchProductHome();
+        setProducts(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getProducts();
   }, []);
 
   return (
-    <div className="container mx-auto px-3 py-8">
-      <div className="grid grid-cols-2 gap-3 ">
+    <div className="flex flex-col items-center bg-[#f8f5e6] min-h-screen">
+      {/* 로딩 상태 */}
+      {loading && <p className="mt-20 text-center text-xl">Loading products...</p>}
+
+      {/* 에러 상태 */}
+      {error && <p className="text-red-500">{error}</p>}
+
+      {/* 상품 목록 */}
+      <div className="mt-20 grid grid-cols-2 gap-4 max-w-4xl w-full p-4">
         {products.map((product) => (
-          <div
-            key={product.id}
-            className="bg-white rounded-lg shadow-md overflow-hidden border bg-[#faf9f0]" //border-black 은 보려고해둔것것
-          >
-            <div className="relative pb-2/3">
-              <img
-                src={product.imageUrl} // imageUrl에 import된 값 사용
-                alt={product.productName}
-                className="w-52 h-52  object-cover rounded-t-lg px-2 py-2" // 이미지 크기 조정
-              />
-            </div>
-            <div className="p-4">
-              <h3 className="text-lg font-semibold text-gray-900 truncate">
-                {product.productName}
-              </h3>
-              <div className="mt-2 text-gray-600">{product.price}원</div>
-              <div className="mt-2 text-yellow-500">
-                {"★".repeat(product.rating || 0)}
+          <Link to={`/product/${product.productCode}`} key={product.productCode} className="cursor-pointer">
+            <div className="bg-white border rounded-md shadow-md overflow-hidden flex flex-col items-center p-4 hover:shadow-lg transition">
+              <div className="w-full max-w-md border rounded-lg bg-yellow-400 flex items-center justify-center max-h-[400px]">
+                <img src={product.image} alt={product.productName} className="w-full h-auto object-contain p-4" />
+              </div>
+              <div className="text-center flex flex-col gap-2 mt-3">
+                <h3 className="text-lg font-semibold">{product.productName}</h3>
+                <p className="text-sm text-gray-600">{product.description}</p>
+                <p className="text-lg font-bold text-red-500">{product.price.toLocaleString()}원</p>
+                <p className="text-sm text-yellow-500">⭐ {product.averageRating}</p>
               </div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>
