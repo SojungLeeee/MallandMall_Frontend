@@ -12,6 +12,7 @@ import Login from "./pages/login/Login";
 import FindId from "./pages/login/FindId";
 import { action as authAction } from "./pages/login/Login";
 import Mypage, { loader as mypageLoader } from "./pages/mypage/Mypage";
+import FoundId from "../src/pages/login/FoundId";
 import DeleteAccount, {
   loader as deleteAccountLoader,
 } from "./pages/mypage/DeleteAccount";
@@ -51,10 +52,8 @@ const router = createBrowserRouter([
       { path: "/carts", element: <MyCart /> },
       { path: "/categoryList", element: <CategoryList /> },
       { path: "/findid", element: <FindId /> },
-<<<<<<< HEAD
-=======
+
       { path: "/foundid", element: <FoundId /> },
->>>>>>> 091e72c13d82559905d06abbb3c592b0989a30e3
       {
         /* 쉼표 및 괄호 문제 해결 */
       },
