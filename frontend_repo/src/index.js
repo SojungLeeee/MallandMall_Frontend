@@ -24,8 +24,15 @@ import { action as signUpAction } from "./pages/login/Signup";
 import SelectCategory from "./pages/login/SelectCategory";
 import CategoryList from "./pages/category/CategoryList";
 import { tokenProviderLoader } from "./auth/tokenProviderService";
+import Appp from "./Appp";
 
 const router = createBrowserRouter([
+  // {
+  //   path: "/findid",
+  //   element: <Appp />,
+  //   loader: tokenProviderLoader, // 로그인 시 localStorage에 저장된 token과 userId 값을 제공하는 역할 담당
+  //   children: [{ path: "/findid", element: <FindId /> }],
+  // },
   {
     path: "/",
     element: <App />,
@@ -57,7 +64,7 @@ const router = createBrowserRouter([
       {
         /* 쉼표 및 괄호 문제 해결 */
       },
-      { path: "/findid", element: <FindId /> },
+      // { path: "/findid", element: <FindId /> },
       { path: "/reset-password", element: <ResetPassword /> },
       { path: "/selectCategory", element: <SelectCategory /> },
       // {
