@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import fish from "../../assets/images/fish.png"; // 이미지를 import
 import meat from "../../assets/images/ham.png"; // 이미지를 import
 import milk from "../../assets/images/milk.png";
@@ -25,30 +25,32 @@ const categories = [
 export default function CategoryList() {
   const navigate = useNavigate(); // useNavigate 훅을 사용하여 navigate 함수 얻기
 
-  const btnClick = (e) => {
-    let categoryName = e.target.innerText; // 클릭된 버튼의 텍스트를 가져옵니다.
+  const btnClick = (categoryName) => {
+    let category = categoryName;
 
-    if (categoryName === "육류") {
-      categoryName = "meat";
-    } else if (categoryName === "해산물") {
-      categoryName = "fish";
-    } else if (categoryName === "유제품") {
-      categoryName = "dairy";
-    } else if (categoryName === "음료") {
-      categoryName = "drink";
-    } else if (categoryName === "채소") {
-      categoryName = "vegetable";
-    } else if (categoryName === "과일") {
-      categoryName = "fruit";
-    } else if (categoryName === "간식") {
-      categoryName = "snack";
-    } else if (categoryName === "조미료/소스") {
-      categoryName = "sauce";
-    } else if (categoryName === "건강식품") {
-      categoryName = "health";
+    // 카테고리 이름을 알맞은 값으로 변환
+    if (category === "육류") {
+      category = "meat";
+    } else if (category === "해산물") {
+      category = "fish";
+    } else if (category === "유제품") {
+      category = "dairy";
+    } else if (category === "음료") {
+      category = "drink";
+    } else if (category === "채소") {
+      category = "vegetable";
+    } else if (category === "과일") {
+      category = "fruit";
+    } else if (category === "간식") {
+      category = "snack";
+    } else if (category === "조미료/소스") {
+      category = "sauce";
+    } else if (category === "건강식품") {
+      category = "health";
     }
-    console.log(categoryName); // 선택된 카테고리 출력
-    navigate(`/products/${categoryName}`); // 카테고리 이름을 포함한 URL로 이동
+
+    console.log(category); // 선택된 카테고리 출력
+    navigate(`/products/${category}`); // 카테고리 이름을 포함한 URL로 이동
   };
 
   return (
@@ -58,16 +60,19 @@ export default function CategoryList() {
           <div
             key={category.name}
             className="flex flex-col items-center justify-center bg-white p-4 rounded-lg shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+            onClick={() => btnClick(category.name)} // div를 클릭했을 때 카테고리 이름을 전달
           >
             <img
               src={category.image}
               alt={category.name}
-              className="w-24 h-24 object-cover rounded-md mb-4"
+              className="w-24 h-24 object-cover rounded-md mb-4 cursor-pointer" // 이미지 클릭 시 카테고리 이름 전달
             />
             <button
-              className="bg-[#f2f1d3]  font-semibold py-2 px-4 rounded-lg text-base"
-              name="btn"
-              onClick={btnClick}
+              className="bg-[#f2f1d3] font-semibold py-2 px-4 rounded-lg text-base"
+              onClick={(e) => {
+                e.stopPropagation(); // 버튼 클릭 시 div 클릭 이벤트가 발생하지 않도록 방지
+                btnClick(category.name); // 버튼 클릭 시 카테고리 이름 전달
+              }}
             >
               {category.name}
             </button>
