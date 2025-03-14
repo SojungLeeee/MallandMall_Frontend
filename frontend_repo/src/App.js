@@ -5,12 +5,14 @@ import { Outlet } from "react-router-dom";
 
 function App() {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col App">
       <Navbar />
-      <main className="flex-grow h-[506px]">
-        <Outlet />
+      <main className="flex-grow overflow-auto">
+        {" "}
+        {/* 스크롤을 추가하기 위해 overflow-auto 설정 */}
+        <Outlet /> {/* Outlet (Home 페이지의 Banner와 Products를 포함) */}
       </main>
-      <FooterNav /> {/* 하단에 FooterNav 컴포넌트를 추가 */}
+      <FooterNav />
     </div>
   );
 }
