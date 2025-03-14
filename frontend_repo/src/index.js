@@ -26,12 +26,17 @@ import CategoryList from "./pages/category/CategoryList";
 import CategoryPage from "./pages/category/CategoryPage";
 import { tokenProviderLoader } from "./auth/tokenProviderService";
 import AppTwo from "./AppTwo";
-
+import AppOne from "./AppOne";
+import Search from "./pages/Search/Search";
 const router = createBrowserRouter([
+  {
+    path: "/search",
+    element: <AppOne />,
+    children: [{ path: "/search", element: <Search /> }],
+  },
   {
     path: "/categoryList",
     element: <AppTwo />,
-    loader: tokenProviderLoader, // 로그인 시 localStorage에 저장된 token과 userId 값을 제공하는 역할 담당
     children: [{ path: "/categoryList", element: <CategoryList /> }],
   },
   {
