@@ -21,8 +21,30 @@ function Signup() {
     }).open();
   };
 
+  // 인라인 스타일로 스크롤바 숨기기 설정
+  const containerStyle = {
+    backgroundColor: "#fff6e2",
+    padding: "2rem",
+    borderRadius: "1rem",
+    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+    width: "100%",
+    maxWidth: "28rem", // max-w-md에 해당
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
+    overflowY: "scroll", // 스크롤 가능
+    scrollbarWidth: "none", // Firefox에서 스크롤바 숨기기
+  };
+
+  // Webkit을 사용하는 브라우저에서 스크롤바 숨기기
+  const webkitScrollbarStyle = {
+    "&::-webkit-scrollbar": {
+      display: "none",
+    },
+  };
+
   return (
-    <div className="bg-[#fff6e2] p-8 rounded-xl shadow-lg w-full max-w-md h-full flex flex-col overflow-y-auto ">
+    <div style={containerStyle}>
       <h2 className="text-2xl font-bold mb-5 text-center">회원가입</h2>
 
       {responseErrorData && responseErrorData.message && (
