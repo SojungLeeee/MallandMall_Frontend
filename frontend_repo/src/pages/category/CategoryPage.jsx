@@ -31,32 +31,45 @@ const CategoryPage = () => {
 
   // 로딩 중일 때 보여줄 로딩 메시지
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="text-center text-xl font-semibold">Loading...</div>;
   }
 
   // 오류가 있을 경우 오류 메시지 표시
   if (error) {
-    return <div>Error: {error}</div>;
+    return (
+      <div className="text-center text-xl font-semibold text-red-500">
+        Error: {error}
+      </div>
+    );
   }
 
   return (
-    <div>
-      <h1>{categoryName} 상품 목록</h1>
-      <div className="grid grid-cols-3 gap-4">
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-2xl font-bold text-center mb-6">
+        {categoryName} 상품 목록
+      </h1>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-3">
         {/* 상품 목록을 반복문으로 렌더링 */}
         {products.length === 0 ? (
-          <p>이 카테고리에는 상품이 없습니다.</p>
+          <p className="text-center text-xl font-semibold">
+            이 카테고리에는 상품이 없습니다.
+          </p>
         ) : (
           products.map((product) => (
-            <div key={product.productCode} className="border p-4 rounded-lg">
+            <div
+              key={product.productCode}
+              className="border p-4 rounded-lg bg-white shadow-md"
+            >
               <img
                 src={product.image}
                 alt={product.productName}
-                className="w-full h-64 object-cover mb-4"
+                className="w-52 h-52  object-cover rounded-t-lg px-2 py-2"
               />
-              <h2 className="text-xl font-semibold">{product.productName}</h2>
-              <p className="text-gray-600">{product.description}</p>
-              <p className="text-lg font-bold">{product.price} 원</p>
+              <h2 className="text-xl font-semibold text-gray-800">
+                {product.productName}
+              </h2>
+              <p className="text-gray-600 text-sm">{product.description}</p>
+              <p className="text-lg font-bold mt-2">{product.price} 원</p>
             </div>
           ))
         )}
