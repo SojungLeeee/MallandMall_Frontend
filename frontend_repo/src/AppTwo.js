@@ -3,7 +3,7 @@ import FooterNav from "./components/ui/layout/FooterNav";
 import Navbar from "./components/ui/layout/Navbar";
 import { Outlet } from "react-router-dom";
 
-function Appp() {
+function AppTwo() {
   return (
     <div className="flex flex-col App">
       <main className="flex-grow overflow-auto">
@@ -15,4 +15,4 @@ function Appp() {
     </div>
   );
 }
-export default Appp;
+export default AppTwo;
