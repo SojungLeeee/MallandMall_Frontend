@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { redirect, useNavigate } from "react-router-dom";
 
 function SelectCategory() {
   // 선택된 카테고리를 저장하는 상태
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedAge, setSelectedAge] = useState(""); // 나이 선택 상태 추가
+  const navigate = useNavigate(); // useNavigate 훅을 사용해 navigate 함수 가져오기
 
   // 카테고리 목록
   const categories = [
@@ -51,6 +53,7 @@ function SelectCategory() {
     console.log("나이대:", selectedAge);
     console.log("선택된 카테고리:", selectedCategories);
     alert("제출되었습니다!");
+    navigate("/");
   };
 
   return (

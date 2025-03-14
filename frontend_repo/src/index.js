@@ -27,12 +27,12 @@ import { tokenProviderLoader } from "./auth/tokenProviderService";
 import Appp from "./Appp";
 
 const router = createBrowserRouter([
-  // {
-  //   path: "/findid",
-  //   element: <Appp />,
-  //   loader: tokenProviderLoader, // 로그인 시 localStorage에 저장된 token과 userId 값을 제공하는 역할 담당
-  //   children: [{ path: "/findid", element: <FindId /> }],
-  // },
+  {
+    path: "/categoryList",
+    element: <Appp />,
+    loader: tokenProviderLoader, // 로그인 시 localStorage에 저장된 token과 userId 값을 제공하는 역할 담당
+    children: [{ path: "/categoryList", element: <CategoryList /> }],
+  },
   {
     path: "/",
     element: <App />,

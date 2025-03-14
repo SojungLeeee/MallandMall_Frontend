@@ -225,7 +225,7 @@ export async function action({ request }) {
     }
   }
 
-  return redirect("/login");
+  return redirect("/selectCategory");
 }
 
 export default Signup;
