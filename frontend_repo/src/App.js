@@ -8,11 +8,11 @@ function App() {
   return (
     <div className="flex flex-col App">
       <Navbar />
+      <SearchBar />
       <main className="flex-grow overflow-auto">
         {" "}
         {/* 스크롤을 추가하기 위해 overflow-auto 설정 */}
         <Outlet /> {/* Outlet (Home 페이지의 Banner와 Products를 포함) */}
-
       </main>
       <FooterNav />
     </div>
