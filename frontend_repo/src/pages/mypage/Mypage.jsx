@@ -11,7 +11,7 @@ export default function MyPage() {
     <div className="flex flex-col items-center justify-center w-full max-w-[390px] h-full text-xl bg-[#fcf3e3]">
       {user && (
         <div className="text-center mb-6">
-          <p className="text-2xl font-bold">{user.userName}님의 마이페이지</p>
+          <p className="text-2xl font-bold">{user.username}님의 마이페이지</p>
         </div>
       )}
 
