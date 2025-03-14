@@ -7,12 +7,12 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import NotFound from "./pages/error/NotFound";
 import Home from "./pages/Home";
 import MyCart from "./pages/cart/MyCart";
-import FoundId from "./pages/login/FoundId";
 import ResetPassword from "./pages/login/ResetPassword";
 import Login from "./pages/login/Login";
 import FindId from "./pages/login/FindId";
 import { action as authAction } from "./pages/login/Login";
 import Mypage, { loader as mypageLoader } from "./pages/mypage/Mypage";
+import FoundId from "../src/pages/login/FoundId";
 import DeleteAccount, {
   loader as deleteAccountLoader,
 } from "./pages/mypage/DeleteAccount";
@@ -22,9 +22,8 @@ import EditProfile, {
 import Signup from "./pages/login/Signup";
 import { action as signUpAction } from "./pages/login/Signup";
 import SelectCategory from "./pages/login/SelectCategory";
-
-import { tokenProviderLoader } from "./auth/tokenProviderService";
 import CategoryList from "./pages/category/CategoryList";
+import { tokenProviderLoader } from "./auth/tokenProviderService";
 
 const router = createBrowserRouter([
   {
@@ -53,6 +52,7 @@ const router = createBrowserRouter([
       { path: "/carts", element: <MyCart /> },
       { path: "/categoryList", element: <CategoryList /> },
       { path: "/findid", element: <FindId /> },
+
       { path: "/foundid", element: <FoundId /> },
       {
         /* 쉼표 및 괄호 문제 해결 */

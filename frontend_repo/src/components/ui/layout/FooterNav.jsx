@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { CiMenuBurger, CiStar } from "react-icons/ci";
 import { SlHome } from "react-icons/sl";
 import { VscAccount } from "react-icons/vsc";
@@ -14,22 +14,40 @@ const styles = `
       text-shadow: none;
     }
     100% {
-      transform: translateY(-33px); /* 50px에서 33px로 줄임 */
+      transform: translateY(-33px);
       transform-origin: 50% 50%;
       text-shadow: 0 1px 0 #cccccc, 0 2px 0 #cccccc, 0 3px 0 #cccccc, 0 4px 0 #cccccc, 0 5px 0 #cccccc, 0 6px 0 #cccccc, 0 7px 0 #cccccc, 0 8px 0 #cccccc, 0 9px 0 #cccccc, 0 50px 30px rgba(0, 0, 0, 0.3);
     }
   }
 
   .hover-pop-up {
-    transition: transform 0.5s ease-out, text-shadow 0.5s ease-out;
+    animation: text-pop-up-top 0.5s ease-out 1 forwards;
+    animation-play-state: running;
   }
 
-  .hover-pop-up:hover {
-    animation: text-pop-up-top 0.5s ease-out forwards;
+  .hover-pop-up-paused {
+    animation-play-state: paused;
   }
 `;
 
 const FooterNav = () => {
+  const starRef = useRef(null);
+
+  const handleMouseEnter = () => {
+    if (starRef.current) {
+      // 애니메이션이 끝나지 않도록, 한번 시작되면 다시 시작되지 않도록 설정
+      starRef.current.classList.add("hover-pop-up");
+      starRef.current.classList.remove("hover-pop-up-paused");
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (starRef.current) {
+      // 마우스를 떠나도 애니메이션은 종료되고, 다시 시작되지 않도록
+      starRef.current.classList.add("hover-pop-up-paused");
+    }
+  };
+
   return (
     <footer
       className="bg-white text-gray-500 py-4 px-4 mt-4 rounded-3xl"
@@ -63,7 +81,10 @@ const FooterNav = () => {
           <li className="flex flex-col items-center w-1/5 sm:w-auto relative">
             <Link
               to="/favorites"
-              className="w-12 h-12 bg-[#403c23] text-white rounded-full flex items-center justify-center shadow-md shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-1px_rgba(0,0,0,0.06)] mb-1 hover-pop-up"
+              className="w-12 h-12 bg-[#403c23] text-white rounded-full flex items-center justify-center shadow-md shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-1px_rgba(0,0,0,0.06)] mb-1"
+              ref={starRef}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
             >
               <CiStar className="text-3xl" />
             </Link>
