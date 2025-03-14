@@ -33,7 +33,7 @@ const ProductDetail = () => {
   if (!product) return null;
 
   return (
-    <div className="flex flex-col items-center bg-[#f8f5e6] min-h-screen p-6">
+    <div className="flex flex-col items-center bg-[#fff7f0] min-h-screen p-6">
       {/*  이미지 컨테이너*/}
       <div className="w-full max-w-md border rounded-lg bg-yellow-400 flex items-center justify-center max-h-[400px]">
         <img

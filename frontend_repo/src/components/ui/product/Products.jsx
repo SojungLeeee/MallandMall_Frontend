@@ -24,7 +24,7 @@ const Products = () => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center bg-[#f8f5e6] min-h-screen">
+    <div className="flex flex-col items-center bg-[#fff7f0] min-h-screen">
       {/* 로딩 상태 */}
       {loading && (
         <p className="mt-20 text-center text-xl">Loading products...</p>
