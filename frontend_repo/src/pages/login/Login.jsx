@@ -27,6 +27,7 @@ function Login() {
         alt="logo"
       />
 
+
       {data && <p>{data.message}</p>}
       <Form method="post" className="w-full mb-5">
         <div className="flex flex-col items-center justify-center">

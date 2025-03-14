@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { fetchMypageHome, fetchUpdateProfile } from "../../api/httpMemberService";
+import {
+  fetchMypageHome,
+  fetchUpdateProfile,
+} from "../../api/httpMemberService";
 import { useNavigate, useLoaderData } from "react-router-dom";
 import { getAuthToken } from "../../context/tokenProviderService";
 import "./EditProfile.css";
@@ -45,7 +48,8 @@ const EditProfile = () => {
       // ✅ username으로 변경
       const updatedUsername = username.trim() === "" ? user.username : username;
       const updatedEmail = email.trim() === "" ? user.email : email;
-      const updatedPhone = phoneNumber.trim() === "" ? user.phoneNumber : phoneNumber;
+      const updatedPhone =
+        phoneNumber.trim() === "" ? user.phoneNumber : phoneNumber;
       const updatedPost = post.trim() === "" ? user.post : post;
       const updatedAddr1 = addr1.trim() === "" ? user.addr1 : addr1;
       const updatedAddr2 = addr2.trim() === "" ? user.addr2 : addr2;
@@ -84,12 +88,22 @@ const EditProfile = () => {
 
       <div className="input-group">
         <label>이름:</label>
-        <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="이름" />
+        <input
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          placeholder="이름"
+        />
       </div>
 
       <div className="input-group">
         <label>이메일:</label>
-        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="이메일" />
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="이메일"
+        />
       </div>
 
       <div className="input-group">
@@ -119,7 +133,12 @@ const EditProfile = () => {
 
       <div className="input-group">
         <label>상세 주소:</label>
-        <input type="text" value={addr2} onChange={(e) => setAddr2(e.target.value)} placeholder="상세 주소" />
+        <input
+          type="text"
+          value={addr2}
+          onChange={(e) => setAddr2(e.target.value)}
+          placeholder="상세 주소"
+        />
       </div>
 
       <div className="button-group">
