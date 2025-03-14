@@ -83,7 +83,7 @@ const EditProfile = () => {
   };
 
   return (
-    <div className="edit-profile">
+    <div className="bg-[#fff6e2] p-8 rounded-xl shadow-lg w-full max-w-md h-full flex flex-col overflow-y-auto">
       <h2>회원정보 수정</h2>
 
       <div className="input-group">

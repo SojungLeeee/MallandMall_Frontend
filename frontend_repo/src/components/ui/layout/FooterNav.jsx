@@ -51,6 +51,7 @@ const FooterNav = () => {
   return (
     <footer
       className="bg-white text-gray-500 py-4 px-4 mt-4 ml-0.5 rounded-3xl"
+
       style={{
         boxShadow:
           "0 -4px 6px -1px rgba(0, 0, 0, 0.1), 0 4px 6px -1px rgba(0, 0, 0, 0.1)",

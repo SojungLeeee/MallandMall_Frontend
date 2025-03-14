@@ -4,7 +4,7 @@ module.exports = {
   theme: {
     extend: {
       backgroundImage: {
-        banner: `url('../public/images/banner.jpg')`,
+        banner: `url('../public/images/banner.jpg')`, // 배너 이미지 추가
       },
     },
   },

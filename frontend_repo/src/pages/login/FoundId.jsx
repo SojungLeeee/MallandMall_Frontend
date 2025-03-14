@@ -9,8 +9,8 @@ export default function FoundId() {
   console.log("FoundId에서 받은 createDate:", createDate); // createDate 확인
 
   return (
-    <div className="flex items-center justify-center w-full h-[671px] bg-[#fff6e2] p-5">
-      <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
+    <div className="flex items-center justify-center w-full h-full bg-white  p-5">
+      <div className="bg-[#fff6e2] p-8 rounded-xl shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-bold mb-5 text-center">
           아이디 찾기 결과
         </h2>

@@ -18,15 +18,14 @@ function Login() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center w-full max-w-[390px] h-screen text-xl bg-[#fff6e2]">
+    <div className="flex flex-col items-center justify-center w-full max-w-[390px]  text-xl  h-full">
       <img
         src={"/images/Loginimage.png"}
-        width="350"
-        height="200"
+        width="250"
+        height="250"
         className="mb-5"
         alt="logo"
       />
-
 
       {data && <p>{data.message}</p>}
       <Form method="post" className="w-full mb-5">
