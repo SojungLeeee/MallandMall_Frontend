@@ -23,6 +23,7 @@ import Signup from "./pages/login/Signup";
 import { action as signUpAction } from "./pages/login/Signup";
 import SelectCategory from "./pages/login/SelectCategory";
 import CategoryList from "./pages/category/CategoryList";
+import CategoryPage from "./pages/category/CategoryPage";
 import { tokenProviderLoader } from "./auth/tokenProviderService";
 import AppTwo from "./AppTwo";
 
@@ -68,23 +69,10 @@ const router = createBrowserRouter([
       // { path: "/findid", element: <FindId /> },
       { path: "/reset-password", element: <ResetPassword /> },
       { path: "/selectCategory", element: <SelectCategory /> },
-      // {
-      //   path: "/products/new",
-      //   element: (
-      //     <ProtectedRoute requireAdmin>
-      //       <NewProduct />
-      //     </ProtectedRoute>
-      //   ),
-      // },
-      // { path: "/products/:id", element: <ProductDetail /> },
-      // {
-      //   path: "/carts",
-      //   element: (
-      //     <ProtectedRoute>
-      //       <MyCart />
-      //     </ProtectedRoute>
-      //   ),
-      // },
+      {
+        path: "/product/:categoryName", // :categoryName은 동적 경로
+        element: <CategoryPage />, // 카테고리별 상품 페이지
+      },
     ],
   },
 ]);
