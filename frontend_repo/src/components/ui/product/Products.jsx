@@ -2,15 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { fetchProductHome } from "../../../api/httpMemberService"; // API 호출
 
-// 백엔드에서 받아온 데이터 useState로 상태관리 해버리기
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  /* 상품 데이터 가져오기, 비동기로 가져오기
- 
-  */
   useEffect(() => {
     const getProducts = async () => {
       try {
@@ -38,22 +34,23 @@ const Products = () => {
       {error && <p className="text-red-500">{error}</p>}
 
       {/* 상품 목록 */}
-      <div className="mt-5 grid grid-cols-2 gap-4 max-w-4xl w-full p-4">
+      <div className="mt-5 grid grid-cols-2  gap-4 p-4">
         {products.map((product) => (
           <Link
             to={`/product/${product.productCode}`}
             key={product.productCode}
             className="cursor-pointer"
           >
-            <div className="bg-white border rounded-md shadow-md overflow-hidden flex flex-col items-center p-4 hover:shadow-lg transition">
-              <div className="w-full max-w-md border rounded-lg bg-yellow-400 flex items-center justify-center max-h-[400px]">
+            <div className="bg-white border rounded-md shadow-md overflow-hidden flex flex-col items-center p-4 hover:shadow-lg transition h-full">
+              {/* 이미지 컨테이너 */}
+              <div className="w-full max-h-72 border rounded-lg bg-yellow-400 flex items-center justify-center">
                 <img
                   src={product.image}
                   alt={product.productName}
-                  className="w-full h-auto object-contain p-4"
+                  className="w-full h-full object-cover p-4"
                 />
               </div>
-              <div className="text-center flex flex-col gap-2 mt-3">
+              <div className="text-center flex flex-col gap-2 mt-3 flex-grow">
                 <h3 className="text-lg font-semibold">{product.productName}</h3>
                 <p className="text-sm text-gray-600">{product.description}</p>
                 <p className="text-lg font-bold text-red-500">

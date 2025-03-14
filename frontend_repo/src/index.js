@@ -83,7 +83,7 @@ const router = createBrowserRouter([
       { path: "/product/:productCode", element: <ProductDetail /> },
 
       {
-        path: "/product/:categoryName", // :categoryName은 동적 경로
+        path: "/products/:categoryName", // :categoryName은 동적 경로
         element: <CategoryPage />, // 카테고리별 상품 페이지
       },
     ],

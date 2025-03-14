@@ -36,29 +36,35 @@ const SearchBar = () => {
   };
 
   return (
-    <form className="flex items-center w-full">
-      <div className="relative flex-grow ml-0.5 mb-2 flex">
-        {/* 인풋 */}
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onKeyDown={handleKeyDown} // 엔터키를 누르면 검색 실행
-          placeholder="검색어 입력"
-          className="w-5/6 p-3 pl-2 pr-10 text-gray-800 placeholder-gray-400 border border-gray-300 rounded-2xl focus:outline-none"
-        />
+    <div className="flex justify-center m-2">
+      {" "}
+      {/* 가로 중앙 정렬 및 상단 여백 추가 */}
+      <form className="flex justify-between items-center w-full max-w-4xl">
+        {" "}
+        {/* 화면 크기에 맞게 최대 너비 설정 */}
+        <div className="relative flex-grow ml-0.5 mb-2 flex">
+          {/* 인풋 */}
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={handleKeyDown} // 엔터키를 누르면 검색 실행
+            placeholder="검색어 입력"
+            className="w-5/6 p-3 pl-2 pr-10 text-gray-800 placeholder-gray-400 border border-gray-300 rounded-2xl focus:outline-none"
+          />
 
-        {/* 오른쪽 버튼 */}
-        <Link
-          to="/"
-          className="w-1/5 p-3 rounded-l-2xl flex items-center justify-center font-bold cursor-pointer"
-        >
-          <span className="text-black">취소</span> {/* 텍스트만 표시 */}
-        </Link>
-      </div>
-      {/* 영역 클릭 시 커서 깜빡이지 않도록 설정 */}
-      <div className="absolute inset-0 pointer-events-none"></div>
-    </form>
+          {/* 오른쪽 버튼 */}
+          <Link
+            to="/"
+            className="w-1/5 p-3 rounded-l-2xl flex items-center justify-center font-bold cursor-pointer"
+          >
+            <span className="text-black">취소</span> {/* 텍스트만 표시 */}
+          </Link>
+        </div>
+        {/* 영역 클릭 시 커서 깜빡이지 않도록 설정 */}
+        <div className="absolute inset-0 pointer-events-none"></div>
+      </form>
+    </div>
   );
 };
 

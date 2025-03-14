@@ -48,7 +48,7 @@ export default function CategoryList() {
       categoryName = "health";
     }
     console.log(categoryName); // 선택된 카테고리 출력
-    navigate(`/product/${categoryName}`); // 카테고리 이름을 포함한 URL로 이동
+    navigate(`/products/${categoryName}`); // 카테고리 이름을 포함한 URL로 이동
   };
 
   return (

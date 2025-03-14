@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { fetchFindCategory } from "../../api/httpCategoryService"; // axios 요청을 가져옵니다.
 
 const CategoryPage = () => {
@@ -44,11 +44,11 @@ const CategoryPage = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-4">
       <h1 className="text-2xl font-bold text-center mb-6">
         {categoryName} 상품 목록
       </h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-4">
         {/* 상품 목록을 반복문으로 렌더링 */}
         {products.length === 0 ? (
           <p className="text-center text-xl font-semibold">
@@ -56,21 +56,34 @@ const CategoryPage = () => {
           </p>
         ) : (
           products.map((product) => (
-            <div
+            <Link
+              to={`/product/${product.productCode}`}
               key={product.productCode}
-              className="border p-4 rounded-lg bg-white shadow-md"
+              className="cursor-pointer"
             >
-              <img
-                src={product.image}
-                alt={product.productName}
-                className="w-52 h-52  object-cover rounded-t-lg px-2 py-2"
-              />
-              <h2 className="text-xl font-semibold text-gray-800">
-                {product.productName}
-              </h2>
-              <p className="text-gray-600 text-sm">{product.description}</p>
-              <p className="text-lg font-bold mt-2">{product.price} 원</p>
-            </div>
+              <div className="bg-white border rounded-md shadow-md overflow-hidden flex flex-col items-center p-4 hover:shadow-lg transition h-full">
+                {/* 이미지 컨테이너 */}
+                <div className="w-full max-h-72 border rounded-lg bg-yellow-400 flex items-center justify-center">
+                  <img
+                    src={product.image}
+                    alt={product.productName}
+                    className="w-full h-full object-cover p-4"
+                  />
+                </div>
+                <div className="text-center flex flex-col gap-2 mt-3">
+                  <h3 className="text-lg font-semibold">
+                    {product.productName}
+                  </h3>
+                  <p className="text-sm text-gray-600">{product.description}</p>
+                  <p className="text-lg font-bold text-red-500">
+                    {product.price.toLocaleString()}원
+                  </p>
+                  <p className="text-sm text-yellow-500">
+                    ⭐ {product.averageRating}
+                  </p>
+                </div>
+              </div>
+            </Link>
           ))
         )}
       </div>
