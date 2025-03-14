@@ -13,8 +13,12 @@ import FindId from "./pages/login/FindId";
 import { action as authAction } from "./pages/login/Login";
 import Mypage, { loader as mypageLoader } from "./pages/mypage/Mypage";
 import FoundId from "../src/pages/login/FoundId";
-import DeleteAccount, { loader as deleteAccountLoader } from "./pages/mypage/DeleteAccount";
-import EditProfile, { loader as editProfileLoader } from "./pages/mypage/EditProfile";
+import DeleteAccount, {
+  loader as deleteAccountLoader,
+} from "./pages/mypage/DeleteAccount";
+import EditProfile, {
+  loader as editProfileLoader,
+} from "./pages/mypage/EditProfile";
 import Signup from "./pages/login/Signup";
 import { action as signUpAction } from "./pages/login/Signup";
 import SelectCategory from "./pages/login/SelectCategory";
@@ -22,18 +26,16 @@ import CategoryList from "./pages/category/CategoryList";
 import CategoryPage from "./pages/category/CategoryPage";
 import { tokenProviderLoader } from "./auth/tokenProviderService";
 
-
 import Products from "./components/ui/product/Products"; // ✅ 경로 수정
 import ProductDetail from "./components/ui/product/ProductDetail"; // ✅ 경로 수정
 
 import AppTwo from "./AppTwo";
-import AppOne from "./AppOne";
 import Search from "./pages/Search/Search";
 
 const router = createBrowserRouter([
   {
     path: "/search",
-    element: <AppOne />,
+    element: <AppTwo />,
     children: [{ path: "/search", element: <Search /> }],
   },
   {
@@ -79,23 +81,6 @@ const router = createBrowserRouter([
 
       { path: "/products", element: <Products /> }, //  상품 목록 페이지
       { path: "/product/:productCode", element: <ProductDetail /> },
-      // {
-      //   path: "/products/new",
-      //   element: (
-      //     <ProtectedRoute requireAdmin>
-      //       <NewProduct />
-      //     </ProtectedRoute>
-      //   ),
-      // },
-      // { path: "/products/:id", element: <ProductDetail /> },
-      // {
-      //   path: "/carts",
-      //   element: (
-      //     <ProtectedRoute>
-      //       <MyCart />
-      //     </ProtectedRoute>
-      //   ),
-      // },
 
       {
         path: "/product/:categoryName", // :categoryName은 동적 경로

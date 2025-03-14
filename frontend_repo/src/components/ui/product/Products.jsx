@@ -30,24 +30,38 @@ const Products = () => {
   return (
     <div className="flex flex-col items-center bg-[#f8f5e6] min-h-screen">
       {/* 로딩 상태 */}
-      {loading && <p className="mt-20 text-center text-xl">Loading products...</p>}
+      {loading && (
+        <p className="mt-20 text-center text-xl">Loading products...</p>
+      )}
 
       {/* 에러 상태 */}
       {error && <p className="text-red-500">{error}</p>}
 
       {/* 상품 목록 */}
-      <div className="mt-20 grid grid-cols-2 gap-4 max-w-4xl w-full p-4">
+      <div className="mt-5 grid grid-cols-2 gap-4 max-w-4xl w-full p-4">
         {products.map((product) => (
-          <Link to={`/product/${product.productCode}`} key={product.productCode} className="cursor-pointer">
+          <Link
+            to={`/product/${product.productCode}`}
+            key={product.productCode}
+            className="cursor-pointer"
+          >
             <div className="bg-white border rounded-md shadow-md overflow-hidden flex flex-col items-center p-4 hover:shadow-lg transition">
               <div className="w-full max-w-md border rounded-lg bg-yellow-400 flex items-center justify-center max-h-[400px]">
-                <img src={product.image} alt={product.productName} className="w-full h-auto object-contain p-4" />
+                <img
+                  src={product.image}
+                  alt={product.productName}
+                  className="w-full h-auto object-contain p-4"
+                />
               </div>
               <div className="text-center flex flex-col gap-2 mt-3">
                 <h3 className="text-lg font-semibold">{product.productName}</h3>
                 <p className="text-sm text-gray-600">{product.description}</p>
-                <p className="text-lg font-bold text-red-500">{product.price.toLocaleString()}원</p>
-                <p className="text-sm text-yellow-500">⭐ {product.averageRating}</p>
+                <p className="text-lg font-bold text-red-500">
+                  {product.price.toLocaleString()}원
+                </p>
+                <p className="text-sm text-yellow-500">
+                  ⭐ {product.averageRating}
+                </p>
               </div>
             </div>
           </Link>
