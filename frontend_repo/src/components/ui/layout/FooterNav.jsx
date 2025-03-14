@@ -3,9 +3,8 @@ import { CiMenuBurger, CiStar } from "react-icons/ci";
 import { SlHome } from "react-icons/sl";
 import { VscAccount } from "react-icons/vsc";
 import { BsCart } from "react-icons/bs";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-// CSS 애니메이션 정의
 const styles = `
   @keyframes text-pop-up-top {
     0% {
@@ -32,10 +31,12 @@ const styles = `
 
 const FooterNav = () => {
   const starRef = useRef(null);
+  const navigate = useNavigate();
+  const token = localStorage.getItem("jwtAuthToken"); // Check if token exists in localStorage
 
   const handleMouseEnter = () => {
     if (starRef.current) {
-      // 애니메이션이 끝나지 않도록, 한번 시작되면 다시 시작되지 않도록 설정
+      // Animation logic for star icon
       starRef.current.classList.add("hover-pop-up");
       starRef.current.classList.remove("hover-pop-up-paused");
     }
@@ -43,14 +44,14 @@ const FooterNav = () => {
 
   const handleMouseLeave = () => {
     if (starRef.current) {
-      // 마우스를 떠나도 애니메이션은 종료되고, 다시 시작되지 않도록
+      // Animation logic when mouse leaves star icon
       starRef.current.classList.add("hover-pop-up-paused");
     }
   };
 
   return (
     <footer
-      className="bg-white text-gray-500 py-4 px-4  rounded-3xl"
+      className="bg-white text-gray-500 py-4 px-4 mt-4 ml-0.5 rounded-3xl"
       style={{
         boxShadow:
           "0 -4px 6px -1px rgba(0, 0, 0, 0.1), 0 4px 6px -1px rgba(0, 0, 0, 0.1)",
@@ -65,7 +66,7 @@ const FooterNav = () => {
               className="flex flex-col items-center hover:text-[#F9E79F] transition duration-300"
             >
               <CiMenuBurger className="text-3xl mb-1" />
-              <span className="text-xs font-medium">메뉴</span>
+              <span className="text-xs font-medium">카테고리</span>
             </Link>
           </li>
           <li className="flex flex-col items-center w-1/5 sm:w-auto">
@@ -91,22 +92,43 @@ const FooterNav = () => {
           </li>
 
           <li className="flex flex-col items-center w-1/5 sm:w-auto">
-            <Link
-              to="/mypage"
-              className="flex flex-col items-center hover:text-[#F9E79F] transition duration-300"
-            >
-              <VscAccount className="text-3xl mb-1" />
-              <span className="text-xs font-medium">MY</span>
-            </Link>
+            {token ? (
+              <Link
+                to="/mypage"
+                className="flex flex-col items-center hover:text-[#F9E79F] transition duration-300"
+              >
+                <VscAccount className="text-3xl mb-1" />
+                <span className="text-xs font-medium">MY</span>
+              </Link>
+            ) : (
+              <Link
+                to="/login"
+                className="flex flex-col items-center hover:text-[#F9E79F] transition duration-300"
+              >
+                <VscAccount className="text-3xl mb-1" />
+                <span className="text-xs font-medium">MY</span>
+              </Link>
+            )}
           </li>
+
           <li className="flex flex-col items-center w-1/5 sm:w-auto">
-            <Link
-              to="/carts"
-              className="flex flex-col items-center hover:text-[#F9E79F] transition duration-300"
-            >
-              <BsCart className="text-3xl mb-1" />
-              <span className="text-xs font-medium">장바구니</span>
-            </Link>
+            {token ? (
+              <Link
+                to="/carts"
+                className="flex flex-col items-center hover:text-[#F9E79F] transition duration-300"
+              >
+                <BsCart className="text-3xl mb-1" />
+                <span className="text-xs font-medium">장바구니</span>
+              </Link>
+            ) : (
+              <Link
+                to="/login"
+                className="flex flex-col items-center hover:text-[#F9E79F] transition duration-300"
+              >
+                <BsCart className="text-3xl mb-1" />
+                <span className="text-xs font-medium">장바구니</span>
+              </Link>
+            )}
           </li>
         </ul>
       </nav>

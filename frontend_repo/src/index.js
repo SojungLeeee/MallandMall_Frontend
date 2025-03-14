@@ -19,18 +19,28 @@ import Signup from "./pages/login/Signup";
 import { action as signUpAction } from "./pages/login/Signup";
 import SelectCategory from "./pages/login/SelectCategory";
 import CategoryList from "./pages/category/CategoryList";
+import CategoryPage from "./pages/category/CategoryPage";
 import { tokenProviderLoader } from "./auth/tokenProviderService";
-import Appp from "./Appp";
+
+
 import Products from "./components/ui/product/Products"; // ✅ 경로 수정
 import ProductDetail from "./components/ui/product/ProductDetail"; // ✅ 경로 수정
 
+import AppTwo from "./AppTwo";
+import AppOne from "./AppOne";
+import Search from "./pages/Search/Search";
+
 const router = createBrowserRouter([
-  // {
-  //   path: "/findid",
-  //   element: <Appp />,
-  //   loader: tokenProviderLoader, // 로그인 시 localStorage에 저장된 token과 userId 값을 제공하는 역할 담당
-  //   children: [{ path: "/findid", element: <FindId /> }],
-  // },
+  {
+    path: "/search",
+    element: <AppOne />,
+    children: [{ path: "/search", element: <Search /> }],
+  },
+  {
+    path: "/categoryList",
+    element: <AppTwo />,
+    children: [{ path: "/categoryList", element: <CategoryList /> }],
+  },
   {
     path: "/",
     element: <App />,
@@ -42,6 +52,7 @@ const router = createBrowserRouter([
       //{ path: "/products", element: <AllProudcts /> },
 
       { path: "/login", element: <Login />, action: authAction },
+
       { path: "/mypage", element: <Mypage />, loader: mypageLoader },
       {
         path: "/mypage/edit",
@@ -65,6 +76,7 @@ const router = createBrowserRouter([
       // { path: "/findid", element: <FindId /> },
       { path: "/reset-password", element: <ResetPassword /> },
       { path: "/selectCategory", element: <SelectCategory /> },
+
       { path: "/products", element: <Products /> }, //  상품 목록 페이지
       { path: "/product/:productCode", element: <ProductDetail /> },
       // {
@@ -84,6 +96,11 @@ const router = createBrowserRouter([
       //     </ProtectedRoute>
       //   ),
       // },
+
+      {
+        path: "/product/:categoryName", // :categoryName은 동적 경로
+        element: <CategoryPage />, // 카테고리별 상품 페이지
+      },
     ],
   },
 ]);
