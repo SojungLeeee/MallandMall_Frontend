@@ -18,7 +18,7 @@ function Login() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center w-full max-w-[390px]  text-xl bg-[#fff6e2] h-full">
+    <div className="flex flex-col items-center justify-center w-full max-w-[390px]  text-xl  h-full">
       <img
         src={"/images/Loginimage.png"}
         width="250"

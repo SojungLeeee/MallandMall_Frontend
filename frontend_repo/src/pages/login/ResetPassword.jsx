@@ -50,8 +50,8 @@ export default function ResetPassword() {
   };
 
   return (
-    <div className="flex justify-center items-center h-full bg-[#fff6e2] p-5">
-      <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
+    <div className="flex justify-center items-center h-full bg-white p-5">
+      <div className="bg-[#fff6e2] p-8 rounded-xl shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-bold mb-6 text-center">비밀번호 재설정</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">

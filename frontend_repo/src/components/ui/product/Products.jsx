@@ -94,7 +94,7 @@ const Products = () => {
         {products.map((product) => (
           <div
             key={product.id}
-            className="bg-white rounded-lg shadow-md overflow-hidden border  bg-custom-bg" //border-black 은 보려고해둔것것
+            className="bg-white rounded-lg shadow-md overflow-hidden border bg-[#faf9f0]" //border-black 은 보려고해둔것것
           >
             <div className="relative pb-2/3">
               <img

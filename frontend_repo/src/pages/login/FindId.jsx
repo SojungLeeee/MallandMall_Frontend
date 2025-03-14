@@ -48,11 +48,11 @@ export default function FindId() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center w-full h-full bg-[#fff6e2] p-5">
+    <div className="flex flex-col items-center justify-center w-full h-full bg-white p-5">
       <h2 className="text-2xl font-bold mb-5">아이디 찾기</h2>
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-md bg-white p-8 rounded-xl shadow-lg"
+        className="w-full max-w-md bg-[#fff6e2] p-8 rounded-xl shadow-lg"
       >
         <div className="mb-4">
           <label
