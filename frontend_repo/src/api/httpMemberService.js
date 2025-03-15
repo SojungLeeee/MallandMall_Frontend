@@ -87,12 +87,15 @@ export async function fetchAddReview(reviewData, token) {
 }
 
 // 리뷰 삭제
-export async function fetchDeleteReview(reviewId) {
-  await instance.delete(`/review/delete/${reviewId}`);
+export async function fetchDeleteReview(reviewId, token) {
+  return await instance.delete(`/review/delete/${reviewId}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
 }
 
 //  리뷰 업데이트
-export async function fetchUpdateReview(reviewId, updatedData) {
-  const response = await instance.put(`/review/update/${reviewId}`, updatedData);
-  return response.data;
+export async function fetchUpdateReview(reviewId, updatedData, token) {
+  return await instance.put(`/review/update/${reviewId}`, updatedData, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
 }
