@@ -28,15 +28,25 @@ const ReviewList = ({ productCode }) => {
     loadReviews();
   }, [productCode]);
 
-  //  날짜 포맷 함수 (YYYY-MM-DD)
+  // 날짜 포맷 함수 (YYYY-MM-DD)
   const formatDate = (dateString) => new Date(dateString).toISOString().split("T")[0];
 
   //  별점 UI 생성
-  const renderStars = (selectedRating) => {
-    return "★".repeat(selectedRating) + "☆".repeat(5 - selectedRating);
-  };
+  const renderStars = (selectedRating, setRatingFunction) => (
+    <div className="flex space-x-1">
+      {[1, 2, 3, 4, 5].map((star) => (
+        <span
+          key={star}
+          className={`cursor-pointer text-xl ${star <= selectedRating ? "text-yellow-500" : "text-gray-300"}`}
+          onClick={() => setRatingFunction(star)}
+        >
+          ★
+        </span>
+      ))}
+    </div>
+  );
 
-  //  리뷰 수정 시작
+  // 리뷰 수정 시작
   const startEditingReview = (review) => {
     setEditReviewId(review.reviewId);
     setEditReviewText(review.reviewText);
@@ -81,20 +91,22 @@ const ReviewList = ({ productCode }) => {
     <div className="w-full max-w-md mt-6 border-t pt-4">
       <h3 className="text-lg font-bold mb-2">상품 리뷰 ({reviews.length})</h3>
 
-      {/* 리뷰 작성 폼 */}
+      {/*  리뷰 작성 폼 */}
       <ReviewForm productCode={productCode} setReviews={setReviews} />
 
-      {/* 리뷰 리스트 */}
+      {/*  리뷰 리스트 */}
       <div className="mt-4 space-y-4">
         {reviews.map((review) => (
           <div key={review.reviewId} className="border p-3 rounded-md bg-yellow-100">
             <p className="text-sm text-gray-700">
               {review.userId} | 작성날짜: {formatDate(review.reviewDate)}
             </p>
-            <p className="text-yellow-500">{renderStars(review.rating)}</p>
 
             {editReviewId === review.reviewId ? (
               <div className="mt-2">
+                {/*  별점 수정 UI  */}
+                {renderStars(editRating, setEditRating)}
+
                 <input
                   type="text"
                   value={editReviewText}
@@ -104,9 +116,15 @@ const ReviewList = ({ productCode }) => {
                 <button onClick={handleUpdateReview} className="mt-2 bg-green-500 px-2 py-1 text-white rounded-md">
                   수정 완료
                 </button>
+                <button onClick={() => setEditReviewId(null)} className="mt-1 text-gray-500 text-sm">
+                  취소
+                </button>
               </div>
             ) : (
-              <p className="text-gray-800">{review.reviewText}</p>
+              <>
+                <p className="text-yellow-500">{renderStars(review.rating, () => {})}</p>
+                <p className="text-gray-800">{review.reviewText}</p>
+              </>
             )}
 
             {review.userId === userId && editReviewId !== review.reviewId && (
