@@ -55,3 +55,44 @@ export async function fetchProductDetail(productCode) {
   const response = await instance.get(`/product/detail/${productCode}`);
   return response.data;
 }
+// 리뷰 목록 불러오기
+export async function fetchProductReviews(productCode) {
+  const response = await instance.get(`/review/product/${productCode}`);
+  return response.data;
+}
+
+//  리뷰 추가
+export async function fetchAddReview(reviewData, token) {
+  if (!token) {
+    console.error(" JWT 토큰이 없습니다. 로그인 여부를 확인하세요.");
+    return;
+  }
+
+  try {
+    console.log(" 전송할 리뷰 데이터:", JSON.stringify(reviewData));
+    console.log(" 전송할 Authorization 헤더:", `Bearer ${token}`);
+
+    const response = await instance.post(`/review/add`, reviewData, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error(" 리뷰 작성 실패:", error.response?.data || error.message);
+    throw error;
+  }
+}
+
+// 리뷰 삭제
+export async function fetchDeleteReview(reviewId) {
+  await instance.delete(`/review/delete/${reviewId}`);
+}
+
+//  리뷰 업데이트
+export async function fetchUpdateReview(reviewId, updatedData) {
+  const response = await instance.put(`/review/update/${reviewId}`, updatedData);
+  return response.data;
+}
