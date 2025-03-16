@@ -31,6 +31,7 @@ import ProductDetail from "./components/ui/product/ProductDetail"; // ✅ 경로
 
 import AppTwo from "./AppTwo";
 import Search from "./pages/Search/Search";
+import Admin from "./pages/admin/Admin";
 
 const router = createBrowserRouter([
   {
@@ -66,6 +67,7 @@ const router = createBrowserRouter([
         element: <DeleteAccount />,
         loader: deleteAccountLoader,
       },
+      { path: "/admin", element: <Admin /> },
       { path: "/signup", element: <Signup />, action: signUpAction },
       { path: "/carts", element: <MyCart /> },
       { path: "/categoryList", element: <CategoryList /> },
