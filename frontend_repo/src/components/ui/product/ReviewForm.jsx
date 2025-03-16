@@ -7,7 +7,7 @@ const ReviewForm = ({ productCode, setReviews }) => {
   const token = localStorage.getItem("jwtAuthToken");
   const userId = localStorage.getItem("userId");
 
-  // 별점 선택 UI
+  //  별점 선택 UI
   const renderStars = (selectedRating, setRatingFunction) => (
     <div className="flex space-x-1">
       {[1, 2, 3, 4, 5].map((star) => (
@@ -27,10 +27,21 @@ const ReviewForm = ({ productCode, setReviews }) => {
 
     const newReview = { userId, productCode, rating, reviewText };
 
-    await fetchAddReview(newReview, token);
-    setReviewText("");
-    setRating(5);
-    setReviews(await fetchProductReviews(productCode));
+    try {
+      await fetchAddReview(newReview, token);
+      setReviewText("");
+      setRating(5);
+
+      //  최신순 정렬 유지
+      const updatedReviews = await fetchProductReviews(productCode);
+      setReviews([...updatedReviews].sort((a, b) => new Date(b.reviewDate) - new Date(a.reviewDate)));
+    } catch (error) {
+      if (error.response?.status === 400) {
+        alert(` 리뷰 작성 실패: ${error.response.data || "구매한 상품에만 리뷰를 작성할 수 있습니다."}`);
+      } else {
+        console.error(" 리뷰 작성 중 오류 발생:", error.response?.data || error.message);
+      }
+    }
   };
 
   return (
