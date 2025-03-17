@@ -25,6 +25,7 @@ import SelectCategory from "./pages/login/SelectCategory";
 import CategoryList from "./pages/category/CategoryList";
 import CategoryPage from "./pages/category/CategoryPage";
 import SearchPage from "./pages/Search/SearchPage";
+import OrderProduct from "./pages/product/OrderProduct";
 import { tokenProviderLoader } from "./auth/tokenProviderService";
 
 import Products from "./components/ui/product/Products"; // ✅ 경로 수정
@@ -92,6 +93,10 @@ const router = createBrowserRouter([
       {
         path: "/search/:productName",
         element: <SearchPage />,
+      },
+      {
+        path: "/order",
+        element: <OrderProduct />,
       },
     ],
   },
