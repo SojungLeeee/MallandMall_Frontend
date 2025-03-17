@@ -6,6 +6,7 @@ import {
   useNavigate,
 } from "react-router-dom";
 import { fetchAuthenticate } from "../../api/httpMemberService"; // 상대 경로로 가져오기
+import { setAuthToken } from "../../auth/tokenProviderService";
 
 function Login() {
   // 예외처리
@@ -91,18 +92,26 @@ export async function action({ request }) {
   try {
     response = await fetchAuthenticate(authData);
     console.log("로그인 요청결과:", response);
-    const token = response.data.token;
-    localStorage.setItem("jwtAuthToken", token);
-    localStorage.setItem("userId", authData.userId);
-  } catch (e) {
-    if (e.status === 400) {
-      console.log("id 또는 비번  에러 발생1:", e);
-      console.log("id 또는 비번  에러 발생2:", e.response.data);
-      return { message: e.response.data };
-    }
-  }
 
-  return redirect("/");
+    // 🔥 응답 구조 검증 추가
+    if (!response || !response.data) {
+      throw new Error("서버에서 유효한 응답을 받지 못했습니다.");
+    }
+
+    const { token, userId, role } = response.data;
+
+    // 🔥 role 저장 추가
+    setAuthToken({ token, userId, role });
+
+    return redirect("/");
+  } catch (e) {
+    console.error("로그인 실패:", e);
+
+    // 🔥 e.response.data가 없는 경우 처리
+    const errorMessage =
+      e.response?.data || "로그인에 실패했습니다. 다시 시도해 주세요.";
+    return { message: errorMessage };
+  }
 }
 
 export default Login;
