@@ -3,7 +3,7 @@ import Button from "../Button";
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { MdAdminPanelSettings } from "react-icons/md";
-
+import Logo from "../../../assets/images/logo/Logo.png";
 export default function Navbar() {
   const { token } = useRouteLoaderData("root");
   const navigate = useNavigate(); // useNavigate 훅을 사용해 navigate 함수 가져오기
@@ -40,7 +40,7 @@ export default function Navbar() {
     <>
       <header className="flex justify-between  p-2">
         <Link to="/" className="flex items-center">
-          <img src="/images/Logo.png" alt="Emart Logo" className="h-13 w-20" />
+          <img src={Logo} alt="Emart Logo" className="h-13 w-20" />
         </Link>
         <nav className="flex items-center gap-3 ">
           {token && (
