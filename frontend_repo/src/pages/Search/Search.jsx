@@ -3,29 +3,16 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const SearchBar = () => {
-  const [query, setQuery] = useState("");
-  const navigate = useNavigate();
+  const [search, setSearch] = useState(""); // 검색어 상태
+  const navigate = useNavigate(); // 페이지 이동을 위한 navigate 함수
 
   // 검색 함수: 엔터를 눌렀을 때 실행
   const handleSearch = async (e) => {
-    e.preventDefault();
-    if (!query.trim()) return;
+    e.preventDefault(); // 기본 폼 제출 동작을 방지
+    if (!search.trim()) return; // 검색어가 비어 있으면 실행하지 않음
 
-    try {
-      const response = await axios.get(`example`, {
-        params: { query }, // 쿼리 파라미터로 전달
-      });
-
-      console.log("🔍 검색 결과:", response.data);
-
-      // 검색 결과 페이지로 이동하면서 데이터 전달
-      navigate(`/search?query=${encodeURIComponent(query)}`, {
-        state: { results: response.data },
-      });
-    } catch (error) {
-      console.error("검색 실패:", error);
-      alert("검색 중 오류가 발생했습니다. 다시 입력하세요.");
-    }
+    // 검색어를 URL 경로에 포함하여 이동
+    navigate(`/search/${search}`); // 카테고리 이름을 포함한 URL로 이동
   };
 
   // 엔터 키를 눌렀을 때 실행
@@ -37,17 +24,18 @@ const SearchBar = () => {
 
   return (
     <div className="flex justify-center m-2">
-      {" "}
       {/* 가로 중앙 정렬 및 상단 여백 추가 */}
-      <form className="flex justify-between items-center w-full max-w-4xl">
-        {" "}
+      <form
+        className="flex justify-between items-center w-full max-w-4xl"
+        onSubmit={handleSearch}
+      >
         {/* 화면 크기에 맞게 최대 너비 설정 */}
         <div className="relative flex-grow ml-0.5 mb-2 flex">
           {/* 인풋 */}
           <input
             type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)} // 입력값을 상태에 저장
             onKeyDown={handleKeyDown} // 엔터키를 누르면 검색 실행
             placeholder="검색어 입력"
             className="w-5/6 p-3 pl-2 pr-10 text-gray-800 placeholder-gray-400 border border-gray-300 rounded-2xl focus:outline-none"
@@ -61,8 +49,6 @@ const SearchBar = () => {
             <span className="text-black">취소</span> {/* 텍스트만 표시 */}
           </Link>
         </div>
-        {/* 영역 클릭 시 커서 깜빡이지 않도록 설정 */}
-        <div className="absolute inset-0 pointer-events-none"></div>
       </form>
     </div>
   );
