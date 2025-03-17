@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import { fetchAuthenticate } from "../../api/httpMemberService"; // 상대 경로로 가져오기
 import { setAuthToken } from "../../auth/tokenProviderService";
+import Logo from "../../assets/images/logo/Logo.png";
 
 function Login() {
   // 예외처리
@@ -20,13 +21,7 @@ function Login() {
 
   return (
     <div className="flex flex-col items-center justify-center w-full max-w-[390px]  text-xl  h-full">
-      <img
-        src={"/images/Loginimage.png"}
-        width="250"
-        height="250"
-        className="mb-5"
-        alt="logo"
-      />
+      <img src={Logo} width="250" height="250" className="mb-5" alt="logo" />
 
       {data && <p>{data.message}</p>}
       <Form method="post" className="w-full mb-5">
