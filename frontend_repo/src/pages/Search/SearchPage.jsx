@@ -64,7 +64,7 @@ const SearchPage = () => {
           {/* 상품 목록을 반복문으로 렌더링 */}
           {products.map((product) => (
             <Link
-              to={`/products/${product.productName}`}
+              to={`/product/${product.productCode}`}
               key={product.productCode}
               className="cursor-pointer"
             >
