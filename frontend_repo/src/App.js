@@ -17,6 +17,7 @@ function App() {
     "/product/:productCode",
     location.pathname
   );
+  const isSearchRoute = matchPath("/search/:productName", location.pathname);
   const isProductHomeRoute = location.pathname === "/product/home";
 
   // Combine the checks to determine if the SearchBar should be shown
@@ -24,7 +25,8 @@ function App() {
     isHomeRoute ||
     isProductCategoryRoute ||
     isProductCodeRoute ||
-    isProductHomeRoute;
+    isProductHomeRoute ||
+    isSearchRoute;
 
   return (
     <div className="flex flex-col App">

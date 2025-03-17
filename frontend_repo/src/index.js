@@ -24,6 +24,7 @@ import { action as signUpAction } from "./pages/login/Signup";
 import SelectCategory from "./pages/login/SelectCategory";
 import CategoryList from "./pages/category/CategoryList";
 import CategoryPage from "./pages/category/CategoryPage";
+import SearchPage from "./pages/Search/SearchPage";
 import { tokenProviderLoader } from "./auth/tokenProviderService";
 
 import Products from "./components/ui/product/Products"; // ✅ 경로 수정
@@ -87,6 +88,10 @@ const router = createBrowserRouter([
       {
         path: "/products/:categoryName", // :categoryName은 동적 경로
         element: <CategoryPage />, // 카테고리별 상품 페이지
+      },
+      {
+        path: "/search/:productName",
+        element: <SearchPage />,
       },
     ],
   },
