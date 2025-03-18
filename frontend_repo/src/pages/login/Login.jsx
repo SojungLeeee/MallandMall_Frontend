@@ -1,10 +1,4 @@
-import {
-  Form,
-  redirect,
-  json,
-  useActionData,
-  useNavigate,
-} from "react-router-dom";
+import { Form, redirect, json, useActionData, useNavigate } from "react-router-dom";
 import { fetchAuthenticate } from "../../api/httpMemberService"; // 상대 경로로 가져오기
 import { setAuthToken } from "../../auth/tokenProviderService";
 import Logo from "../../assets/images/logo/Logo.png";
@@ -48,24 +42,15 @@ function Login() {
         </div>
       </Form>
       <div className="text-center">
-        <a
-          href="/findid"
-          className="mb-4 text-[#6c6c6c] font-bold no-underline cursor-pointer text-xl"
-        >
+        <a href="/findid" className="mb-4 text-[#6c6c6c] font-bold no-underline cursor-pointer text-xl">
           아이디 찾기
         </a>
         <br />
-        <a
-          href="/reset-password"
-          className="mb-4 text-[#6c6c6c] font-bold no-underline cursor-pointer text-xl"
-        >
+        <a href="/reset-password" className="mb-4 text-[#6c6c6c] font-bold no-underline cursor-pointer text-xl">
           비밀번호 재설정
         </a>
         <br />
-        <a
-          href="/signup"
-          className="text-[#6c6c6c] font-bold no-underline cursor-pointer text-xl"
-        >
+        <a href="/signup" className="text-[#6c6c6c] font-bold no-underline cursor-pointer text-xl">
           회원가입
         </a>
         <br />
@@ -80,32 +65,37 @@ export async function action({ request }) {
     userId: data.get("userId"),
     password: data.get("password"),
   };
-  console.log("authData>>", authData);
-
-  let response = null;
 
   try {
-    response = await fetchAuthenticate(authData);
-    console.log("로그인 요청결과:", response);
+    const response = await fetchAuthenticate(authData);
 
-    // 🔥 응답 구조 검증 추가
     if (!response || !response.data) {
       throw new Error("서버에서 유효한 응답을 받지 못했습니다.");
     }
 
     const { token, userId, role } = response.data;
-
-    // 🔥 role 저장 추가
     setAuthToken({ token, userId, role });
 
     return redirect("/");
   } catch (e) {
     console.error("로그인 실패:", e);
 
-    // 🔥 e.response.data가 없는 경우 처리
-    const errorMessage =
-      e.response?.data || "로그인에 실패했습니다. 다시 시도해 주세요.";
-    return { message: errorMessage };
+    let errorMessage = "로그인에 실패했습니다. 다시 시도해 주세요.";
+
+    if (e.response) {
+      if (e.response.status === 401) {
+        errorMessage = "아이디 또는 비밀번호가 잘못되었습니다.";
+      } else if (e.response.status === 404) {
+        errorMessage = "사용자를 찾을 수 없습니다.";
+      } else {
+        errorMessage = e.response.data || errorMessage;
+      }
+    }
+
+    return new Response(JSON.stringify({ message: errorMessage }), {
+      status: e.response?.status || 400,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 }
 
