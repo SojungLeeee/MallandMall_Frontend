@@ -1,33 +1,7 @@
+// AdminAllProducts.jsx
 import React, { useEffect, useState } from "react";
 import { fetchFindAllProductCode } from "../../api/httpAdminService";
-
-// 상품 리스트를 렌더링하는 컴포넌트
-function ProductTable({ products }) {
-  return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full table-auto border-collapse">
-        <thead>
-          <tr className="bg-gray-200">
-            <th className="px-4 py-2 text-left w-1/4">상품코드</th>
-            <th className="px-4 py-2 text-left w-1/4">카테고리</th>
-            <th className="px-4 py-2 text-left w-1/4">상품명</th>
-            <th className="px-4 py-2 text-left w-1/4">가격</th>
-          </tr>
-        </thead>
-        <tbody>
-          {products.map((product, index) => (
-            <tr key={index} className="border-t">
-              <td className="px-4 py-2">{product.productCode}</td>
-              <td className="px-4 py-2">{product.category}</td>
-              <td className="px-4 py-2">{product.productName}</td>
-              <td className="px-4 py-2">{product.price}원</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
+import AllProductCode from "../../components/ui/admin/AllProductCode"; // AllProductCode 컴포넌트 임포트
 
 export default function AdminAllProducts() {
   const [error, setError] = useState(null); // 오류 상태
@@ -65,10 +39,10 @@ export default function AdminAllProducts() {
 
   return (
     <div className="w-full p-4">
-      <h2 className="text-2xl font-semibold mb-4">All Products</h2>
+      <h2 className="text-2xl font-semibold mb-4">상품 코드 목록</h2>
       <hr className="mb-4" />
       {productData.length > 0 ? (
-        <ProductTable products={productData} />
+        <AllProductCode products={productData} showDeleteCheckbox={false} /> // AllProductCode 컴포넌트 사용
       ) : (
         <div>Loading...</div>
       )}

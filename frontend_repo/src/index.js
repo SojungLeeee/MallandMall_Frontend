@@ -32,6 +32,7 @@ import Products from "./components/ui/product/Products"; // ✅ 경로 수정
 import ProductDetail from "./components/ui/product/ProductDetail"; // ✅ 경로 수정
 import MyReviews from "./pages/mypage/MyReview";
 import AdminAllProducts from "./pages/admin/AdminAllProducts";
+import AdminDeleteProducts from "./pages/admin/AdminDeleteProducts";
 
 import AppTwo from "./AppTwo";
 import Search from "./pages/Search/Search";
@@ -108,6 +109,10 @@ const router = createBrowserRouter([
       {
         path: "/admin/product/search",
         element: <AdminAllProducts />,
+      },
+      {
+        path: "/admin/product/delete",
+        element: <AdminDeleteProducts />,
       },
     ],
   },

@@ -22,3 +22,25 @@ export async function fetchFindAllProductCode() {
     throw new Error("fetchFindAllProductCode 예외발생");
   }
 }
+
+// 상품 코드 삭제
+export async function fetchDeleteProductCode(productCode) {
+  try {
+    // DELETE 요청 보내기
+    const response = await instance.delete(
+      `/admin/deleteProductCode/${productCode}`
+    );
+
+    console.log("fetchDeleteProductCode.response: ", response);
+
+    // 응답 상태가 200 또는 204인 경우만 정상 처리
+    if (response.status !== 200 && response.status !== 204) {
+      throw new Error("fetchDeleteProductCode 예외발생");
+    }
+
+    return response; // 응답 반환
+  } catch (error) {
+    console.error("삭제 실패:", error); // 에러 디버깅
+    throw new Error("fetchDeleteProductCode 예외발생");
+  }
+}
