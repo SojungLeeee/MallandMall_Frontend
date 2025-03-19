@@ -30,11 +30,15 @@ export default function MyPage() {
         </button>
         <button
           className="w-full py-3 text-xl bg-[#f9e687] text-black font-bold rounded-2xl focus:outline-none hover:bg-[#e2d267]"
-          onClick={() => navigate("/mypage/orders")}
+          onClick={() => navigate("/mypage/orderinfo")} // 주문내역 페이지로 이동
         >
           주문내역
         </button>
-        <button className="w-full py-3 text-xl bg-[#f9e687] text-black font-bold rounded-2xl focus:outline-none hover:bg-[#e2d267]">
+        {/* 리뷰 페이지로 이동 */}
+        <button
+          className="w-full py-3 text-xl bg-[#f9e687] text-black font-bold rounded-2xl focus:outline-none hover:bg-[#e2d267]"
+          onClick={() => navigate("/mypage/myreview")}
+        >
           내가 쓴 리뷰
         </button>
         <button

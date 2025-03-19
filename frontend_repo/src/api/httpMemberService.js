@@ -99,3 +99,20 @@ export async function fetchUpdateReview(reviewId, updatedData, token) {
     headers: { Authorization: `Bearer ${token}` },
   });
 }
+
+// 특정 사용자 리뷰 불러오기
+// 특정 사용자의 리뷰 목록 불러오기
+export async function fetchUserReviews(userId, token) {
+  const response = await instance.get(`/review/user/${userId}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data;
+}
+
+// 특정 사용자의 주문목록 불러오깅깅
+export async function fetchUserOrderInfo(token) {
+  const response = await instance.get(`/order/myorder`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data;
+}
