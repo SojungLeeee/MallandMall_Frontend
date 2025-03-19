@@ -13,8 +13,12 @@ import FindId from "./pages/login/FindId";
 import { action as authAction } from "./pages/login/Login";
 import Mypage, { loader as mypageLoader } from "./pages/mypage/Mypage";
 import FoundId from "../src/pages/login/FoundId";
-import DeleteAccount, { loader as deleteAccountLoader } from "./pages/mypage/DeleteAccount";
-import EditProfile, { loader as editProfileLoader } from "./pages/mypage/EditProfile";
+import DeleteAccount, {
+  loader as deleteAccountLoader,
+} from "./pages/mypage/DeleteAccount";
+import EditProfile, {
+  loader as editProfileLoader,
+} from "./pages/mypage/EditProfile";
 import Signup from "./pages/login/Signup";
 import { action as signUpAction } from "./pages/login/Signup";
 import SelectCategory from "./pages/login/SelectCategory";
@@ -27,6 +31,7 @@ import MyOrderInfo from "./pages/mypage/MyOrderInfo";
 import Products from "./components/ui/product/Products"; // ✅ 경로 수정
 import ProductDetail from "./components/ui/product/ProductDetail"; // ✅ 경로 수정
 import MyReviews from "./pages/mypage/MyReview";
+import AdminAllProducts from "./pages/admin/AdminAllProducts";
 
 import AppTwo from "./AppTwo";
 import Search from "./pages/Search/Search";
@@ -99,6 +104,10 @@ const router = createBrowserRouter([
       {
         path: "/mypage/myreview",
         element: <MyReviews />,
+      },
+      {
+        path: "/admin/findAllProductCode",
+        element: <AdminAllProducts />,
       },
     ],
   },
