@@ -19,7 +19,7 @@ export default function AdminButton({ text, onClick, disabled = false }) {
       >
         {text}
       </button>
-
+      feature/#1/AdminButton
       {/* 조회 버튼 */}
       <button
         type="button"
@@ -29,7 +29,6 @@ export default function AdminButton({ text, onClick, disabled = false }) {
       >
         <CiSearch /> 조회
       </button>
-
       {/* 등록 버튼 */}
       <button
         type="button"
@@ -39,7 +38,6 @@ export default function AdminButton({ text, onClick, disabled = false }) {
       >
         <CiCircleCheck className="mr-1" /> 등록
       </button>
-
       {/* 수정 버튼 */}
       <button
         type="button"
@@ -49,7 +47,6 @@ export default function AdminButton({ text, onClick, disabled = false }) {
       >
         <MdOutlineUpdate className="mr-1" /> 수정
       </button>
-
       {/* 삭제 버튼 */}
       <button
         type="button"
