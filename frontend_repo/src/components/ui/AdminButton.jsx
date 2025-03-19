@@ -19,7 +19,6 @@ export default function AdminButton({ text, onClick, disabled = false }) {
       >
         {text}
       </button>
-      feature/#1/AdminButton
       {/* 조회 버튼 */}
       <button
         type="button"
