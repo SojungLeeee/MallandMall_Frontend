@@ -106,7 +106,7 @@ const router = createBrowserRouter([
         element: <MyReviews />,
       },
       {
-        path: "/admin/findAllProductCode",
+        path: "/admin/product/search",
         element: <AdminAllProducts />,
       },
     ],
