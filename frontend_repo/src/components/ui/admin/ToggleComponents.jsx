@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { fetchFindAllProductCode } from "../../../api/httpAdminService"; // 경로에 맞게 수정
 
-const UpdateComponents = ({ onCodeSelect }) => {
+const ToggleComponents = ({ onCodeSelect }) => {
   const [productCodes, setProductCodes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -78,4 +78,4 @@ const UpdateComponents = ({ onCodeSelect }) => {
   );
 };
 
-export default UpdateComponents;
+export default ToggleComponents;

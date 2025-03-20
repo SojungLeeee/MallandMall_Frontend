@@ -3,7 +3,7 @@ import {
   fetchFindAllGoods,
   fetchDeleteGoods,
 } from "../../api/httpAdminService";
-import AllProductCodes from "../../components/ui/admin/AllProductCodes"; // AddComponents 컴포넌트 임포트
+import ListComponents from "../../components/ui/admin/ListComponents"; // AddComponents 컴포넌트 임포트
 
 export default function AdminAllgoodss() {
   const [error, setError] = useState(null); // 오류 상태
@@ -122,7 +122,7 @@ export default function AdminAllgoodss() {
 
       {/* 상품 목록 표시 */}
       {goodsData.length > 0 ? (
-        <AllProductCodes
+        <ListComponents
           data={goodsData} // 상품 데이터
           dataType="goods" // 데이터 타입 예시
           renderRow={renderRow} // 행 렌더링 함수

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { fetchFindAllProductCode } from "../../api/httpAdminService";
-import AllProductCodes from "../../components/ui/admin/AllProductCodes"; // AllProductCodes 컴포넌트 임포트
+import ListComponents from "../../components/ui/admin/ListComponents"; // ListComponents 컴포넌트 임포트
 
 export default function AdminAllProducts() {
   const [error, setError] = useState(null); // 오류 상태
@@ -54,7 +54,7 @@ export default function AdminAllProducts() {
       <h2 className="text-2xl font-semibold mb-4">상품 코드 목록</h2>
       <hr className="mb-4" />
       {productData.length > 0 ? (
-        <AllProductCodes
+        <ListComponents
           data={productData} // 상품 데이터
           dataType="product" // 데이터 타입 예시
           renderRow={renderRow} // 행 렌더링 함수

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import UpdateComponents from "../../components/ui/admin/UpdateComponents"; // 경로에 맞게 수정
-import ProductDetails from "../../components/ui/admin/ProductDetails"; // 경로에 맞게 수정
+import ToggleComponents from "../../components/ui/admin/ToggleComponents"; // 경로에 맞게 수정
+import DetailsComponents from "../../components/ui/admin/DetailComponents"; // 경로에 맞게 수정
 import { fetchUpdateProductCode } from "../../api/httpAdminService"; // 경로에 맞게 수정
 
 const AdminUpdateProducts = () => {
@@ -39,12 +39,12 @@ const AdminUpdateProducts = () => {
       <hr className="my-4" />
 
       {/* 상품 코드 목록 컴포넌트 */}
-      <UpdateComponents onCodeSelect={handleCodeSelect} />
+      <ToggleComponents onCodeSelect={handleCodeSelect} />
       <hr className="my-4" />
 
       {/* 선택된 상품 코드가 있을 때, 해당 상품 코드의 상세 정보 컴포넌트 표시 */}
       {selectedCode && (
-        <ProductDetails
+        <DetailsComponents
           productCode={selectedCode}
           onProductUpdate={handleProductUpdate} // 수정된 데이터를 부모 컴포넌트로 전달
         />

@@ -3,7 +3,7 @@ import {
   fetchFindAllProductCode,
   fetchAddProductCode,
 } from "../../api/httpAdminService";
-import AllProductCodes from "../../components/ui/admin/AllProductCodes";
+import ListComponents from "../../components/ui/admin/ListComponents";
 import GenericForm from "../../components/ui/admin/AddComponents"; // 재사용 가능한 양식 컴포넌트 import
 
 export default function AdminAllProducts() {
@@ -120,7 +120,7 @@ export default function AdminAllProducts() {
 
       {/* 상품 목록 표시 */}
       {productData.length > 0 ? (
-        <AllProductCodes
+        <ListComponents
           data={productData}
           dataType="product"
           renderRow={renderRow}

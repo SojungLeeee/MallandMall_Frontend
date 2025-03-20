@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import AllProductCodes, {
+import ListComponents, {
   GenericTableBody,
-} from "../../components/ui/admin/AllProductCodes";
+} from "../../components/ui/admin/ListComponents";
 import axios from "axios";
 
 const AdminAllBranch = () => {
@@ -169,9 +169,9 @@ const AdminAllBranch = () => {
         </button>
       </div>
 
-      <AllProductCodes showDeleteCheckbox={true} text1="지점명" text2="주소">
+      <ListComponents showDeleteCheckbox={true} text1="지점명" text2="주소">
         <GenericTableBody data={branches} renderRow={renderBranchRow} />
-      </AllProductCodes>
+      </ListComponents>
     </div>
   );
 };

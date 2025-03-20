@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { fetchFindProductCode } from "../../../api/httpAdminService"; // 경로에 맞게 수정
 
-const ProductDetails = ({ productCode, onProductUpdate }) => {
+const DetailsComponents = ({ productCode, onProductUpdate }) => {
   const [productDetails, setProductDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -156,4 +156,4 @@ const ProductDetails = ({ productCode, onProductUpdate }) => {
   );
 };
 
-export default ProductDetails;
+export default DetailsComponents;
