@@ -1,4 +1,10 @@
-import { Form, redirect, json, useActionData, useNavigate } from "react-router-dom";
+import {
+  Form,
+  redirect,
+  json,
+  useActionData,
+  useNavigate,
+} from "react-router-dom";
 import { fetchAuthenticate } from "../../api/httpMemberService"; // 상대 경로로 가져오기
 import { setAuthToken } from "../../auth/tokenProviderService";
 import Logo from "../../assets/images/logo/Logo.png";
@@ -14,7 +20,7 @@ function Login() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center w-full max-w-[390px]  text-xl  h-full">
+    <div className="flex flex-col items-center justify-center w-full   text-xl  h-full">
       <img src={Logo} width="250" height="250" className="mb-5" alt="logo" />
 
       {data && <p>{data.message}</p>}
@@ -42,15 +48,24 @@ function Login() {
         </div>
       </Form>
       <div className="text-center">
-        <a href="/findid" className="mb-4 text-[#6c6c6c] font-bold no-underline cursor-pointer text-xl">
+        <a
+          href="/findid"
+          className="mb-4 text-[#6c6c6c] font-bold no-underline cursor-pointer text-xl"
+        >
           아이디 찾기
         </a>
         <br />
-        <a href="/reset-password" className="mb-4 text-[#6c6c6c] font-bold no-underline cursor-pointer text-xl">
+        <a
+          href="/reset-password"
+          className="mb-4 text-[#6c6c6c] font-bold no-underline cursor-pointer text-xl"
+        >
           비밀번호 재설정
         </a>
         <br />
-        <a href="/signup" className="text-[#6c6c6c] font-bold no-underline cursor-pointer text-xl">
+        <a
+          href="/signup"
+          className="text-[#6c6c6c] font-bold no-underline cursor-pointer text-xl"
+        >
           회원가입
         </a>
         <br />
