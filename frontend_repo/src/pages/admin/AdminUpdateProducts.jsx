@@ -1,51 +1,56 @@
-// AdminAllProducts.jsx
-import React, { useEffect, useState } from "react";
-import { fetchFindAllProductCode } from "../../api/httpAdminService";
-import AllProductCodes from "../../components/ui/admin/AllProductCodes"; // AllProductCode 컴포넌트 임포트
+import React, { useState } from "react";
+import UpdateComponents from "../../components/ui/admin/UpdateComponents"; // 경로에 맞게 수정
+import ProductDetails from "../../components/ui/admin/ProductDetails"; // 경로에 맞게 수정
+import { fetchUpdateProductCode } from "../../api/httpAdminService"; // 경로에 맞게 수정
 
-export default function AdminAllProducts() {
-  const [error, setError] = useState(null); // 오류 상태
-  const [productData, setProductData] = useState([]); // 상품 데이터를 위한 상태
+const AdminUpdateProducts = () => {
+  const [selectedCode, setSelectedCode] = useState(""); // 선택된 상품 코드를 상태로 관리
+  const [updatedProduct, setUpdatedProduct] = useState(null); // 수정된 상품 정보
+  const [isUpdated, setIsUpdated] = useState(false); // 수정 성공 여부 상태
 
-  useEffect(() => {
-    async function fetchProductData() {
-      try {
-        const productCodeList = await fetchFindAllProductCode();
-        console.log("받아온 상품 목록:", productCodeList); // 받아온 데이터를 콘솔에 출력
+  // 상품 코드가 선택되었을 때 호출되는 함수
+  const handleCodeSelect = (code) => {
+    setSelectedCode(code); // 선택된 상품 코드 업데이트
+  };
 
-        if (Array.isArray(productCodeList)) {
-          setProductData(productCodeList); // 응답이 배열이면 그 자체를 상태에 저장
-        } else {
-          throw new Error("상품 데이터가 배열이 아닙니다.");
-        }
-      } catch (error1) {
-        console.log("Error.name:", error1.name);
-        console.log("Error.message:", error1.message);
-        setError({ mesg: error1.message }); // 오류 발생 시 상태 업데이트
+  // 수정된 상품 정보를 처리하는 함수
+  const handleProductUpdate = async (updatedProductDetails) => {
+    try {
+      // 상품 코드 수정 API 호출
+      const response = await fetchUpdateProductCode(
+        selectedCode,
+        updatedProductDetails
+      );
+
+      if (response.status === 200) {
+        setUpdatedProduct(updatedProductDetails); // 수정된 정보 업데이트
+        setIsUpdated(true); // 수정 완료 표시
+        alert("상품 수정이 완료되었습니다.");
       }
+    } catch (error) {
+      console.error("상품 수정 오류:", error);
+      alert("상품 수정에 실패했습니다.");
     }
-
-    fetchProductData();
-  }, []);
-
-  // 오류가 있으면 화면에 오류 메시지 표시
-  if (error) {
-    return (
-      <div>
-        <div>{`Error: ${error.mesg}`}</div>
-      </div>
-    );
-  }
+  };
 
   return (
-    <div className="w-full p-4">
-      <h2 className="text-2xl font-semibold mb-4">상품 코드 목록</h2>
-      <hr className="mb-4" />
-      {productData.length > 0 ? (
-        <AllProductCodes products={productData} showDeleteCheckbox={false} /> // AllProductCode 컴포넌트 사용
-      ) : (
-        <div>Loading...</div>
+    <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+      <h1 className="text-2xl font-bold text-gray-800 mb-6">상품 수정</h1>
+      <hr className="my-4" />
+
+      {/* 상품 코드 목록 컴포넌트 */}
+      <UpdateComponents onCodeSelect={handleCodeSelect} />
+      <hr className="my-4" />
+
+      {/* 선택된 상품 코드가 있을 때, 해당 상품 코드의 상세 정보 컴포넌트 표시 */}
+      {selectedCode && (
+        <ProductDetails
+          productCode={selectedCode}
+          onProductUpdate={handleProductUpdate} // 수정된 데이터를 부모 컴포넌트로 전달
+        />
       )}
     </div>
   );
-}
+};
+
+export default AdminUpdateProducts;
