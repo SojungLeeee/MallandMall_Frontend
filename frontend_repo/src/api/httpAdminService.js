@@ -63,3 +63,74 @@ export async function fetchAddProductCode(product) {
     throw new Error("fetchAddProductCode 예외발생");
   }
 }
+
+// 개별 상품 목록 조회
+export async function fetchFindAllGoods() {
+  try {
+    console.log("fetchFindAllGoods 요청");
+    const response = await instance.get("/admin/findAllGoods");
+
+    console.log("개별 상품 목록 응답:", response); // 응답 확인
+
+    // 응답 데이터 반환
+    return response.data;
+  } catch (error) {
+    console.error("에러 발생:", error); // 에러 디버깅
+    throw new Error("fetchFindAllGoods 예외발생");
+  }
+}
+
+// 개별 상품 삭제
+export async function fetchDeleteGoods(goodsId) {
+  try {
+    // DELETE 요청 보내기
+    const response = await instance.delete(`/admin/deleteGoods/${goodsId}`);
+
+    console.log("fetchDeleteGoods.response: ", response);
+
+    // 응답 상태가 200 또는 204인 경우만 정상 처리
+    if (response.status !== 200 && response.status !== 204) {
+      throw new Error("fetchDeleteGoods 예외발생");
+    }
+
+    return response; // 응답 반환
+  } catch (error) {
+    console.error("삭제 실패:", error); // 에러 디버깅
+    throw new Error("fetchDeleteGoods 예외발생");
+  }
+}
+
+// 개별 상품 추가가
+export async function fetchAddGoods(goods) {
+  try {
+    //PUT 요청 보내기
+    const response = await instance.post(`/admin/addGoods`, goods);
+
+    console.log("fetchAddGoods.response: ", response);
+
+    if (response.status !== 201) {
+      throw new Error("fetchAddGoods 예외발생");
+    }
+
+    return response; // 응답 반환
+  } catch (error) {
+    console.error("등록 실패:", error); // 에러 디버깅
+    throw new Error("fetchAddGoods 예외발생");
+  }
+}
+
+// 인벤토리 목록 조회 (재고)
+export async function fetchFindAllInventory() {
+  try {
+    console.log("fetchFindAllInventory 요청");
+    const response = await instance.get("/inventory/findAllInventory");
+
+    console.log("재고 목록 조회:", response); // 응답 확인
+
+    // 응답 데이터 반환
+    return response.data;
+  } catch (error) {
+    console.error("에러 발생:", error); // 에러 디버깅
+    throw new Error("fetchFindAllInventory 예외발생");
+  }
+}

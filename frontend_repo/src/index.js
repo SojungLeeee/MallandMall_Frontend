@@ -35,6 +35,9 @@ import AdminAllProducts from "./pages/admin/AdminAllProducts";
 import AdminDeleteProducts from "./pages/admin/AdminDeleteProducts";
 import AdminUpdateProducts from "./pages/admin/AdminUpdateProducts";
 import AdminAddProducts from "./pages/admin/AdminAddProducts";
+import AdminAllGoods from "./pages/admin/AdminAllGoods";
+import AdminDeleteGoods from "./pages/admin/AdminDeleteGoods";
+import AdminAddGoods from "./pages/admin/AdminAddGoods";
 
 import AppTwo from "./AppTwo";
 import Search from "./pages/Search/Search";
@@ -122,6 +125,22 @@ const router = createBrowserRouter([
       },
       {
         path: "/admin/product/update",
+        element: <AdminUpdateProducts />,
+      },
+      {
+        path: "/admin/item/search",
+        element: <AdminAllGoods />,
+      },
+      {
+        path: "/admin/item/delete",
+        element: <AdminDeleteGoods />,
+      },
+      {
+        path: "/admin/item/register",
+        element: <AdminAddGoods />,
+      },
+      {
+        path: "/admin/item/update",
         element: <AdminUpdateProducts />,
       },
     ],

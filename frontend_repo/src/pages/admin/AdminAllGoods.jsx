@@ -1,7 +1,6 @@
-// AdminAllProducts.jsx
 import React, { useEffect, useState } from "react";
-import { fetchFindAllProductCode } from "../../api/httpAdminService";
-import AllProductCodes from "../../components/ui/admin/AllProductCodes"; // AllProductCode 컴포넌트 임포트
+import { fetchFindAllGoods } from "../../api/httpAdminService";
+import AllProductCodes from "../../components/ui/admin/AllProductCodes"; // AllProductCodes 컴포넌트 임포트
 
 export default function AdminAllProducts() {
   const [error, setError] = useState(null); // 오류 상태
@@ -10,7 +9,7 @@ export default function AdminAllProducts() {
   useEffect(() => {
     async function fetchProductData() {
       try {
-        const productCodeList = await fetchFindAllProductCode();
+        const productCodeList = await fetchFindAllGoods();
         console.log("받아온 상품 목록:", productCodeList); // 받아온 데이터를 콘솔에 출력
 
         if (Array.isArray(productCodeList)) {
@@ -37,12 +36,31 @@ export default function AdminAllProducts() {
     );
   }
 
+  // 행 렌더링 함수 정의
+  const renderRow = (product, index) => {
+    return (
+      <tr key={index}>
+        <td className="px-3 py-2">{product.productCode}</td>
+        <td className="px-3 py-2">{product.branchName}</td>
+        <td className="px-3 py-2">{product.expirationDate}</td>
+      </tr>
+    );
+  };
+
   return (
     <div className="w-full p-4">
-      <h2 className="text-2xl font-semibold mb-4">상품 코드 목록</h2>
+      <h2 className="text-2xl font-semibold mb-4">개별 상품 목록</h2>
       <hr className="mb-4" />
       {productData.length > 0 ? (
-        <AllProductCodes products={productData} showDeleteCheckbox={false} /> // AllProductCode 컴포넌트 사용
+        <AllProductCodes
+          data={productData} // 상품 데이터
+          dataType="product" // 데이터 타입 예시
+          renderRow={renderRow} // 행 렌더링 함수
+          showDeleteCheckbox={false} // 삭제 체크박스 여부
+          text1="상품코드" // 헤더 텍스트
+          text2="지점명"
+          text3="유통기한"
+        />
       ) : (
         <div>Loading...</div>
       )}
