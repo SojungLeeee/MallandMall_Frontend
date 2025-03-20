@@ -61,7 +61,7 @@ export default function Admin() {
       {/* 지점 버튼 그룹 */}
       <AdminButton
         text={"지점"}
-        onSearch={() => navigate("/admin/branch/search")}
+        onSearch={() => navigate("/admin/event/search")}
         onRegister={() => navigate("/admin/branch/register")}
         onUpdate={() => navigate("/admin/branch/update")}
         onDelete={() => navigate("/admin/branch/delete")}
