@@ -75,7 +75,6 @@ export default function AdminAllProducts() {
         <td className="px-3 py-2">{product.category}</td>
         <td className="px-3 py-2">{product.productName}</td>
         <td className="px-3 py-2">{product.price}</td>
-        <td className="px-3 py-2">{product.image}</td>
         <td className="px-3 py-2">
           <button
             onClick={() => handleRemoveProduct(product.productCode)}
@@ -128,7 +127,7 @@ export default function AdminAllProducts() {
           data={productData} // 상품 데이터
           dataType="product" // 데이터 타입 예시
           renderRow={renderRow} // 행 렌더링 함수
-          showDeleteCheckbox={false} // 삭제 체크박스 여부
+          showDeleteCheckbox={true} // 삭제 체크박스 여부
           text1="상품코드" // 헤더 텍스트
           text2="카테고리"
           text3="상품명"
