@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  fetchFindAllProductCode,
-  fetchAddProductCode,
-} from "../../api/httpAdminService";
+import { fetchFindAllProductCode } from "../../api/httpAdminService";
 import AllProductCodes from "../../components/ui/admin/AllProductCodes";
 import AddComponents from "../../components/ui/admin/AddComponent";
 
@@ -28,17 +25,6 @@ export default function AdminAllProducts() {
     }
   };
 
-  // 상품 추가 후 데이터 갱신
-  const handleProductAdded = async (newProduct) => {
-    try {
-      await fetchAddProductCode(newProduct); // 상품 추가 API 호출
-      await fetchProductData(); // 상품 목록을 새로 불러옵니다.
-    } catch (error) {
-      console.log("상품 추가 실패:", error);
-      setError({ mesg: "상품 추가 실패" });
-    }
-  };
-
   useEffect(() => {
     fetchProductData(); // 컴포넌트가 마운트되었을 때 상품 데이터 가져오기
   }, []);
@@ -51,6 +37,11 @@ export default function AdminAllProducts() {
       </div>
     );
   }
+
+  // 상품 추가 후 목록 갱신 핸들러
+  const handleProductAdded = () => {
+    fetchProductData(); // 상품 목록 갱신
+  };
 
   // 행 렌더링 함수 정의
   const renderRow = (product, index) => {
@@ -67,10 +58,7 @@ export default function AdminAllProducts() {
 
   return (
     <div className="w-full p-4">
-      <h2 className="text-2xl font-semibold mb-4">상품 코드 목록</h2>
-      <hr className="mb-4" />
-
-      {/* 상품 추가 컴포넌트 */}
+      {/* 상품 추가 컴포넌트, 상품 추가 후 갱신 요청 */}
       <AddComponents onProductAdded={handleProductAdded} />
 
       <br />

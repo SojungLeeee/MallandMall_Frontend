@@ -29,8 +29,16 @@ const AddComponents = ({ onProductAdded }) => {
       const response = await fetchAddProductCode(productData); // 상품 코드 추가 API 호출
       console.log("상품 추가 성공:", response);
       alert("상품 코드가 정상적으로 등록되었습니다.");
+
       // 상품 추가 후 부모 컴포넌트로 갱신 요청
-      onProductAdded(); // 부모 컴포넌트의 상태 갱신 함수 호출
+      onProductAdded(); // 부모에게 갱신 요청
+      // 폼 초기화
+      setProductCode("");
+      setCategory("");
+      setProductName("");
+      setDescription("");
+      setPrice("");
+      setImage("");
     } catch (error) {
       console.error("상품 추가 실패:", error);
     }

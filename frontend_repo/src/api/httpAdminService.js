@@ -59,7 +59,7 @@ export async function fetchAddProductCode(product) {
 
     return response; // 응답 반환
   } catch (error) {
-    console.error("등록록 실패:", error); // 에러 디버깅
+    console.error("등록 실패:", error); // 에러 디버깅
     throw new Error("fetchAddProductCode 예외발생");
   }
 }
