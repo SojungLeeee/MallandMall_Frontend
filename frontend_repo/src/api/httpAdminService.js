@@ -44,3 +44,22 @@ export async function fetchDeleteProductCode(productCode) {
     throw new Error("fetchDeleteProductCode 예외발생");
   }
 }
+
+// 상품 코드 추가
+export async function fetchAddProductCode(product) {
+  try {
+    //PUT 요청 보내기
+    const response = await instance.post(`/admin/addProductCode`, product);
+
+    console.log("fetchAddProductCode.response: ", response);
+
+    if (response.status !== 201) {
+      throw new Error("fetchAddProductCode 예외발생");
+    }
+
+    return response; // 응답 반환
+  } catch (error) {
+    console.error("등록록 실패:", error); // 에러 디버깅
+    throw new Error("fetchAddProductCode 예외발생");
+  }
+}

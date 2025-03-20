@@ -33,6 +33,8 @@ import ProductDetail from "./components/ui/product/ProductDetail"; // ✅ 경로
 import MyReviews from "./pages/mypage/MyReview";
 import AdminAllProducts from "./pages/admin/AdminAllProducts";
 import AdminDeleteProducts from "./pages/admin/AdminDeleteProducts";
+import AdminUpdateProducts from "./pages/admin/AdminUpdateProducts";
+import AdminAddProducts from "./pages/admin/AdminAddProducts";
 
 import AppTwo from "./AppTwo";
 import Search from "./pages/Search/Search";
@@ -113,6 +115,14 @@ const router = createBrowserRouter([
       {
         path: "/admin/product/delete",
         element: <AdminDeleteProducts />,
+      },
+      {
+        path: "/admin/product/register",
+        element: <AdminAddProducts />,
+      },
+      {
+        path: "/admin/product/update",
+        element: <AdminUpdateProducts />,
       },
     ],
   },
