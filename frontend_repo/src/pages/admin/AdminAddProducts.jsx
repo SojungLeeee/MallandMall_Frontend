@@ -52,8 +52,10 @@ export default function AdminAllProducts() {
   const handleProductSubmit = async (values) => {
     try {
       await fetchAddProductCode(values); // 상품 추가 API 호출
+
       alert("상품 코드가 정상적으로 추가되었습니다.");
       setError(null);
+
       // 폼 초기화
       setProductValues({
         productCode: "",
@@ -76,6 +78,7 @@ export default function AdminAllProducts() {
   }, []);
 
   // 오류가 있으면 화면에 오류 메시지 표시
+
   const errorMessage =
     error && error.mesg ? (
       <div className="p-4 text-red-500 bg-red-100 rounded mb-4">

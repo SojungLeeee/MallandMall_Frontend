@@ -43,6 +43,16 @@ import AdminAddGoods from "./pages/admin/AdminAddGoods";
 import AppTwo from "./AppTwo";
 import Search from "./pages/Search/Search";
 import Admin from "./pages/admin/Admin";
+//어드민 Branch 임포트
+import AdminAllBranch from "./pages/admin/AdminAllBranch";
+import AdminDeleteBranch from "./pages/admin/AdminDeleteBranch";
+import AdminUpdateBranch from "./pages/admin/AdminUpdateBranch";
+import AdminAddBranch from "./pages/admin/AdminAddBranch";
+//어드민 Event 임포트
+import AdminAllEvent from "./pages/admin/AdminAllEvent";
+import AdminDeleteEvent from "./pages/admin/AdminDeleteEvent";
+import AdminUpdateEvent from "./pages/admin/AdminUpdateEvent";
+import AdminAddEvent from "./pages/admin/AdminAddEvent";
 
 const router = createBrowserRouter([
   // AppTwo 기반 라우트
@@ -109,12 +119,29 @@ const router = createBrowserRouter([
       { path: "/admin/product/delete", element: <AdminDeleteProducts /> },
       { path: "/admin/product/register", element: <AdminAddProducts /> },
       { path: "/admin/product/update", element: <AdminUpdateProducts /> },
+
       { path: "/admin/item/search", element: <AdminAllGoods /> },
       { path: "/admin/item/delete", element: <AdminDeleteGoods /> },
       { path: "/admin/item/register", element: <AdminAddGoods /> },
       { path: "/admin/item/update", element: <AdminUpdateProducts /> },
+
+      //관리자 기능 - Event
+      { path: "/admin/event/search", element: <AdminAllEvent /> },
+      { path: "/admin/event/delete", element: <AdminDeleteEvent /> },
+      { path: "/admin/event/register", element: <AdminAddEvent /> },
+      { path: "/admin/event/update", element: <AdminUpdateEvent /> },
+
       //관리자 기능 - Branch
-      // { path: "/admin/branch", element: <AdminAllBranch /> },
+      { path: "/admin/event/search", element: <AdminAllBranch /> },
+      {
+        path: "/admin/branch/delete",
+        element: <AdminDeleteBranch />,
+      },
+      { path: "/admin/branch/register", element: <AdminAddBranch /> },
+      {
+        path: "/admin/branch/update",
+        element: <AdminUpdateBranch />,
+      },
     ],
   },
 ]);
