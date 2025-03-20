@@ -1,39 +1,56 @@
 import React, { useEffect, useState } from "react";
-import { fetchFindAllProductCode } from "../../../api/httpAdminService"; // 경로에 맞게 수정
 
-const ToggleComponents = ({ onCodeSelect }) => {
-  const [productCodes, setProductCodes] = useState([]);
+const ToggleComponents = ({
+  onItemSelect,
+  fetchItems,
+  extractCode,
+  extractLabel = (item, code) => code, // 기본적으로 코드를 레이블로 사용
+  title = "항목 선택",
+  labelText = "코드",
+  placeholderText = "선택하세요",
+  loadingText = "불러오는 중...",
+  errorText = "데이터를 불러오는 데 실패했습니다.",
+}) => {
+  const [items, setItems] = useState([]);
+  const [codes, setCodes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // onCodeSelect가 함수인지 확인 (디버깅)
+  // onItemSelect가 함수인지 확인 (디버깅)
   useEffect(() => {
-    if (typeof onCodeSelect !== "function") {
-      console.error("onCodeSelect는 함수가 아닙니다. 확인해주세요.");
+    if (typeof onItemSelect !== "function") {
+      console.error("onItemSelect는 함수가 아닙니다. 확인해주세요.");
     }
-  }, [onCodeSelect]);
+  }, [onItemSelect]);
 
   useEffect(() => {
-    const fetchProductCodes = async () => {
+    const fetchData = async () => {
       try {
-        const data = await fetchFindAllProductCode(); // 모든 상품 목록 가져오기
-        const codes = data.map((product) => product.productCode); // productCode만 추출
-        setProductCodes(codes); // 상태에 저장
+        const data = await fetchItems(); // API를 통해 데이터 가져오기
+        setItems(data); // 전체 아이템 저장
+
+        // 코드 목록 추출
+        const extractedCodes = data.map((item) => ({
+          code: extractCode(item),
+          label: extractLabel(item, extractCode(item)),
+        }));
+
+        setCodes(extractedCodes);
       } catch (err) {
-        setError("상품 목록을 불러오는 데 실패했습니다.");
+        setError(errorText);
         console.error(err);
       } finally {
-        setLoading(false); // 로딩 상태 종료
+        setLoading(false);
       }
     };
 
-    fetchProductCodes();
-  }, []);
+    fetchData();
+  }, [fetchItems, extractCode, errorText]);
 
   if (loading) {
     return (
       <div className="flex justify-center items-center">
-        <div className="text-xl font-semibold">Loading...</div>
+        <div className="text-xl font-semibold">{loadingText}</div>
       </div>
     );
   }
@@ -48,28 +65,29 @@ const ToggleComponents = ({ onCodeSelect }) => {
 
   return (
     <div className="mb-6">
-      <h2 className="text-xl font-semibold text-gray-800 mb-4">
-        수정할 상품 코드
-      </h2>
+      <h2 className="text-xl font-semibold text-gray-800 mb-4">{title}</h2>
       <div className="flex items-center space-x-4">
         {/* 라벨 */}
-        <label
-          htmlFor="productCode"
-          className="font-medium text-gray-700 w-1/4"
-        >
-          상품 코드
+        <label htmlFor="itemCode" className="font-medium text-gray-700 w-1/4">
+          {labelText}
         </label>
 
-        {/* 상품 코드 선택 드롭다운 */}
+        {/* 아이템 코드 선택 드롭다운 */}
         <select
-          id="productCode"
-          onChange={(e) => onCodeSelect(e.target.value)} // 부모 컴포넌트에 선택된 코드 전달
+          id="itemCode"
+          onChange={(e) => {
+            const selectedCode = e.target.value;
+            const selectedItem = selectedCode
+              ? items.find((item) => extractCode(item) === selectedCode)
+              : null;
+            onItemSelect(selectedCode, selectedItem);
+          }}
           className="w-3/4 p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         >
-          <option value="">상품 코드를 선택하세요</option>
-          {productCodes.map((code, index) => (
+          <option value="">{placeholderText}</option>
+          {codes.map(({ code, label }, index) => (
             <option key={index} value={code}>
-              {code}
+              {label}
             </option>
           ))}
         </select>
