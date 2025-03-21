@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { fetchSearchProducts } from "../../api/httpSearchService"; // axios 요청을 가져옵니다.
+import ProductCard from "../../components/ui/product/ProductCard"; // ProductCard 컴포넌트 import
 
 const SearchPage = () => {
   const { productName } = useParams(); // URL에서 productName을 가져옵니다.
@@ -60,39 +61,13 @@ const SearchPage = () => {
           이 키워드를 포함하는 상품명이 없습니다.
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-4">
-          {/* 상품 목록을 반복문으로 렌더링 */}
-          {products.map((product) => (
-            <Link
-              to={`/product/${product.productCode}`}
-              key={product.productCode}
-              className="cursor-pointer"
-            >
-              <div className="bg-white border rounded-md shadow-md overflow-hidden flex flex-col items-center p-4 hover:shadow-lg transition h-full">
-                {/* 이미지 컨테이너 */}
-                <div className="w-full max-h-72 border rounded-lg bg-yellow-400 flex items-center justify-center">
-                  <img
-                    src={product.image}
-                    alt={product.productName}
-                    className="w-full h-full object-cover p-4"
-                  />
-                </div>
-                <div className="text-center flex flex-col gap-2 mt-3">
-                  <h3 className="text-lg font-semibold">
-                    {product.productName}
-                  </h3>
-                  <p className="text-sm text-gray-600">{product.description}</p>
-                  <p className="text-lg font-bold text-red-500">
-                    {product.price.toLocaleString()}원
-                  </p>
-                  <p className="text-sm text-yellow-500">
-                    ⭐ {product.averageRating}
-                  </p>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
+        <ProductCard
+          products={products} // 상품 데이터 전달
+          loading={loading} // 로딩 상태 전달
+          error={error} // 에러 상태 전달
+          basePath="/product" // 기본 경로 지정
+          columns={2} // 그리드 열 개수 지정
+        />
       )}
     </div>
   );

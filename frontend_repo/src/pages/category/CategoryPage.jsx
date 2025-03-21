@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { fetchFindCategory } from "../../api/httpCategoryService"; // axios 요청을 가져옵니다.
+import ProductCard from "../../components/ui/product/ProductCard"; // ProductCard 컴포넌트 임포트
 
 const CategoryPage = () => {
   const { categoryName } = useParams(); // URL에서 categoryName을 가져옵니다.
@@ -10,10 +11,9 @@ const CategoryPage = () => {
 
   // 카테고리명에 해당하는 상품 목록을 가져오는 함수
   useEffect(() => {
-    // fetchFindCategory 함수를 사용하여 상품 목록을 가져옵니다.
     const fetchProducts = async () => {
       try {
-        const response = await fetchFindCategory(categoryName); // HTTP 요청을 보내고 응답을 받음
+        const response = await fetchFindCategory(categoryName);
         if (response && response.data) {
           setProducts(response.data); // 응답 데이터로 상품 목록을 설정
         } else {
@@ -27,7 +27,7 @@ const CategoryPage = () => {
     };
 
     fetchProducts(); // 컴포넌트 마운트 시 상품 목록을 가져옵니다.
-  }, [categoryName]); // 카테고리가 변경될 때마다 API를 새로 호출
+  }, [categoryName]);
 
   // 로딩 중일 때 보여줄 로딩 메시지
   if (loading) {
@@ -48,45 +48,13 @@ const CategoryPage = () => {
       <h1 className="text-2xl font-bold text-center mb-6">
         {categoryName} 상품 목록
       </h1>
-      <div className="grid grid-cols-2 gap-4">
-        {/* 상품 목록을 반복문으로 렌더링 */}
-        {products.length === 0 ? (
-          <p className="text-center text-xl font-semibold">
-            이 카테고리에는 상품이 없습니다.
-          </p>
-        ) : (
-          products.map((product) => (
-            <Link
-              to={`/product/${product.productCode}`}
-              key={product.productCode}
-              className="cursor-pointer"
-            >
-              <div className="bg-white border rounded-md shadow-md overflow-hidden flex flex-col items-center p-4 hover:shadow-lg transition h-full">
-                {/* 이미지 컨테이너 */}
-                <div className="w-full max-h-72 border rounded-lg bg-yellow-400 flex items-center justify-center">
-                  <img
-                    src={product.image}
-                    alt={product.productName}
-                    className="w-full h-full object-cover p-4"
-                  />
-                </div>
-                <div className="text-center flex flex-col gap-2 mt-3">
-                  <h3 className="text-lg font-semibold">
-                    {product.productName}
-                  </h3>
-                  <p className="text-sm text-gray-600">{product.description}</p>
-                  <p className="text-lg font-bold text-red-500">
-                    {product.price.toLocaleString()}원
-                  </p>
-                  <p className="text-sm text-yellow-500">
-                    ⭐ {product.averageRating}
-                  </p>
-                </div>
-              </div>
-            </Link>
-          ))
-        )}
-      </div>
+      {/* ProductCard 컴포넌트 사용 */}
+      <ProductCard
+        products={products}
+        loading={loading}
+        error={error}
+        basePath={`/product`} // 상품 상세 페이지로의 기본 경로 설정
+      />
     </div>
   );
 };

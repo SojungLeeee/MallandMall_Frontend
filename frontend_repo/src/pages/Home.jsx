@@ -1,12 +1,12 @@
 import React from "react";
 import Banner from "../components/ui/layout/Banner";
-import Products from "../components/ui/product/Products";
+import AllProducts from "../pages/product/AllProducts";
 
 export default function Home() {
   return (
     <>
       <Banner />
-      <Products />
+      <AllProducts />
     </>
   );
 }

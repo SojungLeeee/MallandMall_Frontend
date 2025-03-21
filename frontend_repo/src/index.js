@@ -28,7 +28,7 @@ import SearchPage from "./pages/Search/SearchPage";
 import OrderProduct from "./pages/product/OrderProduct";
 import { tokenProviderLoader } from "./auth/tokenProviderService";
 import MyOrderInfo from "./pages/mypage/MyOrderInfo";
-import Products from "./components/ui/product/Products";
+import AllProducts from "./pages/product/AllProducts";
 import ProductDetail from "./components/ui/product/ProductDetail";
 import MyReviews from "./pages/mypage/MyReview";
 import AdminAllProducts from "./pages/admin/AdminAllProducts";
@@ -107,7 +107,7 @@ const router = createBrowserRouter([
 
       // 카테고리 및 상품
       { path: "/categoryList", element: <CategoryList /> },
-      { path: "/products", element: <Products /> }, // 상품 목록 페이지
+      { path: "/products", element: <AllProducts /> }, // 상품 목록 페이지
       { path: "/product/:productCode", element: <ProductDetail /> },
       { path: "/products/:categoryName", element: <CategoryPage /> }, // 카테고리별 상품 페이지
       { path: "/search/:productName", element: <SearchPage /> },
