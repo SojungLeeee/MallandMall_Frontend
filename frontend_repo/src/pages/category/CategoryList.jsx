@@ -8,6 +8,7 @@ import fruit from "../../assets/images/fruit.png";
 import snack from "../../assets/images/snack.png";
 import sauce from "../../assets/images/sauce.png";
 import pill from "../../assets/images/pill.png";
+import etc from "../../assets/images/rice.png";
 import { useNavigate } from "react-router-dom";
 
 const categories = [
@@ -20,6 +21,7 @@ const categories = [
   { name: "간식", image: snack },
   { name: "조미료/소스", image: sauce },
   { name: "건강식품", image: pill },
+  { name: "기타(밥/면)", image: etc },
 ];
 
 export default function CategoryList() {
@@ -47,6 +49,8 @@ export default function CategoryList() {
       category = "sauce";
     } else if (category === "건강식품") {
       category = "health";
+    } else if (category === "기타(밥/면)") {
+      category = "etc";
     }
 
     console.log(category); // 선택된 카테고리 출력
