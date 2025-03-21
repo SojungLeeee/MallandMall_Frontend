@@ -35,7 +35,7 @@ export const GenericTableBody = ({
 };
 
 // 메인 테이블 컴포넌트
-const AllProductCode = ({
+const ListComponents = ({
   data,
   dataType,
   onRemoveConfirm,
@@ -72,4 +72,4 @@ const AllProductCode = ({
 };
 
 export { getCategoryBackgroundColor };
-export default AllProductCode;
+export default ListComponents;
