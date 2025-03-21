@@ -1,98 +1,95 @@
-import { useState } from "react";
-import { redirect, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { fetchAddLikeCategory } from "../../api/httpCategoryService"; // api 파일에서 함수 import
 
 function SelectCategory() {
-  // 선택된 카테고리를 저장하는 상태
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const [selectedAge, setSelectedAge] = useState(""); // 나이 선택 상태 추가
   const navigate = useNavigate(); // useNavigate 훅을 사용해 navigate 함수 가져오기
+  const location = useLocation(); // useLocation 훅을 사용하여 현재 위치 정보 가져오기
+  const userId = new URLSearchParams(location.search).get("userId"); // 쿼리 파라미터에서 userId 추출
 
-  // 카테고리 목록
+  useEffect(() => {
+    if (userId) {
+      console.log("Received userId:", userId); // userId를 콘솔에 출력
+    }
+  }, [userId]); // userId가 변경될 때마다 실행
+
+  // 카테고리 목록과 매핑
   const categories = [
-    "육류",
-    "해산물",
-    "유제품",
-    "음료",
-    "채소",
-    "과일",
-    "간식",
-    "조미료/소스",
-    "건강식품",
+    { name: "육류", value: "meat" },
+    { name: "해산물", value: "fish" },
+    { name: "유제품", value: "dairy" },
+    { name: "음료", value: "drink" },
+    { name: "채소", value: "vegetable" },
+    { name: "과일", value: "fruit" },
+    { name: "간식", value: "snack" },
+    { name: "조미료/소스", value: "sauce" },
+    { name: "건강식품", value: "health" },
+    { name: "기타(밥/면)", value: "etc" },
   ];
-
-  // 나이 목록
-  const ages = ["10대", "20대", "30대", "40대", "50대", "60대"];
 
   // 카테고리 선택/해제 처리 함수
   const toggleCategory = (category) => {
     setSelectedCategories(
       (prevCategories) =>
-        prevCategories.includes(category)
-          ? prevCategories.filter((item) => item !== category) // 선택 해제
-          : [...prevCategories, category] // 선택
+        prevCategories.includes(category.value)
+          ? prevCategories.filter((item) => item !== category.value) // 선택 해제
+          : [...prevCategories, category.value] // 선택
     );
   };
 
-  // 나이 선택 변경 함수
-  const handleAgeChange = (e) => {
-    setSelectedAge(e.target.value);
-  };
-
   // 제출하기 버튼 클릭 시 처리할 함수
-  const handleSubmit = () => {
-    if (!selectedAge) {
-      alert("나이를 선택해주세요.");
-      return;
-    }
+  const handleSubmit = async () => {
     if (selectedCategories.length === 0) {
       alert("선호 카테고리를 하나 이상 선택해주세요.");
       return;
     }
 
-    // 제출 처리 (예: 콘솔에 선택된 정보 출력)
-    console.log("나이대:", selectedAge);
-    console.log("선택된 카테고리:", selectedCategories);
-    alert("제출되었습니다!");
-    navigate("/");
+    // 선택된 카테고리들 각각에 대해 API 호출을 반복
+    try {
+      for (const categoryValue of selectedCategories) {
+        const likeCategoryData = {
+          userId, // userId를 포함
+          category: categoryValue, // category value (meat, fish, dairy 등)
+        };
+
+        // 서버에 데이터를 저장하는 함수 호출
+        const response = await fetchAddLikeCategory(likeCategoryData);
+
+        if (response.status === 201) {
+          console.log(`${categoryValue} 선호 카테고리 저장 성공`);
+        } else {
+          alert(`카테고리 ${categoryValue} 저장 실패`);
+        }
+      }
+
+      alert("선호 카테고리가 성공적으로 저장되었습니다!");
+      navigate("/"); // 홈 화면으로 이동
+    } catch (error) {
+      console.error("선호 카테고리 저장 중 오류 발생:", error);
+      alert("선호 카테고리 저장에 실패했습니다. 다시 시도해 주세요.");
+    }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center p-5 h-[671px]">
-      {/* 나이 선택 드롭다운 */}
-      <div className="mb-6">
-        <label htmlFor="age" className="text-lg font-semibold text-xl">
-          사용자 나이 : <span></span>
-        </label>
-        <select
-          id="age"
-          value={selectedAge}
-          onChange={handleAgeChange}
-          className="px-4 py-2 mt-2 rounded-lg border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-400 text-lg"
-        >
-          <option value="">나이대를 선택하세요</option>
-          {ages.map((age) => (
-            <option key={age} value={age}>
-              {age}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <h1 className="text-2xl font-bold mb-6">선호 카테고리 선택</h1>
-      <div className="grid grid-cols-3 gap-4">
+    <div className="flex flex-col items-center justify-center p-5">
+      <h1 className="text-xl font-bold mb-6">
+        {userId}님의 선호 카테고리를 선택하세요!
+      </h1>
+      <div className="grid grid-cols-2 gap-4">
         {categories.map((category) => (
           <button
-            key={category}
+            key={category.value}
             onClick={() => toggleCategory(category)}
             className={`px-3 py-8 rounded-xl text-xl font-semibold transition-all duration-300
               ${
-                selectedCategories.includes(category)
+                selectedCategories.includes(category.value)
                   ? "bg-yellow-400 text-black"
                   : "bg-gray-200 text-gray-700 hover:bg-gray-300"
               }
               focus:outline-none`}
           >
-            {category}
+            {category.name}
           </button>
         ))}
       </div>
@@ -100,9 +97,9 @@ function SelectCategory() {
         <h2 className="font-semibold">선택된 선호 카테고리:</h2>
         <ul className="list-disc pl-6">
           {selectedCategories.length > 0 ? (
-            selectedCategories.map((category) => (
-              <li key={category} className="text-lg">
-                {category}
+            selectedCategories.map((categoryValue) => (
+              <li key={categoryValue} className="text-lg">
+                {categories.find((cat) => cat.value === categoryValue).name}
               </li>
             ))
           ) : (

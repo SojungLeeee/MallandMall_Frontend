@@ -45,8 +45,11 @@ export default function AdminButton({
       {/* 수정 버튼 */}
       <button
         type="button"
-        onClick={onUpdate || onClick}
-        className="flex-1 rounded-none inline-flex items-center px-2 py-2 text-sm font-medium text-gray-900 bg-white border-0 border-r border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white"
+        onClick={text === "개별" ? null : onUpdate || onClick} // text가 "개별"일 때 onUpdate가 실행되지 않음
+        disabled={text === "개별"} // text가 "개별"일 때 버튼 비활성화
+        className={`flex-1 rounded-none inline-flex items-center px-2 py-2 text-sm font-medium text-gray-900 bg-white border-0 border-r border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white ${
+          text === "개별" ? "cursor-not-allowed opacity-50" : ""
+        }`}
       >
         <MdOutlineUpdate className="mr-1" /> 수정
       </button>
