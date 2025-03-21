@@ -132,7 +132,7 @@ const router = createBrowserRouter([
       { path: "/admin/event/update", element: <AdminUpdateEvent /> },
 
       //관리자 기능 - Branch
-      { path: "/admin/event/search", element: <AdminAllBranch /> },
+      { path: "/admin/branch/search", element: <AdminAllBranch /> },
       {
         path: "/admin/branch/delete",
         element: <AdminDeleteBranch />,
