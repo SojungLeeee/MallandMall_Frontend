@@ -29,11 +29,17 @@ export default function Navbar() {
   };
 
   const handleLogout = () => {
+    const KAKAO_CLIENT_ID = "d91f0aee90225deaa8dd9ce8585b6033"; // 카카오 REST API 키
+    const KAKAO_LOGOUT_URL = `https://kauth.kakao.com/oauth/logout?client_id=${KAKAO_CLIENT_ID}&logout_redirect_uri=http://localhost:3000`;
+
     localStorage.removeItem("jwtAuthToken");
     localStorage.removeItem("userId");
     localStorage.removeItem("role");
+
     alert("로그아웃 되었습니다.");
-    navigate("/"); // 로그인 페이지로 이동
+
+    //  2. 카카오 강제 로그아웃 URL로 이동
+    window.location.href = KAKAO_LOGOUT_URL;
   };
 
   return (
@@ -47,18 +53,11 @@ export default function Navbar() {
             <>
               {/* 관리자 메뉴 표시 */}
               {role === "ADMIN" && (
-                <Link
-                  to="/admin"
-                  className="flex items-center text-black font-bold font-size hover:text-yellow-600"
-                >
+                <Link to="/admin" className="flex items-center text-black font-bold font-size hover:text-yellow-600">
                   <MdAdminPanelSettings className="text-4xl animate-pop-up" />
                 </Link>
               )}
-              <Button
-                text={"Logout"}
-                onClick={handleLogout}
-                className="flex items-center"
-              />
+              <Button text={"Logout"} onClick={handleLogout} className="flex items-center" />
             </>
           )}
           {!token && (

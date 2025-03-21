@@ -13,12 +13,8 @@ import FindId from "./pages/login/FindId";
 import { action as authAction } from "./pages/login/Login";
 import Mypage, { loader as mypageLoader } from "./pages/mypage/Mypage";
 import FoundId from "../src/pages/login/FoundId";
-import DeleteAccount, {
-  loader as deleteAccountLoader,
-} from "./pages/mypage/DeleteAccount";
-import EditProfile, {
-  loader as editProfileLoader,
-} from "./pages/mypage/EditProfile";
+import DeleteAccount, { loader as deleteAccountLoader } from "./pages/mypage/DeleteAccount";
+import EditProfile, { loader as editProfileLoader } from "./pages/mypage/EditProfile";
 import Signup from "./pages/login/Signup";
 import { action as signUpAction } from "./pages/login/Signup";
 import SelectCategory from "./pages/login/SelectCategory";
@@ -28,14 +24,14 @@ import SearchPage from "./pages/Search/SearchPage";
 import OrderProduct from "./pages/product/OrderProduct";
 import { tokenProviderLoader } from "./auth/tokenProviderService";
 import MyOrderInfo from "./pages/mypage/MyOrderInfo";
-import Products from "./components/ui/product/Products"; // ✅ 경로 수정
-import ProductDetail from "./components/ui/product/ProductDetail"; // ✅ 경로 수정
+import Products from "./components/ui/product/Products";
+import ProductDetail from "./components/ui/product/ProductDetail";
 import MyReviews from "./pages/mypage/MyReview";
 import AdminAllProducts from "./pages/admin/AdminAllProducts";
 import AdminDeleteProducts from "./pages/admin/AdminDeleteProducts";
 import AdminUpdateProducts from "./pages/admin/AdminUpdateProducts";
 import AdminAddProducts from "./pages/admin/AdminAddProducts";
-
+import KakaoCallback from "./components/ui/KakaoCallback";
 import AppTwo from "./AppTwo";
 import Search from "./pages/Search/Search";
 import Admin from "./pages/admin/Admin";
@@ -123,6 +119,10 @@ const router = createBrowserRouter([
       {
         path: "/admin/product/update",
         element: <AdminUpdateProducts />,
+      },
+      {
+        path: "/auth/kakao/callback",
+        element: <KakaoCallback />,
       },
     ],
   },
