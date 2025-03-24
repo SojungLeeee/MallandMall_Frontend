@@ -1,5 +1,5 @@
 import { Link, useNavigate, useRouteLoaderData } from "react-router-dom";
-import Button from "../Button";
+import Button from "../button/Button";
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { MdAdminPanelSettings } from "react-icons/md";
@@ -12,9 +12,7 @@ export default function Navbar() {
   const [role, setRole] = useState();
 
   // localStorage에서도 토큰을 확인
-  const [localToken, setLocalToken] = useState(
-    localStorage.getItem("jwtAuthToken")
-  );
+  const [localToken, setLocalToken] = useState(localStorage.getItem("jwtAuthToken"));
 
   // 두 토큰 중 하나라도 있으면 인증된 것으로 간주
   const token = routerToken || localToken;
@@ -87,18 +85,11 @@ export default function Navbar() {
           {token && (
             <>
               {role === "ADMIN" && (
-                <Link
-                  to="/admin"
-                  className="flex items-center text-black font-bold font-size hover:text-yellow-600"
-                >
+                <Link to="/admin" className="flex items-center text-black font-bold font-size hover:text-yellow-600">
                   <MdAdminPanelSettings className="text-4xl animate-pop-up" />
                 </Link>
               )}
-              <Button
-                text={"Logout"}
-                onClick={handleLogout}
-                className="flex items-center"
-              />
+              <Button text={"Logout"} onClick={handleLogout} className="flex items-center" />
             </>
           )}
           {!token && (
