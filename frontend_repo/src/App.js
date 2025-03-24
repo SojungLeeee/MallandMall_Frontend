@@ -22,6 +22,7 @@ function App() {
   );
   const isSearchRoute = matchPath("/search/:productName", location.pathname);
   const isProductHomeRoute = location.pathname === "/product/home";
+  const isFavoriteProductHome = location.pathname === "/favorites";
 
   // Combine the checks to determine if the SearchBar should be shown
   const showSearchBar =
@@ -29,7 +30,8 @@ function App() {
     isProductCategoryRoute ||
     isProductCodeRoute ||
     isProductHomeRoute ||
-    isSearchRoute;
+    isSearchRoute ||
+    isFavoriteProductHome;
 
   //구글 OAuth 프로바이더 설정
   const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID; // 구글 API에서 받은 ID
