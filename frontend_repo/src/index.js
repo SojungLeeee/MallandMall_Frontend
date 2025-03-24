@@ -13,8 +13,12 @@ import FindId from "./pages/login/FindId";
 import { action as authAction } from "./pages/login/Login";
 import Mypage, { loader as mypageLoader } from "./pages/mypage/Mypage";
 import FoundId from "../src/pages/login/FoundId";
-import DeleteAccount, { loader as deleteAccountLoader } from "./pages/mypage/DeleteAccount";
-import EditProfile, { loader as editProfileLoader } from "./pages/mypage/EditProfile";
+import DeleteAccount, {
+  loader as deleteAccountLoader,
+} from "./pages/mypage/DeleteAccount";
+import EditProfile, {
+  loader as editProfileLoader,
+} from "./pages/mypage/EditProfile";
 import Signup from "./pages/login/Signup";
 import { action as signUpAction } from "./pages/login/Signup";
 import SelectCategory from "./pages/login/SelectCategory";
