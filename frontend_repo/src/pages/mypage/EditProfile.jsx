@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { fetchMypageHome, fetchUpdateProfile } from "../../api/httpMemberService";
+import {
+  fetchMypageHome,
+  fetchUpdateProfile,
+} from "../../api/httpMemberService";
 import { useNavigate, useLoaderData } from "react-router-dom";
 import { getAuthToken } from "../../context/tokenProviderService";
-import "./EditProfile.css";
 
 const EditProfile = () => {
   const user = useLoaderData();
@@ -45,7 +47,8 @@ const EditProfile = () => {
       // ✅ username으로 변경
       const updatedUsername = username.trim() === "" ? user.username : username;
       const updatedEmail = email.trim() === "" ? user.email : email;
-      const updatedPhone = phoneNumber.trim() === "" ? user.phoneNumber : phoneNumber;
+      const updatedPhone =
+        phoneNumber.trim() === "" ? user.phoneNumber : phoneNumber;
       const updatedPost = post.trim() === "" ? user.post : post;
       const updatedAddr1 = addr1.trim() === "" ? user.addr1 : addr1;
       const updatedAddr2 = addr2.trim() === "" ? user.addr2 : addr2;
@@ -79,54 +82,95 @@ const EditProfile = () => {
   };
 
   return (
-    <div className="edit-profile">
-      <h2>회원정보 수정</h2>
+    <div className="bg-[#fff6e2] p-8 rounded-xl shadow-lg w-full max-w-md mx-auto flex flex-col">
+      <h2 className="text-xl font-bold mb-4 text-center">회원정보 수정</h2>
 
-      <div className="input-group">
-        <label>이름:</label>
-        <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="이름" />
+      <div className="w-full flex flex-col mb-4">
+        <label className="text-sm font-bold mb-1">이름:</label>
+        <input
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          placeholder="이름"
+          className="w-full p-2 border border-gray-300 rounded-md text-base bg-[#f3e5ab]"
+        />
       </div>
 
-      <div className="input-group">
-        <label>이메일:</label>
-        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="이메일" />
+      <div className="w-full flex flex-col mb-4">
+        <label className="text-sm font-bold mb-1">이메일:</label>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="이메일"
+          className="w-full p-2 border border-gray-300 rounded-md text-base bg-[#f3e5ab]"
+        />
       </div>
 
-      <div className="input-group">
-        <label>휴대폰 번호:</label>
+      <div className="w-full flex flex-col mb-4">
+        <label className="text-sm font-bold mb-1">휴대폰 번호:</label>
         <input
           type="text"
           value={phoneNumber}
           onChange={(e) => setPhoneNumber(e.target.value)}
           placeholder="휴대폰 번호"
+          className="w-full p-2 border border-gray-300 rounded-md text-base bg-[#f3e5ab]"
         />
       </div>
 
-      <div className="input-group">
-        <label>우편번호:</label>
-        <div className="address-group">
-          <input type="text" value={post} placeholder="우편번호" readOnly />
-          <button type="button" onClick={handleAddressSearch}>
+      <div className="w-full flex flex-col mb-4">
+        <label className="text-sm font-bold mb-1">우편번호:</label>
+        <div className="flex gap-2 items-center w-full">
+          <input
+            type="text"
+            value={post}
+            placeholder="우편번호"
+            readOnly
+            className="flex-grow p-2 border border-gray-300 rounded-md text-base bg-[#f3e5ab]"
+          />
+          <button
+            type="button"
+            onClick={handleAddressSearch}
+            className="flex-shrink-0 py-2 px-3 text-sm font-bold bg-[#fdd835] border-none rounded-md whitespace-nowrap hover:bg-[#fbc02d]"
+          >
             주소 검색
           </button>
         </div>
       </div>
 
-      <div className="input-group">
-        <label>주소:</label>
-        <input type="text" value={addr1} placeholder="주소" readOnly />
+      <div className="w-full flex flex-col mb-4">
+        <label className="text-sm font-bold mb-1">주소:</label>
+        <input
+          type="text"
+          value={addr1}
+          placeholder="주소"
+          readOnly
+          className="w-full p-2 border border-gray-300 rounded-md text-base bg-[#f3e5ab]"
+        />
       </div>
 
-      <div className="input-group">
-        <label>상세 주소:</label>
-        <input type="text" value={addr2} onChange={(e) => setAddr2(e.target.value)} placeholder="상세 주소" />
+      <div className="w-full flex flex-col mb-4">
+        <label className="text-sm font-bold mb-1">상세 주소:</label>
+        <input
+          type="text"
+          value={addr2}
+          onChange={(e) => setAddr2(e.target.value)}
+          placeholder="상세 주소"
+          className="w-full p-2 border border-gray-300 rounded-md text-base bg-[#f3e5ab]"
+        />
       </div>
 
-      <div className="button-group">
-        <button onClick={handleUpdate} className="save-btn">
+      <div className="flex justify-between gap-2 w-full mt-2">
+        <button
+          onClick={handleUpdate}
+          className="py-2 px-4 bg-green-500 text-white font-bold rounded-md hover:bg-green-600"
+        >
           수정 완료
         </button>
-        <button onClick={() => navigate("/mypage")} className="cancel-btn">
+        <button
+          onClick={() => navigate("/mypage")}
+          className="py-2 px-4 bg-red-500 text-white font-bold rounded-md hover:bg-red-600"
+        >
           취소
         </button>
       </div>

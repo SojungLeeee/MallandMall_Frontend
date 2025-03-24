@@ -1,41 +1,72 @@
-import { BsShop } from "react-icons/bs";
-import { Link } from "react-router-dom";
-import CartStatus from "../cart/CartStatus";
-import { BsFillPencilFill } from "react-icons/bs";
-import User from "../member/User";
+import { Link, useNavigate, useRouteLoaderData } from "react-router-dom";
 import Button from "../Button";
-import { useAuthContext } from "../../../context/AuthContext";
-
+import { useEffect, useState } from "react";
+import { jwtDecode } from "jwt-decode";
+import { MdAdminPanelSettings } from "react-icons/md";
+import Logo from "../../../assets/images/logo/Logo.png";
 export default function Navbar() {
-  const { user, login, logout } = useAuthContext();
+  const { token } = useRouteLoaderData("root");
+  const navigate = useNavigate(); // useNavigate 훅을 사용해 navigate 함수 가져오기
+  const [role, setRole] = useState();
+
+  useEffect(() => {
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        setRole(decodedToken.role);
+      } catch (error) {
+        console.error("토큰 디코딩 실패:", error);
+        setRole(null);
+      }
+    } else {
+      setRole();
+    }
+  }, [token]);
+
+  // 로그인 버튼 클릭 시 로그인 페이지로 이동하도록 설정
+  const handleLogin = () => {
+    navigate("/login"); // 로그인 페이지로 이동
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("jwtAuthToken");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("role");
+    alert("로그아웃 되었습니다.");
+    navigate("/"); // 로그인 페이지로 이동
+  };
+
   return (
     <>
-      <header className="flex justify-between border-b border-gray-300 p-2">
-        <Link to="/" className="flex items-center text-4xl text-brand">
-          <BsShop />
-          <h1>Emart</h1>
+      <header className="flex justify-between  p-2">
+        <Link to="/" className="flex items-center">
+          <img src={Logo} alt="Emart Logo" className="h-13 w-20" />
         </Link>
-        <nav className="flex items-center gap-4">
-          <Link to="/products">Products</Link>
-
-          {/*user가 Admin일때 carts가 보이게*/}
-          {user && user.isAdmin && (
-            <Link to="/carts">
-              <CartStatus />
-            </Link>
+        <nav className="flex items-center gap-3 ">
+          {token && (
+            <>
+              {/* 관리자 메뉴 표시 */}
+              {role === "ADMIN" && (
+                <Link
+                  to="/admin"
+                  className="flex items-center text-black font-bold font-size hover:text-yellow-600"
+                >
+                  <MdAdminPanelSettings className="text-4xl animate-pop-up" />
+                </Link>
+              )}
+              <Button
+                text={"Logout"}
+                onClick={handleLogout}
+                className="flex items-center"
+              />
+            </>
           )}
-
-          {/*user가 Admin일때 product/new가 보이게*/}
-          {user && user.isAdmin && (
-            <Link to="products/new" className="text-2xl">
-              <BsFillPencilFill />
-            </Link>
+          {!token && (
+            <>
+              <Button text={"Login"} onClick={handleLogin} />
+            </>
           )}
-
-          {/*user 및 버튼이 보이면 렌더링되게 */}
-          {user && <User user={user} />}
-          {!user && <Button text={"Login"} onClick={login} />}
-          {user && <Button text={"Logout"} onClick={logout} />}
+          {}
         </nav>
       </header>
     </>
