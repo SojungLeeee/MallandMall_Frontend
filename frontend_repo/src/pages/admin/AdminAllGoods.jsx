@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { fetchFindAllProductCode } from "../../api/httpAdminService";
+import { fetchFindAllGoods } from "../../api/httpAdminService";
 import ListComponents from "../../components/ui/admin/ListComponents"; // ListComponents 컴포넌트 임포트
 
 export default function AdminAllProducts() {
@@ -9,7 +9,7 @@ export default function AdminAllProducts() {
   useEffect(() => {
     async function fetchProductData() {
       try {
-        const productCodeList = await fetchFindAllProductCode();
+        const productCodeList = await fetchFindAllGoods();
         console.log("받아온 상품 목록:", productCodeList); // 받아온 데이터를 콘솔에 출력
 
         if (Array.isArray(productCodeList)) {
@@ -41,17 +41,15 @@ export default function AdminAllProducts() {
     return (
       <tr key={index}>
         <td className="px-3 py-2">{product.productCode}</td>
-        <td className="px-3 py-2">{product.category}</td>
-        <td className="px-3 py-2">{product.productName}</td>
-        <td className="px-3 py-2">{product.price}</td>
-        <td className="px-3 py-2">{product.image}</td>
+        <td className="px-3 py-2">{product.branchName}</td>
+        <td className="px-3 py-2">{product.expirationDate}</td>
       </tr>
     );
   };
 
   return (
     <div className="w-full p-4">
-      <h2 className="text-2xl font-semibold mb-4">상품 코드 목록</h2>
+      <h2 className="text-2xl font-semibold mb-4">개별 상품 목록</h2>
       <hr className="mb-4" />
       {productData.length > 0 ? (
         <ListComponents
@@ -60,10 +58,8 @@ export default function AdminAllProducts() {
           renderRow={renderRow} // 행 렌더링 함수
           showDeleteCheckbox={false} // 삭제 체크박스 여부
           text1="상품코드" // 헤더 텍스트
-          text2="카테고리"
-          text3="상품명"
-          text4="가격"
-          text5="삭제"
+          text2="지점명"
+          text3="유통기한"
         />
       ) : (
         <div>Loading...</div>

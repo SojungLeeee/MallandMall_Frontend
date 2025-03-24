@@ -117,3 +117,60 @@ export async function fetchUserOrderInfo(token) {
   });
   return response.data;
 }
+
+// 🛒 장바구니 관련 API
+export async function fetchCartItems(token) {
+  if (!token) throw new Error("🚨 인증 토큰이 없습니다.");
+
+  const response = await instance.get(`/cart/items`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!Array.isArray(response.data)) {
+    console.error("🚨 서버 응답 형식 오류:", response);
+    throw new Error("서버 응답이 배열이 아닙니다.");
+  }
+
+  return response.data;
+}
+
+export async function addToCart(cartData, token) {
+  if (!token) throw new Error("🚨 인증 토큰이 없습니다.");
+  if (!cartData.productCode) throw new Error("🚨 상품 코드는 필수입니다.");
+  if (typeof cartData.quantity !== "number" || cartData.quantity < 1)
+    throw new Error("🚨 수량은 1 이상이어야 합니다.");
+
+  return (
+    await instance.post(`/cart/add`, cartData, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+  ).data;
+}
+
+export async function removeCartItem(productCode, token) {
+  if (!token) throw new Error("🚨 인증 토큰이 없습니다.");
+  if (!productCode) throw new Error("🚨 상품 코드는 필수입니다.");
+
+  console.log(`🗑️ 상품(${productCode}) 삭제 요청`);
+
+  return (
+    await instance.delete(`/cart/${productCode}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+  ).data;
+}
+
+export const updateCartQuantity = async (productCode, quantity, token) => {
+  if (isNaN(quantity) || quantity < 1) {
+    console.error("🚨 잘못된 수량 값:", quantity);
+    return;
+  }
+
+  return await instance.patch(
+    `/cart/${productCode}?quantity=${quantity}`,
+    {},
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
+};

@@ -225,7 +225,8 @@ export async function action({ request }) {
     }
   }
 
-  return redirect("/selectCategory");
+  // Redirect to /selectCategory with userId as a query parameter
+  return redirect(`/selectCategory?userId=${authData.userId}`);
 }
 
 export default Signup;

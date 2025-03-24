@@ -3,7 +3,7 @@ import {
   fetchFindAllProductCode,
   fetchAddProductCode,
 } from "../../api/httpAdminService";
-import AllProductCodes from "../../components/ui/admin/AllProductCodes";
+import ListComponents from "../../components/ui/admin/ListComponents";
 import GenericForm from "../../components/ui/admin/AddComponents"; // 재사용 가능한 양식 컴포넌트 import
 
 export default function AdminAllProducts() {
@@ -53,6 +53,9 @@ export default function AdminAllProducts() {
     try {
       await fetchAddProductCode(values); // 상품 추가 API 호출
 
+      alert("상품 코드가 정상적으로 추가되었습니다.");
+      setError(null);
+
       // 폼 초기화
       setProductValues({
         productCode: "",
@@ -66,7 +69,7 @@ export default function AdminAllProducts() {
       await fetchProductData(); // 상품 목록을 새로 불러옵니다.
     } catch (error) {
       console.log("상품 추가 실패:", error);
-      setError({ mesg: "상품 추가 실패" });
+      setError({ mesg: "중복된 상품코드입니다." });
     }
   };
 
@@ -75,13 +78,13 @@ export default function AdminAllProducts() {
   }, []);
 
   // 오류가 있으면 화면에 오류 메시지 표시
-  if (error) {
-    return (
-      <div className="p-4 text-red-500 bg-red-100 rounded">
-        <div>{`Error: ${error.mesg}`}</div>
+
+  const errorMessage =
+    error && error.mesg ? (
+      <div className="p-4 text-red-500 bg-red-100 rounded mb-4">
+        <div>{`${error.mesg}`}</div>
       </div>
-    );
-  }
+    ) : null;
 
   // 행 렌더링 함수 정의
   const renderRow = (product, index) => {
@@ -98,9 +101,8 @@ export default function AdminAllProducts() {
 
   return (
     <div className="w-full p-4">
-      <h2 className="text-2xl font-semibold mb-4">상품 코드 목록</h2>
-      <hr className="mb-4" />
-
+      {/* 상품 추가 실패 시 오류 메시지 표시 */}
+      {errorMessage}
       {/* 재사용 가능한 상품 추가 양식 */}
       <div className="mb-6">
         <GenericForm
@@ -118,7 +120,7 @@ export default function AdminAllProducts() {
 
       {/* 상품 목록 표시 */}
       {productData.length > 0 ? (
-        <AllProductCodes
+        <ListComponents
           data={productData}
           dataType="product"
           renderRow={renderRow}

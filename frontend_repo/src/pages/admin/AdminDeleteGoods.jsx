@@ -1,25 +1,25 @@
 import React, { useEffect, useState, useRef } from "react";
 import {
-  fetchFindAllProductCode,
-  fetchDeleteProductCode,
+  fetchFindAllGoods,
+  fetchDeleteGoods,
 } from "../../api/httpAdminService";
-import ListComponents from "../../components/ui/admin/ListComponents"; // ListComponents 컴포넌트 임포트
+import ListComponents from "../../components/ui/admin/ListComponents"; // AddComponents 컴포넌트 임포트
 
-export default function AdminAllProducts() {
+export default function AdminAllgoodss() {
   const [error, setError] = useState(null); // 오류 상태
-  const [productData, setProductData] = useState([]); // 상품 데이터를 위한 상태
-  const [delProductCode, setDelProductCode] = useState(null); // 삭제할 상품 코드
+  const [goodsData, setgoodsData] = useState([]); // 상품 데이터를 위한 상태
+  const [delgoodsId, setDelgoodsId] = useState(null); // 삭제할 상품 코드
   const modal_dialog = useRef(null); // 모달 ref
 
   // 상품 데이터를 불러오는 함수
   useEffect(() => {
-    async function fetchProductData() {
+    async function fetchgoodsData() {
       try {
-        const productCodeList = await fetchFindAllProductCode();
-        console.log("받아온 상품 목록:", productCodeList); // 받아온 데이터를 콘솔에 출력
+        const goodsCodeList = await fetchFindAllGoods();
+        console.log("받아온 상품 목록:", goodsCodeList); // 받아온 데이터를 콘솔에 출력
 
-        if (Array.isArray(productCodeList)) {
-          setProductData(productCodeList); // 상품 데이터를 상태에 저장
+        if (Array.isArray(goodsCodeList)) {
+          setgoodsData(goodsCodeList); // 상품 데이터를 상태에 저장
         } else {
           throw new Error("상품 데이터가 배열이 아닙니다.");
         }
@@ -30,27 +30,27 @@ export default function AdminAllProducts() {
       }
     }
 
-    fetchProductData();
+    fetchgoodsData();
   }, []);
 
   // 상품 삭제 처리 함수
-  const handleRemoveProduct = (productCode) => {
-    setDelProductCode(productCode); // 삭제할 상품 코드 설정
+  const handleRemovegoods = (goodsId) => {
+    setDelgoodsId(goodsId); // 삭제할 상품 코드 설정
     modal_dialog.current.showModal(); // 모달 표시
   };
 
   // 삭제 확인 후 서버와 연동하여 상품 삭제
   const handleDeleteConfirm = async () => {
-    if (!delProductCode) return; // 삭제할 상품 코드가 없으면 아무것도 하지 않음
+    if (!delgoodsId) return; // 삭제할 상품 코드가 없으면 아무것도 하지 않음
 
     try {
-      await fetchDeleteProductCode(delProductCode); // 서버에서 상품 삭제
+      await fetchDeleteGoods(delgoodsId); // 서버에서 상품 삭제
       console.log("상품 삭제 성공");
       alert("삭제되었습니다.");
 
       // 로컬 상태에서 해당 상품 삭제
-      setProductData((prevData) =>
-        prevData.filter((product) => product.productCode !== delProductCode)
+      setgoodsData((prevData) =>
+        prevData.filter((goods) => goods.goodsId !== delgoodsId)
       );
       modal_dialog.current.close(); // 모달 닫기
     } catch (error) {
@@ -69,16 +69,16 @@ export default function AdminAllProducts() {
   }
 
   // 행 렌더링 함수 정의
-  const renderRow = (product, index) => {
+  const renderRow = (goods, index) => {
     return (
       <tr key={index}>
-        <td className="px-3 py-2">{product.productCode}</td>
-        <td className="px-3 py-2">{product.category}</td>
-        <td className="px-3 py-2">{product.productName}</td>
-        <td className="px-3 py-2">{product.price}</td>
+        <td className="px-3 py-2">{goods.goodsId}</td>
+        <td className="px-3 py-2">{goods.productCode}</td>
+        <td className="px-3 py-2">{goods.branchName}</td>
+        <td className="px-3 py-2">{goods.expirationDate}</td>
         <td className="px-3 py-2">
           <button
-            onClick={() => handleRemoveProduct(product.productCode)}
+            onClick={() => handleRemovegoods(goods.goodsId)}
             className="bg-white"
           >
             ❌
@@ -90,7 +90,7 @@ export default function AdminAllProducts() {
 
   return (
     <div className="w-full p-4">
-      <h2 className="text-2xl font-semibold mb-4">상품 코드 목록</h2>
+      <h2 className="text-2xl font-semibold mb-4">개별 상품 목록</h2>
       <hr className="mb-4" />
 
       {/* 삭제 확인 모달 */}
@@ -100,9 +100,7 @@ export default function AdminAllProducts() {
       >
         <h3 className="text-xl font-semibold mb-4">삭제 확인</h3>
         <p className="mb-4 text-gray-700">
-          정말로{" "}
-          <span className="text-red-600 font-bold">{delProductCode}</span>{" "}
-          상품코드를 삭제하시겠습니까?
+          정말로 해당 상품을 삭제하시겠습니까?
         </p>
         <div className="flex justify-between">
           <button
@@ -123,16 +121,16 @@ export default function AdminAllProducts() {
       </dialog>
 
       {/* 상품 목록 표시 */}
-      {productData.length > 0 ? (
+      {goodsData.length > 0 ? (
         <ListComponents
-          data={productData} // 상품 데이터
-          dataType="product" // 데이터 타입 예시
+          data={goodsData} // 상품 데이터
+          dataType="goods" // 데이터 타입 예시
           renderRow={renderRow} // 행 렌더링 함수
           showDeleteCheckbox={true} // 삭제 체크박스 여부
-          text1="상품코드" // 헤더 텍스트
-          text2="카테고리"
-          text3="상품명"
-          text4="가격"
+          text1="상품ID"
+          text2="상품코드" // 헤더 텍스트
+          text3="지점명"
+          text4="유통기한"
           text5="삭제"
         />
       ) : (
