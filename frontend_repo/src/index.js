@@ -54,6 +54,8 @@ import AdminDeleteEvent from "./pages/admin/AdminDeleteEvent";
 import AdminUpdateEvent from "./pages/admin/AdminUpdateEvent";
 import AdminAddEvent from "./pages/admin/AdminAddEvent";
 
+import Favorites from "./pages/mypage/Favorites";
+
 const router = createBrowserRouter([
   // AppTwo 기반 라우트
   {
@@ -141,6 +143,10 @@ const router = createBrowserRouter([
       {
         path: "/admin/branch/update",
         element: <AdminUpdateBranch />,
+      },
+      {
+        path: "/favorites",
+        element: <Favorites />,
       },
     ],
   },
