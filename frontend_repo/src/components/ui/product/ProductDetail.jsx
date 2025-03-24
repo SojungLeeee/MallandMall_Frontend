@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { fetchProductDetail } from "../../../api/httpMemberService";
-import ReviewList from "./ReviewList"; // 리뷰 컴포넌트 불러오기
+import { fetchProductDetail, addToCart } from "../../../api/httpMemberService"; // addToCart를 가져옴
+import ReviewList from "./ReviewList";
 
 const ProductDetail = () => {
   const { productCode } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate(); // 페이지 이동을 위한 navigate 훅
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadData = async () => {
@@ -25,6 +25,37 @@ const ProductDetail = () => {
     loadData();
   }, [productCode]);
 
+  const handleAddToCart = async () => {
+    const token = localStorage.getItem("jwtAuthToken");
+    if (!token) {
+      alert("로그인이 필요합니다!");
+      navigate("/login");
+      return;
+    }
+
+    if (!product) {
+      alert("상품 정보가 없습니다.");
+      return;
+    }
+
+    const cartData = {
+      productCode: product.productCode,
+      quantity: 1,
+    };
+
+    try {
+      await addToCart(cartData, token);
+      console.log("장바구니에 추가된 상품:", cartData);
+      alert(`'${product.productName}' 상품이 장바구니에 추가되었습니다!`);
+
+      // 데이터 전달하면서 장바구니 페이지로 이동
+      navigate("/carts", { state: { cartItem: cartData } });
+    } catch (err) {
+      alert("장바구니 추가 중 오류 발생");
+      console.error(err);
+    }
+  };
+
   if (loading)
     return (
       <p className="text-center mt-10 text-lg">상품 정보를 불러오는 중...</p>
@@ -34,7 +65,6 @@ const ProductDetail = () => {
 
   return (
     <div className="flex flex-col items-center bg-[#f8f5e6] min-h-screen p-6">
-      {/* 상품 이미지 */}
       <div className="w-full max-w-md border rounded-lg bg-yellow-400 flex items-center justify-center max-h-[400px]">
         <img
           src={product.image}
@@ -43,7 +73,6 @@ const ProductDetail = () => {
         />
       </div>
 
-      {/* 상품 이름과 가격 */}
       <div className="w-full max-w-md mt-6">
         <h2 className="text-xl font-bold">{product.productName}</h2>
         <p className="text-red-500 font-bold text-lg">
@@ -51,26 +80,24 @@ const ProductDetail = () => {
         </p>
       </div>
 
-      {/* 구매하기와 장바구니 버튼 (양옆 배치) */}
       <div className="w-full max-w-md mt-6 flex gap-4">
         {/* 구매하기 버튼 */}
         <button
           className="flex-1 bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 focus:outline-none"
-          onClick={() => navigate("/order")} // 구매하기 버튼 클릭 시 /buy로 이동
+          onClick={() => navigate("/order")}
         >
           구매하기
         </button>
 
-        {/* 장바구니 버튼 */}
+        {/* 장바구니 추가 버튼 */}
         <button
           className="flex-1 bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 focus:outline-none"
-          onClick={() => alert("상품을 장바구니에 담았습니다!")}
+          onClick={handleAddToCart} // 장바구니 추가 및 페이지 이동
         >
           장바구니에 담기
         </button>
       </div>
 
-      {/* 리뷰 목록 컴포넌트 */}
       <ReviewList productCode={productCode} />
     </div>
   );
