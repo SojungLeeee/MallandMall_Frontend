@@ -55,6 +55,7 @@ export async function fetchProductDetail(productCode) {
   const response = await instance.get(`/product/detail/${productCode}`);
   return response.data;
 }
+
 // 리뷰 목록 불러오기
 export async function fetchProductReviews(productCode) {
   const response = await instance.get(`/review/product/${productCode}`);
