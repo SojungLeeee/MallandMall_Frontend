@@ -5,20 +5,22 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 // Import required modules
-import sadari from "../../../assets/images/banner/sadari.png";
-import cheer from "../../../assets/images/banner/cheer.png";
-import ice from "../../../assets/images/banner/ice.png";
+import welcome from "../../../assets/images/banner/welcome.png";
+import sale from "../../../assets/images/banner/sale.png";
+import ship from "../../../assets/images/banner/ship.png";
+import ssg from "../../../assets/images/banner/ssg.png";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 
 export default function Banner() {
   const slides = [
-    { id: 1, Image: sadari },
-    { id: 2, Image: cheer },
-    { id: 3, Image: ice },
+    { id: 1, Image: sale },
+    { id: 2, Image: welcome },
+    { id: 3, Image: ship },
+    { id: 4, Image: ssg },
   ];
 
   return (
-    <section className="w-[390px] h-[230px] relative">
+    <section className="w-[393px] h-[175px] relative">
       {/* CSS 스타일 추가 */}
       <style>
         {`
@@ -37,8 +39,8 @@ export default function Banner() {
           .swiper-button-prev {
             color: white; /* 화살표 색상 - 흰색 */
             background-color: rgba(0, 0, 0, 0.3); /* 배경색 - 반투명 검정 */
-            width: 30px; /* 너비 */
-            height: 30px; /* 높이 */
+            width: 28px; /* 너비 */
+            height: 28px; /* 높이 */
             border-radius: 50%; /* 원형 모양 */
             display: flex;
             justify-content: center;
@@ -48,7 +50,7 @@ export default function Banner() {
           /* 화살표 크기 조정 */
           .swiper-button-next:after,
           .swiper-button-prev:after {
-            font-size: 15px; /* 화살표 아이콘 크기 */
+            font-size: 14px; /* 화살표 아이콘 크기 */
             font-weight: bold;
           }
 

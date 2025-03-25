@@ -32,7 +32,7 @@ const AllProducts = () => {
   }, []);
 
   return (
-    <div className="products-container">
+    <div className="products-container p-0 ">
       {/* ProductList 컴포넌트 사용 */}
       <ProductCard
         products={products}
@@ -41,7 +41,7 @@ const AllProducts = () => {
         basePath="/product"
         columns={2}
         containerStyle={{
-          backgroundColor: "#fff7f0",
+          backgroundColor: "white",
           padding: "0.5rem",
         }}
       />

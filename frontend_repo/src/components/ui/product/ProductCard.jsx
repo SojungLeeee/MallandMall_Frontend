@@ -28,25 +28,31 @@ const ProductCard = ({
 
   // 기본 아이템 렌더링 함수
   const defaultRenderItem = (product) => (
-    <div className="bg-white border rounded-md shadow-md overflow-hidden flex flex-col items-center p-4 hover:shadow-lg transition h-full">
+    <div className="bg-white border rounded-sm shadow-md overflow-hidden flex flex-col items-center p-4 hover:shadow-lg transition h-full">
       {/* 이미지 컨테이너 */}
-      <div className="w-full max-h-72 border rounded-lg bg-yellow-400 flex items-center justify-center">
+      <div className="w-full max-h-72 border rounded-s  flex items-center justify-center">
         <img
           src={product.image}
           alt={product.productName}
-          className="w-full h-full object-cover p-4"
+          className="w-full h-full object-cover p-2"
         />
       </div>
-      <div className="text-center flex flex-col gap-2 mt-3 flex-grow">
-        <h3 className="text-lg font-semibold">{product.productName}</h3>
+      <div className="flex flex-col justify-start gap-2 mt-3 flex-grow">
+        <h3 className="text-lg font-semibold text-center">
+          {product.productName}
+        </h3>
         {product.description && (
-          <p className="text-sm text-gray-600">{product.description}</p>
+          <p className="text-sm text-gray-600 text-left h-10 overflow-hidden">
+            {product.description}
+          </p>
         )}
-        <p className="text-lg font-bold text-red-500">
+        <p className="text-lg font-bold text-red-500 text-left">
           {product.price.toLocaleString()}원
         </p>
         {product.averageRating !== undefined && (
-          <p className="text-sm text-yellow-500">⭐ {product.averageRating}</p>
+          <p className="text-sm text-yellow-500 text-left">
+            ⭐ {product.averageRating}
+          </p>
         )}
       </div>
     </div>
@@ -66,7 +72,7 @@ const ProductCard = ({
       {error && <p className="text-red-500">{error}</p>}
 
       {/* 상품 목록 */}
-      <div className={`mt-5 grid ${getGridColsClass()} gap-4 p-4 w-full`}>
+      <div className={`mt-0.5 grid ${getGridColsClass()} gap-3 p-2  w-full`}>
         {products.map((product) => (
           <Link
             to={`${basePath}/${product.productCode}`}
