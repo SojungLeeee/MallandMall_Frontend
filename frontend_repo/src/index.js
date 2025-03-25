@@ -62,6 +62,8 @@ import AdminDeleteEvent from "./pages/admin/AdminDeleteEvent";
 import AdminUpdateEvent from "./pages/admin/AdminUpdateEvent";
 import AdminAddEvent from "./pages/admin/AdminAddEvent";
 
+import EditCategory from "./pages/mypage/EditCategory";
+
 import Favorites from "./pages/mypage/Favorites";
 
 const router = createBrowserRouter([
@@ -155,6 +157,10 @@ const router = createBrowserRouter([
       {
         path: "/favorites",
         element: <Home />,
+      },
+      {
+        path: "/mypage/editcategory",
+        element: <EditCategory />,
       },
       {
         path: "/auth/kakao/callback",

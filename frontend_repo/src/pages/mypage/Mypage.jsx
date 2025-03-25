@@ -1,10 +1,11 @@
+// src/pages/MyPage.jsx
 import { useLoaderData, useNavigate } from "react-router-dom";
 import { fetchMypageHome } from "../../api/httpMemberService";
 import { getAuthToken } from "../../context/tokenProviderService";
 import mart from "../../assets/images/mart.png"; // 이미지 경로
 
 export default function MyPage() {
-  const user = useLoaderData();
+  const user = useLoaderData(); // user 데이터를 로드
   const navigate = useNavigate();
 
   return (
@@ -22,25 +23,35 @@ export default function MyPage() {
 
       {/* 버튼들 */}
       <div className="space-y-4 flex flex-col items-center justify-center">
+        {/* 회원정보 수정 */}
         <button
           className="w-full py-3 text-xl bg-[#f9e687] text-black font-bold rounded-2xl focus:outline-none hover:bg-[#e2d267]"
           onClick={() => navigate("/mypage/edit")}
         >
           회원정보 수정
         </button>
+        {/* 선호 카테고리 수정 버튼 */}
         <button
           className="w-full py-3 text-xl bg-[#f9e687] text-black font-bold rounded-2xl focus:outline-none hover:bg-[#e2d267]"
-          onClick={() => navigate("/mypage/orderinfo")} // 주문내역 페이지로 이동
+          onClick={() => navigate(`/mypage/editcategory?userId=${user.userId}`)} // userId를 쿼리 파라미터로 전달
+        >
+          선호 카테고리 수정
+        </button>
+        {/* 주문내역 페이지로 이동 */}
+        <button
+          className="w-full py-3 text-xl bg-[#f9e687] text-black font-bold rounded-2xl focus:outline-none hover:bg-[#e2d267]"
+          onClick={() => navigate("/mypage/orderinfo")}
         >
           주문내역
         </button>
-        {/* 리뷰 페이지로 이동 */}
+        {/* 내가 쓴 리뷰 */}
         <button
           className="w-full py-3 text-xl bg-[#f9e687] text-black font-bold rounded-2xl focus:outline-none hover:bg-[#e2d267]"
           onClick={() => navigate("/mypage/myreview")}
         >
           내가 쓴 리뷰
         </button>
+        {/* 회원탈퇴 */}
         <button
           className="w-full py-3 text-xl bg-[#eeba7a] text-black font-bold rounded-2xl focus:outline-none hover:bg-[#d39e4c]"
           onClick={() => navigate("/mypage/delete")}
@@ -52,7 +63,7 @@ export default function MyPage() {
   );
 }
 
-//  loader 내부에서 토큰 가져오기
+// loader 내부에서 토큰 가져오기
 export async function loader() {
   const { token } = getAuthToken(); // 토큰 가져오기
   console.log("Auth Token:", token);
