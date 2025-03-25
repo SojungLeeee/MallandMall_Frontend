@@ -1,8 +1,11 @@
 import React, { useRef } from "react";
-import { CiMenuBurger, CiStar } from "react-icons/ci";
-import { SlHome } from "react-icons/sl";
-import { VscAccount } from "react-icons/vsc";
-import { BsCart } from "react-icons/bs";
+import {
+  RiMenuLine,
+  RiStarLine,
+  RiHome2Line,
+  RiUser3Line,
+  RiShoppingCartLine,
+} from "react-icons/ri";
 import { Link, useNavigate } from "react-router-dom";
 
 const styles = `
@@ -51,7 +54,7 @@ const FooterNav = () => {
 
   return (
     <footer
-      className="bg-white text-gray-500  px-1.5  ml-1 h rounded-sm"
+      className="bg-white text-gray-500 px-1.5 ml-1 h rounded-sm"
       style={{
         boxShadow:
           "0 -4px 6px -1px rgba(0, 0, 0, 0.1), 0 4px 6px -1px rgba(0, 0, 0, 0.1)",
@@ -65,7 +68,7 @@ const FooterNav = () => {
               to="/categoryList"
               className="flex flex-col items-center text-black hover:text-[#F9E79F] transition duration-300"
             >
-              <CiMenuBurger className="text-2xl mb-1" />
+              <RiMenuLine className="text-2xl mb-1" />
               <span className="text-xs font-medium">카테고리</span>
             </Link>
           </li>
@@ -74,7 +77,7 @@ const FooterNav = () => {
               to="/"
               className="flex flex-col items-center text-black hover:text-[#cece92] transition duration-300"
             >
-              <SlHome className="text-2xl mb-1" />
+              <RiHome2Line className="text-2xl mb-1" />
               <span className="text-xs font-medium">홈</span>
             </Link>
           </li>
@@ -87,7 +90,7 @@ const FooterNav = () => {
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
             >
-              <CiStar className="text-2xl" />
+              <RiStarLine className="text-2xl" />
             </Link>
           </li>
 
@@ -97,7 +100,7 @@ const FooterNav = () => {
                 to="/mypage"
                 className="flex flex-col items-center text-black hover:text-[#F9E79F] transition duration-300"
               >
-                <VscAccount className="text-2xl mb-1" />
+                <RiUser3Line className="text-2xl mb-1" />
                 <span className="text-xs font-medium">MY</span>
               </Link>
             ) : (
@@ -105,8 +108,8 @@ const FooterNav = () => {
                 to="/login"
                 className="flex flex-col items-center text-black hover:text-[#F9E79F] transition duration-300"
               >
-                <VscAccount className="text-2xl mb-1" />
-                <span className="text-xs font-medium">MY</span>
+                <RiUser3Line className="text-2xl mb-1" />
+                <span className="text-xs font-medium">내정보</span>
               </Link>
             )}
           </li>
@@ -117,7 +120,7 @@ const FooterNav = () => {
                 to="/carts"
                 className="flex flex-col items-center text-black hover:text-[#F9E79F] transition duration-300"
               >
-                <BsCart className="text-2xl mb-1" />
+                <RiShoppingCartLine className="text-2xl mb-1" />
                 <span className="text-xs font-medium">장바구니</span>
               </Link>
             ) : (
@@ -125,7 +128,7 @@ const FooterNav = () => {
                 to="/login"
                 className="flex flex-col items-center text-black hover:text-[#F9E79F] transition duration-300"
               >
-                <BsCart className="text-2xl mb-1" />
+                <RiShoppingCartLine className="text-2xl mb-1" />
                 <span className="text-xs font-medium">장바구니</span>
               </Link>
             )}

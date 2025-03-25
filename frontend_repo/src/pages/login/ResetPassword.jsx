@@ -51,10 +51,35 @@ export default function ResetPassword() {
 
   return (
     <div className="flex justify-center items-center h-full bg-white p-5">
-      <div className="bg-[#fff6e2] p-8 rounded-xl shadow-lg w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center">비밀번호 재설정</h2>
+      <div className="bg-white p-8 rounded-lg shadow-md border border-gray-200 w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-6 text-center text-black">
+          비밀번호 재설정
+        </h2>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        {/* 자동완성 배경색 제거를 위한 스타일 */}
+        <style>
+          {`
+            input:-webkit-autofill,
+            input:-webkit-autofill:hover,
+            input:-webkit-autofill:focus,
+            input:-webkit-autofill:active {
+              -webkit-box-shadow: 0 0 0 30px white inset !important;
+              -webkit-text-fill-color: black !important;
+              transition: background-color 5000s ease-in-out 0s;
+            }
+            
+            textarea:-webkit-autofill,
+            textarea:-webkit-autofill:hover,
+            textarea:-webkit-autofill:focus,
+            textarea:-webkit-autofill:active {
+              -webkit-box-shadow: 0 0 0 30px white inset !important;
+              -webkit-text-fill-color: black !important;
+              transition: background-color 5000s ease-in-out 0s;
+            }
+          `}
+        </style>
+
+        <form onSubmit={handleSubmit} className="space-y-4" autoComplete="off">
           {/* 아이디 입력란 */}
           <div>
             <input
@@ -64,7 +89,11 @@ export default function ResetPassword() {
               value={formData.userId}
               onChange={handleChange}
               required
-              className="w-full p-3 text-lg border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-yellow-400"
+              className="w-full p-3 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-0 focus:border-gray-300"
+              style={{
+                WebkitAppearance: "none",
+                backgroundColor: "white",
+              }}
             />
           </div>
 
@@ -77,7 +106,11 @@ export default function ResetPassword() {
               value={formData.phone}
               onChange={handleChange}
               required
-              className="w-full p-3 text-lg border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-yellow-400"
+              className="w-full p-3 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-0 focus:border-gray-300"
+              style={{
+                WebkitAppearance: "none",
+                backgroundColor: "white",
+              }}
             />
           </div>
 
@@ -90,7 +123,11 @@ export default function ResetPassword() {
               value={formData.newPassword}
               onChange={handleChange}
               required
-              className="w-full p-3 text-lg border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-yellow-400"
+              className="w-full p-3 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-0 focus:border-gray-300"
+              style={{
+                WebkitAppearance: "none",
+                backgroundColor: "white",
+              }}
             />
           </div>
 
@@ -98,7 +135,9 @@ export default function ResetPassword() {
           <div>
             <button
               type="submit"
-              className="w-full py-3 text-xl bg-[#f9e687] text-black font-bold rounded-2xl focus:outline-none hover:bg-[#e2d267]"
+              className="w-full py-3 text-base bg-black text-white font-medium rounded-md
+                         shadow-md hover:bg-gray-800 hover:translate-y-[-2px] transition-all
+                         focus:outline-none focus:ring-0 duration-300 ease-in-out"
             >
               비밀번호 재설정
             </button>
