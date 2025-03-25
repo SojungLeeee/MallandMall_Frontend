@@ -1,15 +1,9 @@
-import {
-  Form,
-  redirect,
-  json,
-  useActionData,
-  useNavigate,
-} from "react-router-dom";
+import { Form, redirect, json, useActionData, useNavigate } from "react-router-dom";
 import { fetchAuthenticate } from "../../api/httpMemberService"; // 상대 경로로 가져오기
 import { setAuthToken } from "../../auth/tokenProviderService";
 import Logo from "../../assets/images/logo/Logo.png";
-import KakaoLoginButton from "../../components/ui/KakaoLoginButton";
-import GoogleLoginButton from "../../components/ui/GoogleLoginButton";
+import KakaoLoginButton from "../../components/ui/button/KakaoLoginButton";
+import GoogleLoginButton from "../../components/ui/button/GoogleLoginButton";
 
 function Login() {
   // 예외처리
@@ -58,24 +52,15 @@ function Login() {
       </div>
 
       <div className="text-center">
-        <a
-          href="/findid"
-          className="mb-4 text-[#6c6c6c] font-bold no-underline cursor-pointer text-xl"
-        >
+        <a href="/findid" className="mb-4 text-[#6c6c6c] font-bold no-underline cursor-pointer text-xl">
           아이디 찾기
         </a>
         <br />
-        <a
-          href="/reset-password"
-          className="mb-4 text-[#6c6c6c] font-bold no-underline cursor-pointer text-xl"
-        >
+        <a href="/reset-password" className="mb-4 text-[#6c6c6c] font-bold no-underline cursor-pointer text-xl">
           비밀번호 재설정
         </a>
         <br />
-        <a
-          href="/signup"
-          className="text-[#6c6c6c] font-bold no-underline cursor-pointer text-xl"
-        >
+        <a href="/signup" className="text-[#6c6c6c] font-bold no-underline cursor-pointer text-xl">
           회원가입
         </a>
         <br />

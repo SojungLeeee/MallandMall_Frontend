@@ -1,3 +1,4 @@
+// src/pages/MyPage.jsx
 import { useLoaderData, useNavigate } from "react-router-dom";
 import { fetchMypageHome } from "../../api/httpMemberService";
 import { getAuthToken } from "../../context/tokenProviderService";
@@ -6,7 +7,7 @@ import mart from "../../assets/images/logo/Loginimage.png"; // 이미지 경로
 import { User, ShoppingBag, MessageSquare, LogOut } from "lucide-react";
 
 export default function MyPage() {
-  const user = useLoaderData();
+  const user = useLoaderData(); // user 데이터를 로드
   const navigate = useNavigate();
   return (
     <div className="flex flex-col items-center justify-center w-full max-w-[390px] h-full text-xl">
@@ -61,7 +62,9 @@ export default function MyPage() {
           <div className="grid grid-cols-3 divide-x divide-gray-300">
             <button
               className="flex flex-col items-center justify-center py-4 hover:bg-gray-50"
-              onClick={() => navigate("/mypage/wishlist")}
+              onClick={() =>
+                navigate(`/mypage/editcategory?userId=${user.userId}`)
+              }
             >
               <div className="w-12 h-12 flex items-center justify-center mb-2">
                 <svg
@@ -121,7 +124,7 @@ export default function MyPage() {
   );
 }
 
-//  loader 내부에서 토큰 가져오기
+// loader 내부에서 토큰 가져오기
 export async function loader() {
   const { token } = getAuthToken(); // 토큰 가져오기
   console.log("Auth Token:", token);

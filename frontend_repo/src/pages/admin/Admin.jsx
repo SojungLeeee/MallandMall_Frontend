@@ -1,5 +1,5 @@
 import React from "react";
-import AdminButton from "../../components/ui/AdminButton";
+import AdminButton from "../../components/ui/button/AdminButton";
 import { useNavigate } from "react-router-dom";
 
 export default function Admin() {

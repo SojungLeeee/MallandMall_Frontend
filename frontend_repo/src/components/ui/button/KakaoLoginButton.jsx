@@ -1,5 +1,5 @@
 import React from "react";
-import kakaoLoginImg from "../../assets/kakao_login_medium_wide.png"; // 이미지 파일 경로에 맞게 수정
+import kakaoLoginImg from "../../../assets/kakao_login_medium_wide.png"; // 이미지 파일 경로에 맞게 수정
 
 const KAKAO_CLIENT_ID = "d91f0aee90225deaa8dd9ce8585b6033";
 

@@ -81,7 +81,7 @@ const FooterNav = () => {
 
           <li className="flex flex-col items-center w-1/5 sm:w-auto relative">
             <Link
-              to="/favorites"
+              to={token ? "/favorites" : "/login"} // token 확인 후 favorites 또는 login으로 이동
               className="w-12 h-12 bg-[#403c23] text-white rounded-full flex items-center justify-center shadow-md shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-1px_rgba(0,0,0,0.06)] mb-1"
               ref={starRef}
               onMouseEnter={handleMouseEnter}

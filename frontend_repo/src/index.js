@@ -40,7 +40,7 @@ import AdminDeleteProducts from "./pages/admin/AdminDeleteProducts";
 import AdminUpdateProducts from "./pages/admin/AdminUpdateProducts";
 import AdminAddProducts from "./pages/admin/AdminAddProducts";
 
-import KakaoCallback from "./components/ui/KakaoCallback";
+import KakaoCallback from "./util/KakaoCallback";
 
 import AdminAllGoods from "./pages/admin/AdminAllGoods";
 import AdminDeleteGoods from "./pages/admin/AdminDeleteGoods";
@@ -61,6 +61,8 @@ import AdminAllEvent from "./pages/admin/AdminAllEvent";
 import AdminDeleteEvent from "./pages/admin/AdminDeleteEvent";
 import AdminUpdateEvent from "./pages/admin/AdminUpdateEvent";
 import AdminAddEvent from "./pages/admin/AdminAddEvent";
+
+import EditCategory from "./pages/mypage/EditCategory";
 
 import Favorites from "./pages/mypage/Favorites";
 
@@ -154,7 +156,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/favorites",
-        element: <Favorites />,
+        element: <Home />,
+      },
+      {
+        path: "/mypage/editcategory",
+        element: <EditCategory />,
       },
       {
         path: "/auth/kakao/callback",

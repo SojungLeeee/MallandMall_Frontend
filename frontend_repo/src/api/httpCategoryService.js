@@ -38,3 +38,37 @@ export async function fetchFindCategory(category) {
   console.log("fetchFindCategory.response:", response);
   return response;
 }
+
+//선호 카테고리 수정을 위해 userId로 선호 카테고리 확인
+export async function fetchLikeCategoriesByUserId(userId) {
+  console.log("fetchFindCategory 요청");
+
+  const response = await instance.get(
+    `/likecategories/showLikeCategories/${userId}`
+  );
+
+  console.log("fetchLikeCategoriesByUserId.response:", response);
+  return response;
+}
+
+//선호 카테고리에서 체크 해제되면 삭제
+export async function fetchDeleteCategories(userId, category) {
+  try {
+    // DELETE 요청 보내기
+    const response = await instance.delete(
+      `/likecategories/deleteLikeCategories/${userId}/${category}`
+    );
+
+    console.log("fetchDeleteCategories.response: ", response);
+
+    // 응답 상태가 200 또는 204인 경우만 정상 처리
+    if (response.status !== 200 && response.status !== 204) {
+      throw new Error("fetchDeleteCategories 예외발생");
+    }
+
+    return response; // 응답 반환
+  } catch (error) {
+    console.error("삭제 실패:", error); // 에러 디버깅
+    throw new Error("fetchDeleteCategories 예외발생");
+  }
+}

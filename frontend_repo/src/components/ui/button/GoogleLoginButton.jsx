@@ -1,18 +1,15 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
-import { googleLogin } from "../../api/httpGoogleService";
-import { setAuthToken } from "../../auth/tokenProviderService";
+import { googleLogin } from "../../../api/httpGoogleService";
+import { setAuthToken } from "../../../auth/tokenProviderService";
 
 function GoogleLoginButton() {
   const navigate = useNavigate();
 
   const handleGoogleLoginSuccess = async (credentialResponse) => {
     try {
-      console.log(
-        "Google 로그인 성공, 토큰:",
-        credentialResponse.credential.substring(0, 20) + "..."
-      );
+      console.log("Google 로그인 성공, 토큰:", credentialResponse.credential.substring(0, 20) + "...");
 
       // 구글 로그인 API 호출
       const data = await googleLogin(credentialResponse.credential);
