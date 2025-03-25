@@ -42,7 +42,9 @@
 .App {
   width: 390px;
   height: 840px;
-  border: 1px solid black; /* 화면 경계선 (선택사항) */
+
+  border: 1px solid black;
+  /* 화면 경계선 */
 }
 
 /* 스크롤을 숨기도록 설정 */
