@@ -119,37 +119,6 @@ function Login() {
         </div>
       </Form>
 
-      {/* 구분선 */}
-      <div className="w-[84%] flex items-center justify-center mb-2">
-        <div className="h-px bg-gray-300 flex-grow"></div>
-        <span className="mx-4 text-gray-500 text-sm">또는</span>
-        <div className="h-px bg-gray-300 flex-grow"></div>
-      </div>
-
-      <div className="text-center">
-        <a
-          href="/findid"
-          className="mb-4 text-[#6c6c6c] font-bold no-underline cursor-pointer text-xl"
-        >
-          아이디 찾기
-        </a>
-        <br />
-        <a
-          href="/reset-password"
-          className="mb-4 text-[#6c6c6c] font-bold no-underline cursor-pointer text-xl"
-        >
-          비밀번호 재설정
-        </a>
-        <br />
-        <a
-          href="/signup"
-          className="text-[#6c6c6c] font-bold no-underline cursor-pointer text-xl"
-        >
-          회원가입
-        </a>
-        <br />
-      </div>
-
       {/* 소셜 로그인 버튼들 */}
       <SocialLoginButtons />
     </div>
