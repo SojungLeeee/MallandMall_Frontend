@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { fetchProductDetail, addToCart } from "../../../api/httpMemberService"; // addToCart를 가져옴
+import { fetchProductDetail, addToCart } from "../../../api/httpMemberService";
 import ReviewList from "./ReviewList";
 
 const ProductDetail = () => {
@@ -58,14 +58,17 @@ const ProductDetail = () => {
 
   if (loading)
     return (
-      <p className="text-center mt-10 text-lg">상품 정보를 불러오는 중...</p>
+      <p className="text-center mt-10 text-lg font-medium text-gray-700">
+        상품 정보를 불러오는 중...
+      </p>
     );
-  if (error) return <p className="text-center text-red-500">{error}</p>;
+  if (error)
+    return <p className="text-center text-red-500 font-medium">{error}</p>;
   if (!product) return null;
 
   return (
-    <div className="flex flex-col items-center bg-[#f8f5e6] min-h-screen p-6">
-      <div className="w-full max-w-md border rounded-lg bg-yellow-400 flex items-center justify-center max-h-[400px]">
+    <div className="flex flex-col items-center bg-white min-h-screen p-6">
+      <div className="w-full max-w-md border border-gray-200 rounded-sm bg-white flex items-center justify-center max-h-[400px] shadow-md overflow-hidden">
         <img
           src={product.image}
           alt={product.productName}
@@ -74,8 +77,10 @@ const ProductDetail = () => {
       </div>
 
       <div className="w-full max-w-md mt-6">
-        <h2 className="text-xl font-bold">{product.productName}</h2>
-        <p className="text-red-500 font-bold text-lg">
+        <h2 className="text-xl font-bold text-black text-left">
+          {product.productName}
+        </h2>
+        <p className="text-black font-bold text-lg mt-2 text-left">
           {product.price.toLocaleString()} 원
         </p>
       </div>
@@ -83,7 +88,7 @@ const ProductDetail = () => {
       <div className="w-full max-w-md mt-6 flex gap-4">
         {/* 구매하기 버튼 */}
         <button
-          className="flex-1 bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 focus:outline-none"
+          className="flex-1 bg-black text-white py-3 px-4 rounded-sm hover:bg-gray-800 transition-colors font-medium focus:outline-none"
           onClick={() => navigate("/order")}
         >
           구매하기
@@ -91,14 +96,16 @@ const ProductDetail = () => {
 
         {/* 장바구니 추가 버튼 */}
         <button
-          className="flex-1 bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 focus:outline-none"
-          onClick={handleAddToCart} // 장바구니 추가 및 페이지 이동
+          className="flex-1 bg-white text-black py-3 px-4 rounded-sm border border-gray-300 hover:bg-gray-100 transition-colors font-medium focus:outline-none"
+          onClick={handleAddToCart}
         >
           장바구니에 담기
         </button>
       </div>
 
-      <ReviewList productCode={productCode} />
+      <div className="w-full max-w-md mt-8 border-t border-gray-200 pt-6">
+        <ReviewList productCode={productCode} />
+      </div>
     </div>
   );
 };

@@ -38,7 +38,7 @@ const SearchBar = () => {
             onChange={(e) => setSearch(e.target.value)} // 입력값을 상태에 저장
             onKeyDown={handleKeyDown} // 엔터키를 누르면 검색 실행
             placeholder="검색어 입력"
-            className="w-5/6 p-3 pl-2 pr-10 text-gray-800 placeholder-gray-400 border border-gray-300 rounded-2xl focus:outline-none"
+            className="w-5/6 p-3 pl-2 pr-10 text-gray-800 placeholder-gray-400 border border-gray-300 rounded-sm focus:outline-none"
           />
 
           {/* 오른쪽 버튼 */}
