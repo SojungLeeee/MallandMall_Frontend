@@ -40,33 +40,60 @@ const MyReviews = () => {
     new Date(dateString).toISOString().split("T")[0];
 
   if (loading)
-    return <p className="text-center mt-10 text-lg">리뷰 불러오는 중...</p>;
-  if (error) return <p className="text-center text-red-500">{error}</p>;
+    return (
+      <p className="text-center mt-10 text-lg font-medium text-gray-700">
+        리뷰 불러오는 중...
+      </p>
+    );
+  if (error)
+    return <p className="text-center text-red-500 font-medium">{error}</p>;
 
   return (
-    <div className="flex flex-col items-center bg-[#f8f5e6] min-h-screen p-6 w-full max-w-md">
-      <h3 className="text-lg font-bold mb-2">
-        내가 작성한 리뷰 ({reviews.length})
+    <div className="flex flex-col items-center bg-white min-h-screen p-6 w-full max-w-md shadow-md border border-gray-100">
+      <h3 className="text-xl font-bold mb-6 text-black">
+        내가 작성한 리뷰{" "}
+        <span className="text-gray-500">({reviews.length})</span>
       </h3>
 
-      <div className="mt-4 space-y-4 w-full">
+      <div className="mt-4 space-y-5 w-full">
         {reviews.map((review) => (
           <div
             key={review.reviewId}
-            className="border p-3 rounded-md bg-yellow-100"
+            className="border border-gray-200 p-4 rounded-sm bg-white shadow-sm hover:border-gray-300 transition-all"
           >
-            <p className="text-sm text-gray-700">
-              상품 코드: {review.productCode} | 작성날짜:{" "}
-              {formatDate(review.reviewDate)}
+            <div className="flex justify-between items-center mb-2">
+              <p className="text-sm text-gray-500 font-medium">
+                {formatDate(review.reviewDate)}
+              </p>
+              <p className="text-sm text-gray-500">
+                상품 코드: {review.productCode}
+              </p>
+            </div>
+            <div className="mb-2">
+              {[...Array(5)].map((_, i) => (
+                <span
+                  key={i}
+                  className={i < review.rating ? "text-black" : "text-gray-200"}
+                >
+                  ★
+                </span>
+              ))}
+            </div>
+            <p className="text-gray-800 mt-2 border-t border-gray-100 pt-2">
+              {review.reviewText}
             </p>
-            <p className="text-yellow-500">{"⭐".repeat(review.rating)}</p>
-            <p className="text-gray-800">{review.reviewText}</p>
           </div>
         ))}
+
+        {reviews.length === 0 && (
+          <div className="text-center py-10 text-gray-500">
+            작성한 리뷰가 없습니다.
+          </div>
+        )}
       </div>
 
       <button
-        className="mt-4 bg-gray-500 text-white px-4 py-2 rounded-md"
+        className="mt-6 bg-black text-white px-6 py-3 rounded-sm hover:bg-gray-800 transition-colors font-medium"
         onClick={() => navigate("/mypage")}
       >
         마이페이지로 돌아가기

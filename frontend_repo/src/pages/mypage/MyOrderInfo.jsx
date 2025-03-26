@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { fetchUserOrderInfo, fetchProductDetail } from "../../api/httpMemberService";
+import {
+  fetchUserOrderInfo,
+  fetchProductDetail,
+} from "../../api/httpMemberService";
 import { getAuthToken } from "../../context/tokenProviderService";
 import { useNavigate } from "react-router-dom";
 
@@ -7,7 +10,7 @@ const MyOrderInfo = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [productDetails, setProductDetails] = useState({}); //  상품 상세 정보를 저장하는 상태
+  const [productDetails, setProductDetails] = useState({}); // 상품 상세 정보를 저장하는 상태
 
   const { token } = getAuthToken();
   const navigate = useNavigate();
@@ -33,7 +36,7 @@ const MyOrderInfo = () => {
     loadOrders();
   }, [token]);
 
-  //  주문된 상품들의 상세 정보를 가져오는 함수
+  // 주문된 상품들의 상세 정보를 가져오는 함수
   useEffect(() => {
     const loadProductDetails = async () => {
       let details = {};
@@ -43,7 +46,7 @@ const MyOrderInfo = () => {
             const productData = await fetchProductDetail(order.productCode);
             details[order.productCode] = productData;
           } catch (error) {
-            console.error(` 상품 정보 로드 실패: ${order.productCode}`, error);
+            console.error(`상품 정보 로드 실패: ${order.productCode}`, error);
           }
         }
       }
@@ -55,44 +58,101 @@ const MyOrderInfo = () => {
     }
   }, [orders]);
 
-  if (loading) return <p className="text-center mt-10 text-lg">주문 내역 불러오는 중...</p>;
-  if (error) return <p className="text-center text-red-500">{error}</p>;
+  if (loading)
+    return (
+      <p className="text-center mt-10 text-lg font-medium text-gray-700">
+        주문 내역 불러오는 중...
+      </p>
+    );
+  if (error)
+    return <p className="text-center text-red-500 font-medium">{error}</p>;
 
   return (
-    <div className="w-full max-w-md mt-6 border-t pt-4">
-      <h3 className="text-lg font-bold mb-2">주문 내역 ({orders.length})</h3>
+    <div className="w-full max-w-md mt-6 border-t border-gray-100 pt-6 bg-white">
+      <h3 className="text-xl font-bold mb-6 text-black">
+        주문 내역 <span className="text-gray-500">({orders.length})</span>
+      </h3>
 
       {/* 주문 내역 리스트 */}
-      <div className="mt-4 space-y-4">
+      <div className="mt-4 space-y-5">
         {orders.map((order) => {
           const product = productDetails[order.productCode];
           return (
-            <div key={order.orderId} className="border p-3 rounded-md bg-yellow-100">
-              {/*  상품 이미지 및 상세 페이지 이동 */}
-              {product ? (
-                <div
-                  className="cursor-pointer flex flex-col items-center"
-                  onClick={() => navigate(`/product/${order.productCode}`)} //  상품 상세 페이지 이동
-                >
-                  <img src={product.image} alt={product.productName} className="w-32 h-32 object-cover rounded-md" />
-                  <p className="text-lg font-bold mt-2">{product.productName}</p>
-                </div>
-              ) : (
-                <p className="text-sm text-gray-500">상품 정보를 불러오는 중...</p>
-              )}
+            <div
+              key={order.orderId}
+              className="border border-gray-200 p-4 rounded-sm bg-white shadow-sm hover:border-gray-300 transition-all"
+            >
+              {/* 상품 정보 섹션 */}
+              <div className="flex items-start border-b border-gray-100 pb-3 mb-3">
+                {/* 상품 이미지 */}
+                {product ? (
+                  <div
+                    className="cursor-pointer mr-4"
+                    onClick={() => navigate(`/product/${order.productCode}`)}
+                  >
+                    <img
+                      src={product.image}
+                      alt={product.productName}
+                      className="w-24 h-24 object-cover rounded-sm border border-gray-200"
+                    />
+                  </div>
+                ) : (
+                  <div className="w-24 h-24 bg-gray-100 rounded-sm flex items-center justify-center mr-4">
+                    <p className="text-xs text-gray-500">이미지 로딩 중...</p>
+                  </div>
+                )}
 
-              {/*  주문 정보 */}
-              <p className="text-sm text-gray-700">주문 ID: {order.orderId}</p>
-              <p className="text-sm text-gray-700">상품 코드: {order.productCode}</p>
-              <p className="text-sm text-gray-700">수량: {order.quantity}</p>
-              <p className="text-sm text-gray-700">받는 사람: {order.receiverName}</p>
-              <p className="text-sm text-gray-700">
-                배송지: {order.addr1} {order.addr2} ({order.post})
-              </p>
-              <p className="text-sm text-gray-700">연락처: {order.phoneNumber}</p>
+                {/* 상품 정보 */}
+                <div className="flex-1">
+                  {product ? (
+                    <div
+                      className="cursor-pointer"
+                      onClick={() => navigate(`/product/${order.productCode}`)}
+                    >
+                      <p className="text-lg font-medium text-black hover:underline">
+                        {product.productName}
+                      </p>
+                      <p className="text-sm text-gray-600 mt-1">
+                        상품 코드: {order.productCode}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        수량: {order.quantity}
+                      </p>
+                      <p className="text-sm font-medium text-black mt-1">
+                        주문 ID: {order.orderId}
+                      </p>
+                    </div>
+                  ) : (
+                    <p className="text-sm text-gray-500">
+                      상품 정보를 불러오는 중...
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* 배송 정보 섹션 */}
+              <div className="mt-2">
+                <h4 className="text-sm font-medium text-black mb-2">
+                  배송 정보
+                </h4>
+                <div className="space-y-1 text-sm text-gray-600">
+                  <p>받는 사람: {order.receiverName}</p>
+                  <p>연락처: {order.phoneNumber}</p>
+                  <p>
+                    배송지: {order.addr1} {order.addr2}{" "}
+                    <span className="text-gray-500">({order.post})</span>
+                  </p>
+                </div>
+              </div>
             </div>
           );
         })}
+
+        {orders.length === 0 && (
+          <div className="text-center py-10 text-gray-500 border border-gray-200 rounded-sm">
+            주문 내역이 없습니다.
+          </div>
+        )}
       </div>
     </div>
   );

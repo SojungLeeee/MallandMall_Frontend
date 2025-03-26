@@ -10,7 +10,7 @@ const EditProfile = () => {
   const user = useLoaderData();
   const navigate = useNavigate();
 
-  // ✅ 상태 변수 초기화 (기본값: 빈 문자열)
+  // 상태 변수 초기화 (기본값: 빈 문자열)
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -18,10 +18,10 @@ const EditProfile = () => {
   const [addr1, setAddr1] = useState("");
   const [addr2, setAddr2] = useState("");
 
-  // ✅ 회원 정보 불러와서 초기값 설정
+  // 회원 정보 불러와서 초기값 설정
   useEffect(() => {
     if (user) {
-      setUsername(user.username || ""); // ✅ username으로 변경
+      setUsername(user.username || "");
       setEmail(user.email || "");
       setPhoneNumber(user.phoneNumber || "");
       setPost(user.post || "");
@@ -44,7 +44,6 @@ const EditProfile = () => {
     try {
       const { token } = getAuthToken();
 
-      // ✅ username으로 변경
       const updatedUsername = username.trim() === "" ? user.username : username;
       const updatedEmail = email.trim() === "" ? user.email : email;
       const updatedPhone =
@@ -82,94 +81,108 @@ const EditProfile = () => {
   };
 
   return (
-    <div className="bg-[#fff6e2] p-8 rounded-xl shadow-lg w-full max-w-md mx-auto flex flex-col">
-      <h2 className="text-xl font-bold mb-4 text-center">회원정보 수정</h2>
+    <div className="bg-white p-8 rounded-sm shadow-md w-full max-w-md mx-auto flex flex-col border border-gray-100">
+      <h2 className="text-xl font-bold mb-6 text-center text-black">
+        회원정보 수정
+      </h2>
 
-      <div className="w-full flex flex-col mb-4">
-        <label className="text-sm font-bold mb-1">이름:</label>
+      <div className="w-full flex flex-col mb-5">
+        <label className="text-sm font-medium mb-1 text-gray-700 text-left">
+          이름
+        </label>
         <input
           type="text"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           placeholder="이름"
-          className="w-full p-2 border border-gray-300 rounded-md text-base bg-[#f3e5ab]"
+          className="w-full p-3 border border-gray-200 rounded-sm text-base bg-white focus:border-black focus:ring-1 focus:ring-black focus:outline-none transition-all"
         />
       </div>
 
-      <div className="w-full flex flex-col mb-4">
-        <label className="text-sm font-bold mb-1">이메일:</label>
+      <div className="w-full flex flex-col mb-5">
+        <label className="text-sm font-medium mb-1 text-gray-700 text-left">
+          이메일
+        </label>
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="이메일"
-          className="w-full p-2 border border-gray-300 rounded-md text-base bg-[#f3e5ab]"
+          className="w-full p-3 border border-gray-200 rounded-sm text-base bg-white focus:border-black focus:ring-1 focus:ring-black focus:outline-none transition-all"
         />
       </div>
 
-      <div className="w-full flex flex-col mb-4">
-        <label className="text-sm font-bold mb-1">휴대폰 번호:</label>
+      <div className="w-full flex flex-col mb-5">
+        <label className="text-sm font-medium mb-1 text-gray-700 text-left">
+          휴대폰 번호
+        </label>
         <input
           type="text"
           value={phoneNumber}
           onChange={(e) => setPhoneNumber(e.target.value)}
           placeholder="휴대폰 번호"
-          className="w-full p-2 border border-gray-300 rounded-md text-base bg-[#f3e5ab]"
+          className="w-full p-3 border border-gray-200 rounded-md text-base bg-white focus:border-black focus:ring-1 focus:ring-black focus:outline-none transition-all"
         />
       </div>
 
-      <div className="w-full flex flex-col mb-4">
-        <label className="text-sm font-bold mb-1">우편번호:</label>
+      <div className="w-full flex flex-col mb-5">
+        <label className="text-sm font-medium mb-1 text-gray-700 text-left">
+          우편번호
+        </label>
         <div className="flex gap-2 items-center w-full">
           <input
             type="text"
             value={post}
             placeholder="우편번호"
             readOnly
-            className="flex-grow p-2 border border-gray-300 rounded-md text-base bg-[#f3e5ab]"
+            className="flex-grow p-3 border border-gray-200 rounded-sm text-base bg-gray-50 text-gray-500"
           />
           <button
             type="button"
             onClick={handleAddressSearch}
-            className="flex-shrink-0 py-2 px-3 text-sm font-bold bg-[#fdd835] border-none rounded-md whitespace-nowrap hover:bg-[#fbc02d]"
+            className="flex-shrink-0 py-3 px-4 text-sm font-medium bg-black text-white border-none rounded-sm whitespace-nowrap hover:bg-gray-800 transition-colors"
           >
             주소 검색
           </button>
         </div>
       </div>
 
-      <div className="w-full flex flex-col mb-4">
-        <label className="text-sm font-bold mb-1">주소:</label>
+      <div className="w-full flex flex-col mb-5">
+        <label className="text-sm font-medium mb-1 text-gray-700 text-left">
+          주소
+        </label>
         <input
           type="text"
           value={addr1}
           placeholder="주소"
           readOnly
-          className="w-full p-2 border border-gray-300 rounded-md text-base bg-[#f3e5ab]"
+          className="w-full p-3 border border-gray-200 rounded-sm text-base bg-gray-50 text-gray-500"
         />
       </div>
 
-      <div className="w-full flex flex-col mb-4">
-        <label className="text-sm font-bold mb-1">상세 주소:</label>
+      <div className="w-full flex flex-col mb-6">
+        <label className="text-sm font-medium mb-1 text-gray-700 text-left">
+          상세 주소
+        </label>
         <input
           type="text"
           value={addr2}
           onChange={(e) => setAddr2(e.target.value)}
           placeholder="상세 주소"
-          className="w-full p-2 border border-gray-300 rounded-md text-base bg-[#f3e5ab]"
+          className="w-full p-3 border border-gray-200 rounded-md text-base bg-white focus:border-black focus:ring-1 focus:ring-black focus:outline-none transition-all"
         />
       </div>
 
-      <div className="flex justify-between gap-2 w-full mt-2">
+      <div className="flex justify-between gap-3 w-full mt-2">
         <button
           onClick={handleUpdate}
-          className="py-2 px-4 bg-green-500 text-white font-bold rounded-md hover:bg-green-600"
+          className="py-3 px-6 bg-black text-white font-medium rounded-sm hover:bg-gray-800 transition-colors flex-1"
         >
           수정 완료
         </button>
         <button
           onClick={() => navigate("/mypage")}
-          className="py-2 px-4 bg-red-500 text-white font-bold rounded-md hover:bg-red-600"
+          className="py-3 px-6 bg-white text-black font-medium rounded-sm border border-gray-300 hover:bg-gray-100 transition-colors flex-1"
         >
           취소
         </button>

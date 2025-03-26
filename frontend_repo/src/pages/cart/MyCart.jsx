@@ -8,7 +8,9 @@ import {
 
 const MyCart = () => {
   const [items, setItems] = useState([]);
-  const [isUpdating, setIsUpdating] = useState(false); // 중복 요청 방지
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [selectedItems, setSelectedItems] = useState({});
+  const [isAllSelected, setIsAllSelected] = useState(false);
   const navigate = useNavigate();
   const token = localStorage.getItem("jwtAuthToken");
 
@@ -22,6 +24,14 @@ const MyCart = () => {
       .then((data) => {
         if (!Array.isArray(data)) return;
         setItems(data);
+
+        // Initialize selected items
+        const initialSelectedItems = data.reduce((acc, item) => {
+          acc[item.productCode] = true;
+          return acc;
+        }, {});
+        setSelectedItems(initialSelectedItems);
+        setIsAllSelected(true);
       })
       .catch(() => {});
   }, [token, navigate]);
@@ -33,15 +43,24 @@ const MyCart = () => {
       setItems((prevItems) =>
         prevItems.filter((item) => item.productCode !== productCode)
       );
+
+      // Remove from selected items
+      const newSelectedItems = { ...selectedItems };
+      delete newSelectedItems[productCode];
+      setSelectedItems(newSelectedItems);
+
+      // Check if all items are selected
+      setIsAllSelected(
+        Object.keys(newSelectedItems).length === items.length - 1
+      );
     } catch (error) {}
   };
 
   const handleQuantityChange = async (productCode, newQuantity) => {
     if (!token || isNaN(newQuantity) || newQuantity < 1 || isUpdating) return;
 
-    setIsUpdating(true); // 중복 요청 방지
+    setIsUpdating(true);
 
-    // UI를 먼저 업데이트 (Optimistic UI)
     setItems((prevItems) =>
       prevItems.map((item) =>
         item.productCode === productCode
@@ -58,7 +77,6 @@ const MyCart = () => {
       );
       if (!updatedItem || typeof updatedItem.quantity !== "number") return;
 
-      // 서버 응답 반영 (최종 확정)
       setItems((prevItems) =>
         prevItems.map((item) =>
           item.productCode === productCode
@@ -68,141 +86,198 @@ const MyCart = () => {
       );
     } catch (error) {
     } finally {
-      setIsUpdating(false); // 업데이트 완료 후 해제
+      setIsUpdating(false);
     }
+  };
+
+  const handleItemSelect = (productCode) => {
+    const newSelectedItems = {
+      ...selectedItems,
+      [productCode]: !selectedItems[productCode],
+    };
+    setSelectedItems(newSelectedItems);
+
+    // Check if all items are selected
+    setIsAllSelected(
+      Object.keys(newSelectedItems).length === items.length &&
+        Object.values(newSelectedItems).every((value) => value)
+    );
+  };
+
+  const handleSelectAll = () => {
+    const newIsAllSelected = !isAllSelected;
+    setIsAllSelected(newIsAllSelected);
+
+    const newSelectedItems = items.reduce((acc, item) => {
+      acc[item.productCode] = newIsAllSelected;
+      return acc;
+    }, {});
+    setSelectedItems(newSelectedItems);
   };
 
   const handleCheckout = () => {
-    // 구매하기 버튼 클릭 시 장바구니 내용 처리
-    if (items.length === 0) {
-      alert("장바구니에 상품이 없습니다.");
+    // Get selected items
+    const selectedCartItems = items.filter(
+      (item) => selectedItems[item.productCode]
+    );
+
+    if (selectedCartItems.length === 0) {
+      alert("선택된 상품이 없습니다.");
       return;
     }
 
-    // 실제 구매 로직을 추가할 수 있음
-    navigate("/order"); // 주문 페이지로 이동
+    navigate("/order", {
+      state: { selectedItems: selectedCartItems },
+    });
   };
 
+  // 총 금액 계산 (선택된 상품만)
+  const totalPrice = items.reduce(
+    (total, item) =>
+      selectedItems[item.productCode]
+        ? total + item.price * item.quantity
+        : total,
+    0
+  );
+
   return (
-    <div>
-      <h1>장바구니</h1>
+    <div className="max-w-4xl mx-auto px-4 py-8 bg-white">
+      <h1 className="text-xl font-bold text-black mb-4 text-center">
+        장바구니
+      </h1>
+
+      <div className="flex items-center mb-4">
+        <div className="flex items-center">
+          <input
+            type="checkbox"
+            id="select-all"
+            checked={isAllSelected}
+            onChange={handleSelectAll}
+            className="mr-2 w-5 h-5 text-black focus:ring-black border-gray-300 rounded"
+          />
+          <label htmlFor="select-all" className="text-sm">
+            전체 선택
+          </label>
+        </div>
+      </div>
+
       {items.length === 0 ? (
-        <p>장바구니가 비었습니다.</p>
+        <p className="text-center text-gray-500 py-12">
+          장바구니가 비었습니다.
+        </p>
       ) : (
-        items.map((item) => (
-          <div key={item.productCode} style={cartItemStyle}>
-            <div>
-              <h2>{item.productName}</h2>
-              <p>가격: {item.price.toLocaleString()}원</p>
-              <div style={quantityContainerStyle}>
+        <div className="space-y-4">
+          {items.map((item) => (
+            <div
+              key={item.productCode}
+              className="flex items-center justify-between border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow"
+            >
+              <div className="flex items-center space-x-4 w-full">
+                {/* 개별 상품 선택 체크박스 */}
+                <input
+                  type="checkbox"
+                  checked={!!selectedItems[item.productCode]}
+                  onChange={() => handleItemSelect(item.productCode)}
+                  className="mr-2 w-5 h-5 text-black focus:ring-black border-gray-300 rounded"
+                />
+
+                {item.image && (
+                  <img
+                    src={item.image}
+                    alt={item.productName}
+                    className="w-20 h-20 object-cover rounded-md"
+                  />
+                )}
+                <div className="flex-1">
+                  <h2 className="font-semibold text-black">
+                    {item.productName}
+                  </h2>
+                  <p className="text-gray-600 mb-2">
+                    {item.price.toLocaleString()}원
+                  </p>
+
+                  {/* 수량 조절 박스를 여기로 이동 */}
+                  <div className="flex items-center">
+                    <div className="flex items-center border border-gray-300 rounded-sm">
+                      <button
+                        onClick={() =>
+                          handleQuantityChange(
+                            item.productCode,
+                            item.quantity - 1
+                          )
+                        }
+                        className="px-3 py-1 border-r border-gray-300 text-gray-600 hover:bg-gray-100 disabled:opacity-50"
+                        disabled={isUpdating || item.quantity <= 1}
+                      >
+                        -
+                      </button>
+                      <span className="px-4 py-1 text-black">
+                        {item.quantity}
+                      </span>
+                      <button
+                        onClick={() =>
+                          handleQuantityChange(
+                            item.productCode,
+                            item.quantity + 1
+                          )
+                        }
+                        className="px-3 py-1 border-l border-gray-300 text-gray-600 hover:bg-gray-100 disabled:opacity-50"
+                        disabled={isUpdating}
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 삭제 버튼 */}
                 <button
-                  onClick={() =>
-                    handleQuantityChange(item.productCode, item.quantity - 1)
-                  }
-                  style={quantityButtonStyle}
-                  disabled={isUpdating} // 중복 클릭 방지
+                  onClick={() => handleRemoveItem(item.productCode)}
+                  className="text-gray-500 hover:text-black transition-colors"
                 >
-                  ➖
-                </button>
-                <span>{item.quantity}개</span>
-                <button
-                  onClick={() =>
-                    handleQuantityChange(item.productCode, item.quantity + 1)
-                  }
-                  style={quantityButtonStyle}
-                  disabled={isUpdating} // 중복 클릭 방지
-                >
-                  ➕
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
                 </button>
               </div>
-              {item.image && (
-                <img
-                  src={item.image}
-                  alt={item.productName}
-                  style={imageStyle}
-                />
-              )}
             </div>
-            <button
-              onClick={() => handleRemoveItem(item.productCode)}
-              style={deleteButtonStyle}
-            >
-              ❌
-            </button>
+          ))}
+
+          {/* 총 금액 */}
+          <div className="border-t border-gray-200 pt-4 text-right">
+            <p className="text-xl font-bold text-black">
+              총 합계: {totalPrice.toLocaleString()}원
+            </p>
           </div>
-        ))
+        </div>
       )}
 
       {/* 구매하기 버튼 */}
-      <div style={checkoutButtonContainerStyle}>
-        <button onClick={handleCheckout} style={checkoutButtonStyle}>
-          구매하기
-        </button>
-      </div>
+      {items.length > 0 && (
+        <div className="mt-8">
+          <button
+            onClick={handleCheckout}
+            className="w-full py-4 text-lg font-semibold text-white bg-black 
+                       hover:bg-gray-800 transition-colors duration-300 
+                       focus:outline-none focus:ring-2 focus:ring-black focus:ring-opacity-50"
+          >
+            구매하기
+          </button>
+        </div>
+      )}
     </div>
   );
-};
-
-// 스타일
-const cartItemStyle = {
-  border: "1px solid #ccc",
-  padding: "10px",
-  margin: "10px 0",
-  borderRadius: "8px",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-};
-
-const quantityContainerStyle = {
-  display: "flex",
-  alignItems: "center",
-  gap: "10px",
-};
-
-const quantityButtonStyle = {
-  background: "#007bff",
-  color: "white",
-  border: "none",
-  padding: "5px 10px",
-  borderRadius: "5px",
-  cursor: "pointer",
-  opacity: 1,
-  transition: "opacity 0.3s",
-};
-
-const deleteButtonStyle = {
-  background: "red",
-  color: "white",
-  border: "none",
-  padding: "8px 12px",
-  fontSize: "16px",
-  borderRadius: "5px",
-  cursor: "pointer",
-  width: "80px",
-  height: "40px",
-};
-
-const imageStyle = {
-  width: "100px",
-  marginTop: "10px",
-};
-
-const checkoutButtonContainerStyle = {
-  marginTop: "20px",
-  display: "flex",
-  justifyContent: "center",
-};
-
-const checkoutButtonStyle = {
-  background: "#28a745",
-  color: "white",
-  border: "none",
-  padding: "10px 20px",
-  fontSize: "18px",
-  borderRadius: "8px",
-  cursor: "pointer",
-  transition: "background-color 0.3s",
 };
 
 export default MyCart;

@@ -1,9 +1,28 @@
-import { Form, redirect, json, useActionData, useNavigate } from "react-router-dom";
+import {
+  Form,
+  redirect,
+  json,
+  useActionData,
+  useNavigate,
+} from "react-router-dom";
 import { fetchAuthenticate } from "../../api/httpMemberService"; // 상대 경로로 가져오기
 import { setAuthToken } from "../../auth/tokenProviderService";
 import Logo from "../../assets/images/logo/Logo.png";
 import KakaoLoginButton from "../../components/ui/button/KakaoLoginButton";
 import GoogleLoginButton from "../../components/ui/button/GoogleLoginButton";
+
+// 소셜 로그인 버튼 컨테이너 컴포넌트
+const SocialLoginButtons = () => {
+  return (
+    <div className="w-full flex flex-col items-center">
+      <p className="text-[#6c6c6c] mb-2">소셜 계정 로그인</p>
+      <div className="flex justify-center">
+        <KakaoLoginButton />
+        <GoogleLoginButton />
+      </div>
+    </div>
+  );
+};
 
 function Login() {
   // 예외처리
@@ -16,55 +35,123 @@ function Login() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center w-full   text-xl  h-full">
+    <div className="flex flex-col items-center justify-center w-full text-xl h-full">
+      {/* 자동완성 시 배경색 변경 방지를 위한 스타일 */}
+      <style>
+        {`
+          input:-webkit-autofill,
+          input:-webkit-autofill:hover,
+          input:-webkit-autofill:focus,
+          input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0 30px white inset !important;
+            -webkit-text-fill-color: black !important;
+            transition: background-color 5000s ease-in-out 0s;
+          }
+          
+          textarea:-webkit-autofill,
+          textarea:-webkit-autofill:hover,
+          textarea:-webkit-autofill:focus,
+          textarea:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0 30px white inset !important;
+            -webkit-text-fill-color: black !important;
+            transition: background-color 5000s ease-in-out 0s;
+          }
+        `}
+      </style>
+
+      {/* 로고 이미지 */}
       <img src={Logo} width="250" height="250" className="mb-5" alt="logo" />
 
       {data && <p>{data.message}</p>}
-      <Form method="post" className="w-full mb-5">
+      <Form method="post" className="w-full mb-2" autoComplete="off">
         <div className="flex flex-col items-center justify-center">
+          {/* 아이디 입력 */}
           <input
             type="text"
             name="userId"
             placeholder="아이디"
-            className="w-[70%] h-12 text-xl bg-[#eae1e1] border-[#eae1e1] rounded-2xl text-center font-bold"
+            className="w-[85%] h-12 text-base border border-gray-300 rounded-sm px-4 mb-3 
+                     focus:outline-none focus:ring-0 focus:border-gray-300"
+            style={{
+              WebkitAppearance: "none",
+              backgroundColor: "white",
+            }}
           />
-          <br />
+
+          {/* 비밀번호 입력 */}
           <input
             type="password"
             name="password"
             placeholder="비밀번호"
-            className="w-[70%] h-12 text-xl bg-[#eae1e1] border-[#eae1e1] rounded-2xl text-center font-bold"
+            className="w-[85%] h-12 text-base border border-gray-300 rounded-sm px-4 
+                     focus:outline-none focus:ring-0 focus:border-gray-300"
+            style={{
+              WebkitAppearance: "none",
+              backgroundColor: "white",
+            }}
           />
+
+          {/* 계정 찾기, 비밀번호 찾기, 회원가입 링크 */}
+          <div className="flex justify-end w-[85%] text-xs text-gray-500 gap-1 mt-2 mb-4 pr-1">
+            <a href="/findid" className="no-underline cursor-pointer">
+              계정 찾기
+            </a>
+            <span>|</span>
+            <a href="/reset-password" className="no-underline cursor-pointer">
+              비밀번호 찾기
+            </a>
+            <span>|</span>
+            <a href="/signup" className="no-underline cursor-pointer">
+              회원가입
+            </a>
+          </div>
+
+          {/* 로그인 버튼 */}
           <button
             name="login"
-            className="mt-5 w-[60%] h-12 text-xl bg-[#f9e687] border-[#f9e687] rounded-2xl font-bold"
+            className="w-[84%] h-12 text-xl bg-[#1a1a1a] text-white border-none rounded font-bold mb-2
+             shadow-md hover:bg-[#2c2c2c] hover:translate-y-[-2px] transition-all
+             focus:outline-none focus:ring-0 
+             duration-300 ease-in-out"
           >
             로그인
           </button>
         </div>
       </Form>
 
-      {/* 소셜 로그인 버튼들 */}
-      <div className="w-full flex flex-col items-center mb-4">
-        <p className="text-[#6c6c6c] mb-2">소셜 계정으로 로그인</p>
-        <GoogleLoginButton /> {/* Google 로그인 버튼 */}
-        <KakaoLoginButton />
+      {/* 구분선 */}
+      <div className="w-[84%] flex items-center justify-center mb-2">
+        <div className="h-px bg-gray-300 flex-grow"></div>
+        <span className="mx-4 text-gray-500 text-sm">또는</span>
+        <div className="h-px bg-gray-300 flex-grow"></div>
       </div>
 
       <div className="text-center">
-        <a href="/findid" className="mb-4 text-[#6c6c6c] font-bold no-underline cursor-pointer text-xl">
+        <a
+          href="/findid"
+          className="mb-4 text-[#6c6c6c] font-bold no-underline cursor-pointer text-xl"
+        >
           아이디 찾기
         </a>
         <br />
-        <a href="/reset-password" className="mb-4 text-[#6c6c6c] font-bold no-underline cursor-pointer text-xl">
+        <a
+          href="/reset-password"
+          className="mb-4 text-[#6c6c6c] font-bold no-underline cursor-pointer text-xl"
+        >
           비밀번호 재설정
         </a>
         <br />
-        <a href="/signup" className="text-[#6c6c6c] font-bold no-underline cursor-pointer text-xl">
+        <a
+          href="/signup"
+          className="text-[#6c6c6c] font-bold no-underline cursor-pointer text-xl"
+        >
           회원가입
         </a>
         <br />
       </div>
+
+      {/* 소셜 로그인 버튼들 */}
+      <SocialLoginButtons />
     </div>
   );
 }
