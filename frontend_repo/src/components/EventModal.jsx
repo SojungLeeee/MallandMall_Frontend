@@ -28,8 +28,19 @@ const Modal = ({ isOpen, onClose, event }) => {
       >
         {/* Event Display */}
         <h3 className="font-semibold text-xl mb-2">깜짝 Event</h3>
-        <p>카테고리명: {event.category}</p>
-        <p>행사명: {event.eventTitle}</p>
+        <p>카테고리 : {event.category}</p>
+        <p>{event.eventTitle} (전지점)</p>
+
+        {/* 이미지 표시 */}
+        {event.image && (
+          <div className="my-4">
+            <img
+              src={event.image}
+              alt="Event Image"
+              className="w-full h-auto rounded-lg shadow-lg"
+            />
+          </div>
+        )}
 
         {/* "오늘 하루 보지 않기" 체크박스 */}
         <div className="flex justify-between items-center">

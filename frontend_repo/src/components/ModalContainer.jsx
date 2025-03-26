@@ -46,8 +46,8 @@ const ModalContainer = ({ isOpen }) => {
 
   return (
     <div className="relative">
-      <h4 className="text-xl font-semibold mb-4 text-center">
-        [ 전국 지점 통합 이벤트 안내 ]
+      <h4 className="text-xl font-semibold mb-1 text-center">
+        [ 전국 지점 통합 이벤트 ]
       </h4>
 
       {/* Error and Loading State */}
@@ -75,12 +75,12 @@ const ModalContainer = ({ isOpen }) => {
               <img
                 src={event.image}
                 alt={event.eventTitle}
-                className="w-full h-20 object-cover rounded-lg shadow-md transform transition duration-300 group-hover:scale-105"
+                className="w-full h-40 object-cover rounded-lg shadow-md transform transition duration-300 group-hover:scale-105"
               />
 
               {/* event.category 위에 표시 */}
               <div className="absolute top-0 left-0 w-full bg-black bg-opacity-50 p-2 text-white text-sm font-semibold">
-                {event.category} {/* 여기에 event.category를 텍스트로 추가 */}
+                {event.eventTitle} {/* 여기에 event.eventTitle 텍스트로 추가 */}
               </div>
 
               <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
