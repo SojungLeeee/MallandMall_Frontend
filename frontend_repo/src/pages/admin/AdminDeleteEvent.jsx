@@ -1,8 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import {
-  fetchEventsByBranch,
-  fetchDeleteEvent,
-} from "../../api/httpAdminEvent";
+import { fetchAllEvents, fetchDeleteEvent } from "../../api/httpAdminEvent";
 import ListComponents from "../../components/ui/admin/ListComponents"; // ListComponents 컴포넌트 임포트
 
 export default function AdminDeleteEvent() {
@@ -18,7 +15,7 @@ export default function AdminDeleteEvent() {
       setIsLoading(true);
       try {
         // 'default'를 전달하면 서버에서 모든 이벤트를 반환하도록 구현
-        const eventList = await fetchEventsByBranch("default");
+        const eventList = await fetchAllEvents("default");
         console.log("받아온 이벤트 목록:", eventList); // 받아온 데이터를 콘솔에 출력
 
         if (Array.isArray(eventList)) {
@@ -70,8 +67,9 @@ export default function AdminDeleteEvent() {
       <tr key={index} className="border-b border-gray-200 hover:bg-gray-50">
         <td className="px-4 py-3">{event.eventId}</td>
         <td className="px-4 py-3">{event.category}</td>
-        <td className="px-4 py-3">{event.branchName}</td>
         <td className="px-4 py-3">{event.eventTitle}</td>
+        <td className="px-4 py-3">{event.startDate}</td>
+        <td className="px-4 py-3">{event.endDate}</td>
         <td className="px-4 py-3">
           <button
             onClick={() => handleRemoveEvent(event.eventId)}
@@ -140,11 +138,12 @@ export default function AdminDeleteEvent() {
           dataType="event" // 데이터 타입
           renderRow={renderRow} // 행 렌더링 함수
           showDeleteCheckbox={true} // 삭제 체크박스 여부
-          text1="이벤트 ID" // 헤더 텍스트
+          text1="이벤트 ID"
           text2="카테고리"
-          text3="지점"
-          text4="이벤트 제목"
-          text5="삭제"
+          text3="이벤트명"
+          text4="시작일자"
+          text5="마감일자"
+          text6="삭제"
         />
       ) : (
         <div className="p-4 text-center bg-gray-100 rounded">

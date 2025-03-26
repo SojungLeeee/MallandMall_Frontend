@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { fetchEventsByBranch, createEvent } from "../../api/httpAdminEvent";
+import { fetchAllEvents, createEvent } from "../../api/httpAdminEvent";
 import { fetchAllBranches } from "../../api/httpAdminBranch";
 import ListComponents from "../../components/ui/admin/ListComponents";
 import GenericForm from "../../components/ui/admin/AddComponents"; // 재사용 가능한 양식 컴포넌트 import
@@ -8,54 +8,30 @@ export default function AdminAddEvent() {
   const [error, setError] = useState(null);
   const [eventData, setEventData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [branches, setBranches] = useState([]);
 
   // 이벤트 추가 양식을 위한 상태 및 필드 정의
   const [eventValues, setEventValues] = useState({
     category: "",
-    branchName: "",
     eventTitle: "",
+    startDate: "",
+    endDate: "",
+    image: "",
   });
-
-  // 지점 데이터 로드
-  useEffect(() => {
-    async function loadBranches() {
-      try {
-        const branchList = await fetchAllBranches();
-        if (Array.isArray(branchList)) {
-          setBranches(branchList);
-        }
-      } catch (error) {
-        console.error("지점 목록 로드 실패:", error);
-      }
-    }
-
-    loadBranches();
-  }, []);
-
-  // 지점 선택 옵션 생성
-  const branchOptions = branches.map((branch) => ({
-    value: branch.branchName,
-    label: `${branch.branchName} (${branch.branchAddress})`,
-  }));
 
   // 이벤트 양식 필드 정의
   const eventFields = [
     { id: "category", label: "카테고리", type: "text" },
-    {
-      id: "branchName",
-      label: "지점",
-      type: "select",
-      options: branchOptions,
-    },
-    { id: "eventTitle", label: "이벤트 제목", type: "text" },
+    { id: "eventTitle", label: "이벤트명", type: "text" },
+    { id: "startDate", label: "시작일자", type: "datetime-local" },
+    { id: "endDate", label: "마감일자", type: "datetime-local" },
+    { id: "image", label: "이미지", type: "text" },
   ];
 
   // 이벤트 데이터를 가져오는 함수
   const fetchEventData = async () => {
     setIsLoading(true);
     try {
-      const eventList = await fetchEventsByBranch("default");
+      const eventList = await fetchAllEvents("default");
       console.log("받아온 이벤트 목록:", eventList);
 
       if (Array.isArray(eventList)) {
@@ -83,8 +59,10 @@ export default function AdminAddEvent() {
       // 폼 초기화
       setEventValues({
         category: "",
-        branchName: "",
         eventTitle: "",
+        startDate: "",
+        endDate: "",
+        image: "",
       });
 
       await fetchEventData(); // 이벤트 목록을 새로 불러옵니다.
@@ -112,8 +90,9 @@ export default function AdminAddEvent() {
       <tr key={index} className="border-b border-gray-200 hover:bg-gray-50">
         <td className="px-4 py-3">{event.eventId}</td>
         <td className="px-4 py-3">{event.category}</td>
-        <td className="px-4 py-3">{event.branchName}</td>
         <td className="px-4 py-3">{event.eventTitle}</td>
+        <td className="px-4 py-3">{event.startDate}</td>
+        <td className="px-4 py-3">{event.endDate}</td>
       </tr>
     );
   };
@@ -151,9 +130,10 @@ export default function AdminAddEvent() {
           showDeleteCheckbox={false}
           text1="이벤트 ID"
           text2="카테고리"
-          text3="지점"
-          text4="이벤트 제목"
-          text5=""
+          text3="이벤트명"
+          text4="시작일자"
+          text5="마감일자"
+          text6=""
         />
       ) : (
         <div className="p-4 text-center bg-gray-100 rounded">
