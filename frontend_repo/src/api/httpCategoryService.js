@@ -72,3 +72,11 @@ export async function fetchDeleteCategories(userId, category) {
     throw new Error("fetchDeleteCategories 예외발생");
   }
 }
+
+// 카테고리로 이벤트 찾기
+export async function fetchFindLikeCategories(userId, token) {
+  const response = await instance.get(`event/favorites/${userId}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data;
+}
