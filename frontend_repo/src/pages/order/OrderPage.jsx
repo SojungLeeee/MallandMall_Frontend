@@ -86,7 +86,7 @@ const OrderPage = () => {
 
   const handlePayment = (pgProvider) => {
     const { IMP } = window;
-    IMP.init("imp06302336");
+    IMP.init("imp42828803");
 
     const totalAmount = isFromCart
       ? selectedItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
@@ -184,10 +184,16 @@ const OrderPage = () => {
       )}
 
       <div className="flex gap-4 mb-4">
-        <button onClick={handleDefaultToggle} className="px-4 py-2 bg-blue-500 text-white rounded">
+        <button
+          onClick={handleDefaultToggle}
+          className="px-4 py-2 bg-blue-500 text-white rounded"
+        >
           기본 배송지 사용
         </button>
-        <button onClick={handleClear} className="px-4 py-2 bg-gray-400 text-white rounded">
+        <button
+          onClick={handleClear}
+          className="px-4 py-2 bg-gray-400 text-white rounded"
+        >
           직접 입력
         </button>
       </div>
@@ -208,7 +214,10 @@ const OrderPage = () => {
             onChange={handleChange}
             className="border p-2 rounded w-full"
           />
-          <button onClick={handleAddressSearch} className="px-4 bg-gray-200 rounded">
+          <button
+            onClick={handleAddressSearch}
+            className="px-4 bg-gray-200 rounded"
+          >
             주소검색
           </button>
         </div>
@@ -253,7 +262,10 @@ const OrderPage = () => {
               -
             </button>
             <span>{quantity}</span>
-            <button className="px-3 py-1 bg-gray-200 rounded" onClick={() => setQuantity((prev) => prev + 1)}>
+            <button
+              className="px-3 py-1 bg-gray-200 rounded"
+              onClick={() => setQuantity((prev) => prev + 1)}
+            >
               +
             </button>
           </div>
