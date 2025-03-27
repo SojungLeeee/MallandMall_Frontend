@@ -3,11 +3,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { fetchUserProfile, sendOrderConfirm } from "../../api/httpOrderService";
 
 const OrderPage = () => {
-  const { state } = useLocation(); // 상품 정보 받아오기
+  const { state } = useLocation();
   const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
   const [useDefault, setUseDefault] = useState(true);
-  const [quantity, setQuantity] = useState(1); // 수량 상태 추가
+  const [quantity, setQuantity] = useState(1);
   const [formData, setFormData] = useState({
     receiverName: "",
     post: "",
@@ -16,6 +16,9 @@ const OrderPage = () => {
     phoneNumber: "",
     memo: "",
   });
+
+  const isFromCart = Array.isArray(state?.selectedItems);
+  const selectedItems = isFromCart ? state.selectedItems : [];
 
   useEffect(() => {
     const token = localStorage.getItem("jwtAuthToken");
@@ -83,39 +86,74 @@ const OrderPage = () => {
 
   const handlePayment = (pgProvider) => {
     const { IMP } = window;
-    IMP.init("imp06302336"); // 상점 아이디
+    IMP.init("imp06302336");
+
+    const totalAmount = isFromCart
+      ? selectedItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
+      : state.price * quantity;
+
+    const productName = isFromCart
+      ? `${selectedItems[0].productName} 외 ${selectedItems.length - 1}개`
+      : state.productName;
 
     IMP.request_pay(
       {
         pg: pgProvider,
         pay_method: "card",
         merchant_uid: `mid_${new Date().getTime()}`,
-        name: state.productName,
-        amount: state.price * quantity,
+        name: productName,
+        amount: totalAmount,
         buyer_email: profile.email,
         buyer_name: formData.receiverName,
         buyer_tel: formData.phoneNumber,
         buyer_addr: formData.addr1 + " " + formData.addr2,
         buyer_postcode: formData.post,
-        m_redirect_url: "http://localhost:3000/order/complete", // PC/모바일 모두 동일하게 이동
+        m_redirect_url: "http://localhost:3000/order/complete",
       },
       (rsp) => {
         if (rsp.success) {
           const token = localStorage.getItem("jwtAuthToken");
-          const orderData = {
-            ...formData,
-            userId: profile.userId,
-            productCode: state.productCode,
-            quantity: quantity,
-            impUid: rsp.imp_uid,
-          };
 
-          sendOrderConfirm(orderData, token)
-            .then(() => {
-              // PC에서는 redirect되므로 따로 navigate 필요 없음
-              console.log("주문 전송 완료");
-            })
-            .catch(() => alert("주문 처리 중 오류 발생"));
+          // 여러 상품 주문
+          if (isFromCart) {
+            const requests = selectedItems.map((item) => {
+              return sendOrderConfirm(
+                {
+                  ...formData,
+                  userId: profile.userId,
+                  productCode: item.productCode,
+                  quantity: item.quantity,
+                  impUid: rsp.imp_uid,
+                },
+                token
+              );
+            });
+
+            Promise.all(requests)
+              .then(() => {
+                if (window.innerWidth > 768) {
+                  navigate(`/order/complete?imp_uid=${rsp.imp_uid}`);
+                }
+              })
+              .catch(() => alert("장바구니 주문 처리 중 오류 발생"));
+          } else {
+            // 단일 상품 주문
+            const orderData = {
+              ...formData,
+              userId: profile.userId,
+              productCode: state.productCode,
+              quantity: quantity,
+              impUid: rsp.imp_uid,
+            };
+
+            sendOrderConfirm(orderData, token)
+              .then(() => {
+                if (window.innerWidth > 768) {
+                  navigate(`/order/complete?imp_uid=${rsp.imp_uid}`);
+                }
+              })
+              .catch(() => alert("주문 처리 중 오류 발생"));
+          }
         } else {
           alert("결제 실패: " + rsp.error_msg);
         }
@@ -146,16 +184,10 @@ const OrderPage = () => {
       )}
 
       <div className="flex gap-4 mb-4">
-        <button
-          onClick={handleDefaultToggle}
-          className="px-4 py-2 bg-blue-500 text-white rounded"
-        >
+        <button onClick={handleDefaultToggle} className="px-4 py-2 bg-blue-500 text-white rounded">
           기본 배송지 사용
         </button>
-        <button
-          onClick={handleClear}
-          className="px-4 py-2 bg-gray-400 text-white rounded"
-        >
+        <button onClick={handleClear} className="px-4 py-2 bg-gray-400 text-white rounded">
           직접 입력
         </button>
       </div>
@@ -176,10 +208,7 @@ const OrderPage = () => {
             onChange={handleChange}
             className="border p-2 rounded w-full"
           />
-          <button
-            onClick={handleAddressSearch}
-            className="px-4 bg-gray-200 rounded"
-          >
+          <button onClick={handleAddressSearch} className="px-4 bg-gray-200 rounded">
             주소검색
           </button>
         </div>
@@ -206,31 +235,30 @@ const OrderPage = () => {
         />
         <textarea
           name="memo"
-          placeholder="배송 메모 (예: 문 앞에 두세요)"
+          placeholder="배송 메모"
           value={formData.memo}
           onChange={handleChange}
           className="border p-2 rounded"
-        ></textarea>
+        />
       </div>
 
-      <div className="my-6">
-        <label className="block mb-1 font-semibold">구매 수량</label>
-        <div className="flex items-center gap-2">
-          <button
-            className="px-3 py-1 bg-gray-200 rounded"
-            onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
-          >
-            -
-          </button>
-          <span>{quantity}</span>
-          <button
-            className="px-3 py-1 bg-gray-200 rounded"
-            onClick={() => setQuantity((prev) => prev + 1)}
-          >
-            +
-          </button>
+      {!isFromCart && (
+        <div className="my-6">
+          <label className="block mb-1 font-semibold">구매 수량</label>
+          <div className="flex items-center gap-2">
+            <button
+              className="px-3 py-1 bg-gray-200 rounded"
+              onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
+            >
+              -
+            </button>
+            <span>{quantity}</span>
+            <button className="px-3 py-1 bg-gray-200 rounded" onClick={() => setQuantity((prev) => prev + 1)}>
+              +
+            </button>
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="mt-6 grid grid-cols-2 gap-4">
         <button
