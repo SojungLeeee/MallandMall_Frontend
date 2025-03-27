@@ -64,7 +64,9 @@ import AdminAddEvent from "./pages/admin/AdminAddEvent";
 
 import EditCategory from "./pages/mypage/EditCategory";
 
+import OrderPage from "./pages/order/OrderPage";
 import Favorites from "./pages/mypage/Favorites";
+import OrderComplete from "./pages/order/OrderComplete";
 
 const router = createBrowserRouter([
   // AppTwo 기반 라우트
@@ -115,7 +117,9 @@ const router = createBrowserRouter([
 
       // 장바구니 및 주문
       { path: "/carts", element: <MyCart /> },
-      { path: "/order", element: <OrderProduct /> },
+      { path: "/order", element: <OrderPage /> },
+      { path: "/order/complete/:imp_uid", element: <OrderComplete /> },
+      { path: "/order/complete", element: <OrderComplete /> },
 
       // 카테고리 및 상품
       { path: "/categoryList", element: <CategoryList /> },

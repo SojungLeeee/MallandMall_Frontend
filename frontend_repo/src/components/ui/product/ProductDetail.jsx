@@ -108,6 +108,19 @@ const ProductDetail = () => {
     }
   };
 
+  const handleGoToOrder = () => {
+    if (!product) return;
+
+    navigate("/order", {
+      state: {
+        productCode: product.productCode,
+        quantity: 1,
+        productName: product.productName,
+        price: product.price,
+      },
+    });
+  };
+
   if (loading)
     return (
       <p className="text-center mt-10 text-lg font-medium text-gray-700">
@@ -179,7 +192,7 @@ const ProductDetail = () => {
         {/* 구매하기 버튼 */}
         <button
           className="flex-1 bg-black text-white py-3 px-4 rounded-sm hover:bg-gray-800 transition-colors font-medium focus:outline-none"
-          onClick={() => navigate("/order")}
+          onClick={handleGoToOrder}
         >
           구매하기
         </button>
