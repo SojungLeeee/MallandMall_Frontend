@@ -45,7 +45,7 @@ const Favorites = () => {
         basePath="/product"
         columns={2}
         containerStyle={{
-          backgroundColor: "#fff7f0",
+          backgroundColor: "white",
           padding: "0.5rem",
         }}
       />

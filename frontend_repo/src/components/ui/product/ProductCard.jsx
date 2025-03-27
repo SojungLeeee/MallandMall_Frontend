@@ -60,7 +60,7 @@ const ProductCard = ({
 
   return (
     <div
-      className="flex flex-col items-center bg-[#fff7f0] min-h-screen"
+      className="flex flex-col items-center bg-[#fff7f0]"
       style={containerStyle}
     >
       {/* 로딩 상태 */}
@@ -86,7 +86,10 @@ const ProductCard = ({
 
       {/* 상품이 없을 때 */}
       {!loading && !error && products.length === 0 && (
-        <p className="mt-20 text-center text-xl">상품이 없습니다.</p>
+        <p className="mt-20 text-center text-s">
+          관련 상품이 없거나, <br></br>
+          카테고리 설정이 되어있지 않습니다.
+        </p>
       )}
     </div>
   );
