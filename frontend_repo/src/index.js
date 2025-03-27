@@ -63,6 +63,7 @@ import AdminUpdateEvent from "./pages/admin/AdminUpdateEvent";
 import AdminAddEvent from "./pages/admin/AdminAddEvent";
 
 import EditCategory from "./pages/mypage/EditCategory";
+import CouponPage from "./pages/mypage/CouponPage";
 
 import OrderPage from "./pages/order/OrderPage";
 import Favorites from "./pages/mypage/Favorites";
@@ -165,6 +166,10 @@ const router = createBrowserRouter([
       {
         path: "/mypage/editcategory",
         element: <EditCategory />,
+      },
+      {
+        path: "/mypage/coupons",
+        element: <CouponPage />,
       },
       {
         path: "/auth/kakao/callback",
