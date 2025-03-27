@@ -34,7 +34,7 @@ const ProductCard = ({
         <img
           src={product.image}
           alt={product.productName}
-          className="w-full h-full object-cover p-2"
+          className="w-full h-full object-cover"
         />
       </div>
       <div className="flex flex-col justify-start gap-2 mt-3 flex-grow">

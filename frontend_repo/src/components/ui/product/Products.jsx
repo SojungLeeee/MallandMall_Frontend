@@ -43,7 +43,7 @@ const Products = () => {
           >
             <div className="bg-white border rounded-md shadow-md overflow-hidden flex flex-col items-center p-4 hover:shadow-lg transition h-full">
               {/* 이미지 컨테이너 */}
-              <div className="w-full max-h-72 border rounded-lg bg-yellow-400 flex items-center justify-center">
+              <div className="w-full max-h-72 border rounded-s bg-yellow-400 flex items-center justify-center">
                 <img
                   src={product.image}
                   alt={product.productName}
