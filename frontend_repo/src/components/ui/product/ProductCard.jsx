@@ -88,7 +88,10 @@ const ProductCard = ({
       {!loading && !error && products.length === 0 && (
         <p className="mt-20 text-center text-s">
           관련 상품이 없거나, <br></br>
-          카테고리 설정이 되어있지 않습니다.
+          카테고리 설정이 되어있지 않습니다. <br></br> <br></br> <hr></hr>
+          <br></br>
+          소셜 로그인 사용자는 <br></br>
+          마이페이지에서 카테고리 설정이 필요합니다.
         </p>
       )}
     </div>
