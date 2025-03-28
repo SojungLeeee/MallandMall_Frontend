@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { fetchSearchProducts } from "../../api/httpSearchService"; // axios 요청을 가져옵니다.
 import ProductCard from "../../components/ui/product/ProductCard"; // ProductCard 컴포넌트 import
+import NaverMap from "../../components/ui/map/NaverMap";
 
 const SearchPage = () => {
   const { productName } = useParams(); // URL에서 productName을 가져옵니다.
@@ -50,14 +51,14 @@ const SearchPage = () => {
 
   return (
     <div className="container mx-auto px-4 py-4">
-      <h1 className="text-xl font-bold text-center mb-6">
-        '<span className="text-green-500">{productName}</span>' 키워드를
+      <h1 className="text-xl font-bold text-center mb-6 text-black bg-white py-3 border-b-2  shadow-sm">
+        '<span className="text-indigo-600">{productName}</span>' 키워드를
         포함하는 상품 목록
       </h1>
 
       {/* 상품이 없을 때 화면 전체를 차지하게 표시 */}
       {products.length === 0 ? (
-        <div className="text-center text-base font-semibold h-full flex items-center justify-center">
+        <div className="text-center text-base font-semibold h-full flex items-center justify-center bg-white text-gray-800 p-8 rounded-sm border border-gray-300 shadow-sm">
           이 키워드를 포함하는 상품명이 없습니다.
         </div>
       ) : (

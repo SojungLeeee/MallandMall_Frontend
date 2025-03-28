@@ -18,6 +18,20 @@ code {
     monospace;
 }
 
+@layer components {
+  .marker-container {
+    @apply relative w-[60px] h-[60px] text-center;
+  }
+
+  .marker-background {
+    @apply absolute w-[60px] h-[40px] rounded-lg flex justify-center items-center text-white font-bold text-sm;
+  }
+
+  .marker-pointer {
+    @apply absolute bottom-[18px] left-[24px] w-[12px] h-[12px] bg-black rounded-full;
+  }
+}
+
 @media (min-width: 390px) and (max-height: 840px) {
   body {
     width: 390px;
