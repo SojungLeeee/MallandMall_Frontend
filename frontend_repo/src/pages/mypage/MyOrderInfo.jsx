@@ -131,17 +131,18 @@ const MyOrderInfo = () => {
               </div>
 
               {/* 배송 정보 섹션 */}
-              <div className="mt-2">
+              <div className="mt-2 ">
                 <h4 className="text-sm font-medium text-black mb-2">
                   배송 정보
                 </h4>
-                <div className="space-y-1 text-sm text-gray-600">
+                <div className="space-y-1 text-sm text-gray-600 text-left pl-5 pr-5">
                   <p>받는 사람: {order.receiverName}</p>
                   <p>연락처: {order.phoneNumber}</p>
                   <p>
                     배송지: {order.addr1} {order.addr2}{" "}
                     <span className="text-gray-500">({order.post})</span>
                   </p>
+                  <p>주문일자 : {order.orderDate}</p>
                 </div>
               </div>
             </div>

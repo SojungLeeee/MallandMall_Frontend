@@ -58,7 +58,7 @@ const ReviewList = ({ productCode }) => {
         <span
           key={star}
           className={`cursor-pointer text-xl ${
-            star <= selectedRating ? "text-black" : "text-gray-200"
+            star <= selectedRating ? "text-yellow-500" : "text-gray-200"
           }`}
           onClick={() => setRatingFunction && setRatingFunction(star)}
         >
@@ -132,7 +132,7 @@ const ReviewList = ({ productCode }) => {
       <ReviewForm productCode={productCode} setReviews={setReviews} />
 
       {/* 리뷰 리스트 */}
-      <div className="mt-6 space-y-5">
+      <div className="mt-6 space-y-5 text-left">
         {reviews.length > 0 ? (
           reviews.map((review) => (
             <div

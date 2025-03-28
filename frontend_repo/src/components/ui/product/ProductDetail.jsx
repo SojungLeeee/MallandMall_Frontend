@@ -152,7 +152,7 @@ const ProductDetail = () => {
       </div>
 
       {/* 지점별 재고량과 전체 재고량을 양옆에 배치 */}
-      <div className="w-full max-w-md mt-6 flex justify-between items-center">
+      <div className="w-full max-w-md mt-1 flex justify-between items-center">
         {/* 지점별 재고량 */}
         <div className="flex-1">
           <label htmlFor="branchSelect" className="font-semibold">
@@ -173,22 +173,24 @@ const ProductDetail = () => {
               </option>
             ))}
           </select>
-          {/* 지점별 재고량 표시 */}
-          {selectedBranch && (
-            <div className="w-full max-w-md mt-2 flex justify-end items-center">
-              <p className="text-gray-700">
-                해당 지점 재고량: {branchInventoryQuantity}개
-              </p>
-            </div>
-          )}
         </div>
       </div>
 
-      {/* 전체 재고량 표시 */}
-      <div className="w-full max-w-md mt-2 flex justify-end items-center">
-        <p className="text-gray-700">전국 총 재고량: {inventoryQuantity}개</p>
-      </div>
+      <div className="w-full max-w-md mt-2 flex flex-col items-start text-right">
+        {/* 해당 지점 재고량 표시 */}
+        {selectedBranch && (
+          <div className="w-full max-w-md mt-2">
+            <p className="text-gray-700">
+              해당 지점 재고량: {branchInventoryQuantity}개
+            </p>
+          </div>
+        )}
 
+        {/* 전국 총 재고량 표시 */}
+        <div className="w-full max-w-md mt-2">
+          <p className="text-gray-700">전국 총 재고량: {inventoryQuantity}개</p>
+        </div>
+      </div>
       <div className="w-full max-w-md mt-6 flex gap-4">
         {/* 구매하기 버튼 */}
         <button

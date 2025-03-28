@@ -17,7 +17,7 @@ const ReviewForm = ({ productCode, setReviews }) => {
         <span
           key={star}
           className={`cursor-pointer text-xl ${
-            star <= selectedRating ? "text-black" : "text-gray-200"
+            star <= selectedRating ? "text-yellow-500" : "text-gray-200"
           }`}
           onClick={() => setRatingFunction(star)}
         >
