@@ -10,8 +10,8 @@ function MyCoupon({ coupon }) {
   const { couponName, minPrice, expirationDate, benefits, couponType } = coupon;
 
   return (
-    <div className="coupon-card p-4 border rounded-lg shadow-md  mx-full bg-white m-1">
-      <h3 className="text-lg font-semibold text-center mb-2">{couponName}</h3>
+    <div className="coupon-card p-4 border rounded-lg shadow-md  mx-full bg-white m-2">
+      <h3 className="text-lg font-semibold text-center mb-1">{couponName}</h3>
       <div className="coupon-details">
         {/* 최소 주문 금액 */}
         <div className="flex justify-end">
