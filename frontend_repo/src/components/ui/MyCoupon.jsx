@@ -11,10 +11,11 @@ function MyCoupon({ coupon }) {
 
   return (
     <div className="coupon-card p-4 border rounded-lg shadow-md  mx-full bg-white m-2">
-      <h3 className="text-lg font-semibold text-center mb-1">{couponName}</h3>
+      <h3 className="text-lg font-semibold text-center mb-2">{couponName}</h3>
+      <hr></hr>
       <div className="coupon-details">
         {/* 최소 주문 금액 */}
-        <div className="flex justify-end">
+        <div className="flex justify-end mt-2">
           <span className="text-gray-600">
             {" "}
             {minPrice} 원 이상 구매 시 사용 가능

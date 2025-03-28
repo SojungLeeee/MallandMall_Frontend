@@ -260,6 +260,8 @@ const OrderPage = () => {
           className="border p-2 rounded"
         />
       </div>
+      <br></br>
+      <hr></hr>
 
       {/* 상품 이미지와 이름 표시 */}
       <div className="my-6">
@@ -297,6 +299,16 @@ const OrderPage = () => {
             </div>
           </div>
         )}
+
+        {/* 쿠폰 사용 버튼 추가 */}
+        <div className="w-full">
+          <button
+            onClick={() => navigate("/mypage/usecoupon")}
+            className="w-full px-4 py-2 rounded-md bg-gray-500 text-white"
+          >
+            쿠폰 사용
+          </button>
+        </div>
       </div>
 
       <hr></hr>

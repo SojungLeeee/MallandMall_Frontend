@@ -109,7 +109,7 @@ const MyOrderInfo = () => {
                       className="cursor-pointer"
                       onClick={() => navigate(`/product/${order.productCode}`)}
                     >
-                      <p className="text-lg font-medium text-black hover:underline">
+                      <p className="text-lg text-black hover:underline font-bold">
                         {product.productName}
                       </p>
                       <p className="text-sm text-gray-600 mt-1">
@@ -118,7 +118,7 @@ const MyOrderInfo = () => {
                       <p className="text-sm text-gray-600">
                         수량: {order.quantity}
                       </p>
-                      <p className="text-sm font-medium text-black mt-1">
+                      <p className="text-sm text-black">
                         주문 ID: {order.orderId}
                       </p>
                     </div>

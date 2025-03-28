@@ -25,11 +25,9 @@ import SelectCategory from "./pages/login/SelectCategory";
 import CategoryList from "./pages/category/CategoryList";
 import CategoryPage from "./pages/category/CategoryPage";
 import SearchPage from "./pages/Search/SearchPage";
-import OrderProduct from "./pages/product/OrderProduct";
 import { tokenProviderLoader } from "./auth/tokenProviderService";
 import MyOrderInfo from "./pages/mypage/MyOrderInfo";
-
-import Products from "./components/ui/product/Products";
+import CouponUsePage from "./pages/order/CouponUsePage";
 
 import AllProducts from "./pages/product/AllProducts";
 
@@ -80,6 +78,11 @@ const router = createBrowserRouter([
     path: "/categoryList",
     element: <AppTwo />,
     children: [{ path: "/categoryList", element: <CategoryList /> }],
+  },
+  {
+    path: "/mypage/usecoupon",
+    element: <AppTwo />,
+    children: [{ path: "/mypage/usecoupon", element: <CouponUsePage /> }],
   },
 
   // 메인 App 기반 라우트
@@ -171,6 +174,7 @@ const router = createBrowserRouter([
         path: "/mypage/coupons",
         element: <CouponPage />,
       },
+
       {
         path: "/auth/kakao/callback",
         element: <KakaoCallback />,
