@@ -7,17 +7,33 @@ const instance = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
-// 특정 사용자가 쓴 질문 목록 가져오기
 export async function getUserQuestions(userId, token) {
   try {
     const response = await instance.get(`/questions/${userId}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
+    console.log("Response from getUserQuestions: ", response.data); // 서버 응답 확인
     return response.data;
+  } catch (error) {
+    console.error(
+      "❌ 문의 목록 불러오기 실패:",
+      error.response ? error.response.data : error
+    );
+    throw error;
+  }
+}
+
+// 질문 삭제하기 함수
+export async function deleteQuestion(questionId, token) {
+  try {
+    const response = await instance.delete(`/questions/delete/${questionId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data; // 성공적으로 삭제된 경우 서버의 응답 반환
   } catch (error) {
     console.log("토큰 값:", token);
     console.error(
-      "❌ 문의 목록 불러오기 실패:",
+      "❌ 질문 삭제 실패:",
       error.response ? error.response.data : error
     );
     throw error;
