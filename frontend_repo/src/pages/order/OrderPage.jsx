@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { fetchUserProfile, sendOrderConfirm } from "../../api/httpOrderService";
 
 const OrderPage = () => {
-  const { state } = useLocation();
+  const { state } = useLocation(); // state로 전달된 정보 받기
   const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
   const [useDefault, setUseDefault] = useState(true);
@@ -17,8 +17,14 @@ const OrderPage = () => {
     memo: "",
   });
 
-  const isFromCart = Array.isArray(state?.selectedItems);
+  // 상품상세페이지에서 넘어오는지, 장바구니에서 넘어오는지 확인
+  const isFromCart = Array.isArray(state?.selectedItems); // 장바구니에서 넘어오는 경우
   const selectedItems = isFromCart ? state.selectedItems : [];
+
+  // 총 결제 금액 계산
+  const totalAmount = isFromCart
+    ? selectedItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
+    : state.price * quantity; // 상품상세페이지에서 넘어오는 경우 단일 상품 결제
 
   useEffect(() => {
     const token = localStorage.getItem("jwtAuthToken");
@@ -88,10 +94,6 @@ const OrderPage = () => {
     const { IMP } = window;
     IMP.init("imp42828803");
 
-    const totalAmount = isFromCart
-      ? selectedItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
-      : state.price * quantity;
-
     const productName = isFromCart
       ? `${selectedItems[0].productName} 외 ${selectedItems.length - 1}개`
       : state.productName;
@@ -102,7 +104,7 @@ const OrderPage = () => {
         pay_method: "card",
         merchant_uid: `mid_${new Date().getTime()}`,
         name: productName,
-        amount: totalAmount,
+        amount: totalAmount, // 총 결제 금액
         buyer_email: profile.email,
         buyer_name: formData.receiverName,
         buyer_tel: formData.phoneNumber,
@@ -114,22 +116,19 @@ const OrderPage = () => {
         if (rsp.success) {
           const token = localStorage.getItem("jwtAuthToken");
 
-          // 여러 상품 주문
+          // 장바구니 다수 상품 결제
           if (isFromCart) {
-            const requests = selectedItems.map((item) => {
-              return sendOrderConfirm(
-                {
-                  ...formData,
-                  userId: profile.userId,
-                  productCode: item.productCode,
-                  quantity: item.quantity,
-                  impUid: rsp.imp_uid,
-                },
-                token
-              );
-            });
+            const multiProductData = {
+              ...formData,
+              userId: profile.userId,
+              impUid: rsp.imp_uid,
+              orders: selectedItems.map((item) => ({
+                productCode: item.productCode,
+                quantity: item.quantity,
+              })),
+            };
 
-            Promise.all(requests)
+            sendOrderConfirm(multiProductData, token)
               .then(() => {
                 if (window.innerWidth > 768) {
                   navigate(`/order/complete?imp_uid=${rsp.imp_uid}`);
@@ -137,8 +136,8 @@ const OrderPage = () => {
               })
               .catch(() => alert("장바구니 주문 처리 중 오류 발생"));
           } else {
-            // 단일 상품 주문
-            const orderData = {
+            // 단일 상품 결제
+            const singleProductData = {
               ...formData,
               userId: profile.userId,
               productCode: state.productCode,
@@ -146,7 +145,7 @@ const OrderPage = () => {
               impUid: rsp.imp_uid,
             };
 
-            sendOrderConfirm(orderData, token)
+            sendOrderConfirm(singleProductData, token)
               .then(() => {
                 if (window.innerWidth > 768) {
                   navigate(`/order/complete?imp_uid=${rsp.imp_uid}`);
@@ -251,26 +250,39 @@ const OrderPage = () => {
         />
       </div>
 
-      {!isFromCart && (
-        <div className="my-6">
-          <label className="block mb-1 font-semibold">구매 수량</label>
-          <div className="flex items-center gap-2">
-            <button
-              className="px-3 py-1 bg-gray-200 rounded"
-              onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
+      {/* 상품 이미지와 이름 표시 */}
+      <div className="my-6">
+        {isFromCart ? (
+          selectedItems.map((item) => (
+            <div
+              key={item.productCode}
+              className="flex items-center justify-between mb-4"
             >
-              -
-            </button>
-            <span>{quantity}</span>
-            <button
-              className="px-3 py-1 bg-gray-200 rounded"
-              onClick={() => setQuantity((prev) => prev + 1)}
-            >
-              +
-            </button>
+              <img
+                src={item.image}
+                alt={item.productName}
+                className="w-20 h-20 object-cover rounded-md mr-4"
+              />
+              <div className="flex-1">
+                <h3>{item.productName}</h3>
+                <p>{item.price.toLocaleString()}원</p>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="flex items-center justify-between mb-4">
+            <img
+              src={state.image}
+              alt={state.productName}
+              className="w-20 h-20 object-cover rounded-md mr-4"
+            />
+            <div className="flex-1">
+              <h3>{state.productName}</h3>
+              <p>{state.price.toLocaleString()}원</p>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       <div className="mt-6 grid grid-cols-2 gap-4">
         <button
