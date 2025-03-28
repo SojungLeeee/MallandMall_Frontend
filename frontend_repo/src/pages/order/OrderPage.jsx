@@ -91,6 +91,17 @@ const OrderPage = () => {
   };
 
   const handlePayment = (pgProvider) => {
+    // 필수 입력값 체크
+    if (
+      !formData.receiverName ||
+      !formData.post ||
+      !formData.addr1 ||
+      !formData.addr2 ||
+      !formData.phoneNumber
+    ) {
+      alert("모든 기본 정보를 입력해주세요.");
+      return; // 빈 값이 있으면 결제 처리 중단
+    }
     const { IMP } = window;
     IMP.init("imp42828803");
 
@@ -161,20 +172,20 @@ const OrderPage = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto mt-10 p-6 bg-white shadow rounded">
+    <div className="max-w-2xl mx-auto p-6 bg-white shadow rounded">
       <h2 className="text-xl font-bold mb-4">기본 배송지</h2>
       {profile ? (
-        <div className="bg-gray-100 p-4 rounded mb-6">
-          <p>
+        <div className="bg-gray-100 p-4 rounded mb-6 text-left">
+          <p className="mb-1">
             <strong>이름:</strong> {profile.userName}
           </p>
-          <p>
+          <p className="mb-1">
             <strong>주소:</strong> {profile.addr1} {profile.addr2}
           </p>
-          <p>
+          <p className="mb-1">
             <strong>우편번호:</strong> {profile.post}
           </p>
-          <p>
+          <p className="mb-1">
             <strong>연락처:</strong> {profile.phoneNumber}
           </p>
         </div>
@@ -265,7 +276,9 @@ const OrderPage = () => {
               />
               <div className="flex-1">
                 <h3>{item.productName}</h3>
-                <p>{item.price.toLocaleString()}원</p>
+                <p>
+                  {item.price.toLocaleString()}원 / {item.quantity}개
+                </p>
               </div>
             </div>
           ))
@@ -278,10 +291,22 @@ const OrderPage = () => {
             />
             <div className="flex-1">
               <h3>{state.productName}</h3>
-              <p>{state.price.toLocaleString()}원</p>
+              <p>
+                {state.price.toLocaleString()}원 * {quantity}개
+              </p>
             </div>
           </div>
         )}
+      </div>
+
+      <hr></hr>
+
+      {/* 전체 결제 금액 */}
+      <div className="my-6 text-right">
+        <h3 className="text-lg font-bold">총 결제 금액</h3>
+        <p className="text-xl font-semibold text-red-500">
+          {totalAmount.toLocaleString()} 원
+        </p>
       </div>
 
       <div className="mt-6 grid grid-cols-2 gap-4">
