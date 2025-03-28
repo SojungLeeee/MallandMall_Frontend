@@ -5,17 +5,10 @@ import ConversationView from "./ConversationView";
 import InquiryWriteForm from "./InquiryWriteForm";
 import InquiryEditForm from "./InquiryEditForm";
 
-// Axios 인스턴스 설정
-const instance = axios.create({
-  baseURL: "http://localhost:8090/emart",
-  timeout: 10000,
-  headers: { "Content-Type": "application/json" },
-});
-
 // 질문 목록 가져오기 함수
 export async function getUserQuestions(userId, token) {
   try {
-    const response = await instance.get(`/questions/${userId}`, {
+    const response = await axios.get(`/questions/${userId}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     return response.data;
@@ -32,7 +25,7 @@ export async function getUserQuestions(userId, token) {
 // 질문 삭제하기 함수
 export async function deleteQuestion(questionId, token) {
   try {
-    const response = await instance.delete(`/questions/delete/${questionId}`, {
+    const response = await axios.delete(`/questions/delete/${questionId}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     return response.data; // 성공적으로 삭제된 경우 서버의 응답 반환
@@ -61,13 +54,14 @@ const CustomerServiceScreen = () => {
       console.error("❌ JWT 토큰이 존재하지 않습니다.");
       return null;
     }
-    return "aaa"; // 실제로는 JWT를 디코딩해서 userId를 가져와야 함
+    // 실제로 JWT에서 userId를 추출해야 합니다.
+    return localStorage.getItem("userId"); // 로컬 스토리지에서 userId 가져오기
   };
 
   useEffect(() => {
     const fetchInquiries = async () => {
       const userId = getAuthenticatedUserId();
-      if (!userId) return;
+      if (!userId || !token) return;
 
       try {
         const response = await axios.get(
@@ -94,7 +88,7 @@ const CustomerServiceScreen = () => {
     };
 
     fetchInquiries();
-  }, []);
+  }, [token]);
 
   // 문의 작성 버튼 클릭 시 실행될 함수
   const onWriteClick = () => {

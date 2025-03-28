@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchAllCouponList } from "../../api/httpCouponService"; // 쿠폰 API 임포트
 import { getAuthToken } from "../../context/tokenProviderService";
-import MyCoupon from "../../components/ui/SelectCoupon"; // 쿠폰 정보 컴포넌트 임포트
+import SelectCoupon from "../../components/ui/SelectCoupon"; // 쿠폰 정보 컴포넌트 임포트
 
-function CouponUsePage({}) {
+function CouponUsePage() {
   const [coupons, setCoupons] = useState([]); // 쿠폰 목록 상태
   const [loading, setLoading] = useState(true); // 로딩 상태
   const [error, setError] = useState(null); // 에러 상태
@@ -45,12 +45,23 @@ function CouponUsePage({}) {
 
   // 쿠폰 선택 처리 함수
   const handleCouponSelect = (coupon) => {
+    if (coupon.couponName.includes("오프라인")) {
+      return; // '오프라인' 쿠폰은 클릭할 수 없으므로 아무 작업도 하지 않음
+    }
     setSelectedCoupon(coupon);
+  };
+
+  // 쿠폰 적용하기
+  const handleCouponApply = () => {
+    if (selectedCoupon) {
+      navigate("/order", {
+        state: { coupon: selectedCoupon }, // 선택된 쿠폰을 state로 전달
+      });
+    }
   };
 
   return (
     <div className="coupon-page-container pt-7 pb-4 pl-4 pr-4">
-      {/* 상단 "쿠폰 사용" 텍스트와 돌아가기 X 버튼 */}
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold">쿠폰 사용</h2>
         <button
@@ -69,39 +80,30 @@ function CouponUsePage({}) {
         합니다.
       </p>
 
-      {/* 쿠폰 목록이 없으면 "쿠폰이 없습니다" 메시지 */}
       {coupons.length === 0 ? (
         <div className="text-center">보유한 쿠폰이 없습니다.</div>
       ) : (
         <div className="coupon-list grid">
           {coupons.map((coupon) => (
-            <MyCoupon
+            <SelectCoupon
               key={coupon.couponId}
               coupon={coupon}
-              isSelected={selectedCoupon?.couponId === coupon.couponId} // 선택된 쿠폰 강조
-              onSelect={handleCouponSelect} // 쿠폰 선택 시 처리
+              isSelected={selectedCoupon?.couponId === coupon.couponId}
+              onSelect={handleCouponSelect}
+              disabled={coupon.couponName.includes("오프라인")} // '오프라인' 쿠폰 비활성화
             />
           ))}
         </div>
       )}
 
-      {/* 쿠폰 목록 아래에 "적용하기" 버튼 추가 */}
       <div className="flex justify-center mt-4">
-        <button className="bg-gray-800 text-white py-2 px-6 rounded-lg hover:bg-gray-700">
+        <button
+          onClick={handleCouponApply}
+          className="bg-gray-800 text-white py-2 px-6 rounded-lg hover:bg-gray-700"
+        >
           적용하기
         </button>
       </div>
-
-      {/* 선택된 쿠폰 표시 */}
-      {selectedCoupon && (
-        <div className="mt-4 text-center">
-          <h3 className="text-xl font-bold">선택된 쿠폰</h3>
-          <p>
-            {selectedCoupon.couponName} - {selectedCoupon.discountAmount} 원
-            할인
-          </p>
-        </div>
-      )}
     </div>
   );
 }
