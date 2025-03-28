@@ -133,7 +133,7 @@ const ProductDetail = () => {
   if (!product) return null;
 
   return (
-    <div className="flex flex-col items-center bg-white min-h-screen p-6">
+    <div className="flex flex-col items-center bg-white min-h-screen pt-2 pb-6 pl-6 pr-6">
       <div className="w-full max-w-md border border-gray-200 rounded-sm bg-white flex items-center justify-center max-h-[400px] shadow-md overflow-hidden">
         <img
           src={product.image}
