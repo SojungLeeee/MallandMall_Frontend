@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { MdAdminPanelSettings } from "react-icons/md";
 import Logo from "../../../assets/images/logo/Logo.png";
+import NaverMapButton from "../map/NaverMapButton";
 
 export default function Navbar() {
   // 기존 코드 유지
@@ -84,6 +85,8 @@ export default function Navbar() {
           <img src={Logo} alt="Emart Logo" className="h-13 w-20" />
         </Link>
         <nav className="flex items-center gap-3">
+          {/* 재고 조회 버튼 추가 */}
+          <NaverMapButton />
           {token && (
             <>
               {role === "ADMIN" && (

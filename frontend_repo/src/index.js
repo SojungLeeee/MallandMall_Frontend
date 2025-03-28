@@ -66,6 +66,7 @@ import CouponPage from "./pages/mypage/CouponPage";
 import OrderPage from "./pages/order/OrderPage";
 import Favorites from "./pages/mypage/Favorites";
 import OrderComplete from "./pages/order/OrderComplete";
+import NaverMap from "./components/ui/map/NaverMap";
 
 const router = createBrowserRouter([
   // AppTwo 기반 라우트
@@ -178,6 +179,11 @@ const router = createBrowserRouter([
       {
         path: "/auth/kakao/callback",
         element: <KakaoCallback />,
+      },
+      //NaverMap
+      {
+        path: "/map",
+        element: <NaverMap />,
       },
     ],
   },

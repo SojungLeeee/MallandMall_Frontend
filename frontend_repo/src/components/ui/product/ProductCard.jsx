@@ -59,7 +59,7 @@ const ProductCard = ({
   );
 
   return (
-    <div className="flex flex-col items-center bg-white" style={containerStyle}>
+    <div className="flex flex-col items-center " style={containerStyle}>
       {/* 로딩 상태 */}
       {loading && (
         <p className="mt-20 text-center text-xl">Loading products...</p>
