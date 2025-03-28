@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import httpAdminquestion from "../../api/httpAdminquestions"; // API 요청 함수
+import httpAdminquestion from "../../api/httpAdminquestions";
 
 const AdminQuestionManagement = () => {
   const [questions, setQuestions] = useState([]);
@@ -9,7 +9,35 @@ const AdminQuestionManagement = () => {
     const fetchQuestions = async () => {
       try {
         const response = await httpAdminquestion.get("/answers/all");
-        setQuestions(response.data);
+        const questionList = response.data;
+
+        const updatedQuestions = await Promise.all(
+          questionList.map(async (question) => {
+            try {
+              const answerResponse = await httpAdminquestion.get(
+                `/answers/question/${question.questionId}`
+              );
+              const answers = answerResponse.data;
+
+              const isAnswered = answers.some(
+                (answer) => answer.status === "ACTIVE"
+              );
+
+              return {
+                ...question,
+                answerStatus: isAnswered ? "답변 완료" : "답변 대기 중",
+              };
+            } catch (error) {
+              console.error(
+                `❌ 질문 ${question.questionId}의 답변 조회 실패:`,
+                error
+              );
+              return { ...question, answerStatus: "답변 대기 중" };
+            }
+          })
+        );
+
+        setQuestions(updatedQuestions);
       } catch (error) {
         console.error("❌ 질문 목록 불러오기 실패:", error);
       }
@@ -33,18 +61,19 @@ const AdminQuestionManagement = () => {
                   <h2 className="text-xl font-semibold">{question.title}</h2>
                   <p className="text-sm text-gray-500">{question.createDate}</p>
                 </div>
-                <div className="text-sm text-gray-500">
-                  {/* 답변 여부에 따라 상태 표시 */}
-                  {Array.isArray(question.answers) &&
-                  question.answers.length > 0
-                    ? "답변 완료"
-                    : "답변 대기 중"}
+                <div
+                  className={`text-sm font-bold ${
+                    question.answerStatus === "답변 완료"
+                      ? "text-green-600"
+                      : "text-red-500"
+                  }`}
+                >
+                  {question.answerStatus}
                 </div>
               </div>
-              {/* 🔹 URL에 questionId를 넣지 않고, state로 데이터 전달 */}
               <Link
                 to="/admin/question/detail"
-                state={{ question }} // question 객체를 전달
+                state={{ question }}
                 className="text-blue-500 ml-4 text-xs hover:underline"
               >
                 상세보기
