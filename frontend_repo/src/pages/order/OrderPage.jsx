@@ -4,10 +4,9 @@ import { fetchUserProfile, sendOrderConfirm } from "../../api/httpOrderService";
 
 const OrderPage = () => {
   const { state } = useLocation(); // state로 전달된 정보 받기
+  const [selectedCoupon, setSelectedCoupon] = useState(null); // 선택된 쿠폰 상태
   const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
-  const [useDefault, setUseDefault] = useState(true);
-  const [quantity, setQuantity] = useState(1);
   const [formData, setFormData] = useState({
     receiverName: "",
     post: "",
@@ -16,15 +15,28 @@ const OrderPage = () => {
     phoneNumber: "",
     memo: "",
   });
+  const [productInfo, setProductInfo] = useState(null); // 하나의 품목 정보
+  const [cartItems, setCartItems] = useState([]); // 여러 품목 장바구니 아이템
+  const [isFromCart, setIsFromCart] = useState(false); // 장바구니에서 왔는지 확인하는 상태
 
-  // 상품상세페이지에서 넘어오는지, 장바구니에서 넘어오는지 확인
-  const isFromCart = Array.isArray(state?.selectedItems); // 장바구니에서 넘어오는 경우
-  const selectedItems = isFromCart ? state.selectedItems : [];
+  const handleCouponClick = () => {
+    navigate("/mypage/usecoupon"); // /mypage/coupon 페이지로 이동
+  };
 
-  // 총 결제 금액 계산
-  const totalAmount = isFromCart
-    ? selectedItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
-    : state.price * quantity; // 상품상세페이지에서 넘어오는 경우 단일 상품 결제
+  useEffect(() => {
+    if (state && state.selectedCoupon) {
+      setSelectedCoupon(state.selectedCoupon); // 쿠폰 정보가 있으면 상태에 저장
+    }
+
+    // 장바구니에서 넘어온 경우 처리
+    const selectedCartItems = localStorage.getItem("selectedCartItems");
+    if (selectedCartItems) {
+      setIsFromCart(true);
+      setCartItems(JSON.parse(selectedCartItems)); // localStorage에서 불러온 장바구니 아이템 설정
+    } else {
+      setIsFromCart(false);
+    }
+  }, [state]);
 
   useEffect(() => {
     const token = localStorage.getItem("jwtAuthToken");
@@ -33,6 +45,7 @@ const OrderPage = () => {
       navigate("/login");
       return;
     }
+
     fetchUserProfile(token)
       .then((data) => {
         setProfile(data);
@@ -46,6 +59,12 @@ const OrderPage = () => {
         }));
       })
       .catch((err) => console.error(err));
+
+    // localStorage에서 상품 정보 불러오기
+    const storedProductInfo = localStorage.getItem("productInfo");
+    if (storedProductInfo) {
+      setProductInfo(JSON.parse(storedProductInfo)); // 하나의 품목 정보 불러오기
+    }
   }, [navigate]);
 
   const handleChange = (e) => {
@@ -55,7 +74,6 @@ const OrderPage = () => {
 
   const handleDefaultToggle = () => {
     if (!profile) return;
-    setUseDefault(true);
     setFormData({
       receiverName: profile.userName,
       post: profile.post,
@@ -67,7 +85,6 @@ const OrderPage = () => {
   };
 
   const handleClear = () => {
-    setUseDefault(false);
     setFormData({
       receiverName: "",
       post: "",
@@ -102,12 +119,17 @@ const OrderPage = () => {
       alert("모든 기본 정보를 입력해주세요.");
       return; // 빈 값이 있으면 결제 처리 중단
     }
+
     const { IMP } = window;
     IMP.init("imp42828803");
 
+    // 결제 요청을 위한 금액 계산
+    const totalAmount = discountedPrice;
+
+    // 결제 상품 이름 설정
     const productName = isFromCart
-      ? `${selectedItems[0].productName} 외 ${selectedItems.length - 1}개`
-      : state.productName;
+      ? `${cartItems[0].productName} 외 ${cartItems.length - 1}개`
+      : productInfo.productName;
 
     IMP.request_pay(
       {
@@ -133,17 +155,23 @@ const OrderPage = () => {
               ...formData,
               userId: profile.userId,
               impUid: rsp.imp_uid,
-              orders: selectedItems.map((item) => ({
+              orders: cartItems.map((item) => ({
                 productCode: item.productCode,
                 quantity: item.quantity,
               })),
+              discountedPrice: discountRate,
             };
 
             sendOrderConfirm(multiProductData, token)
               .then(() => {
                 if (window.innerWidth > 768) {
-                  navigate(`/order/complete?imp_uid=${rsp.imp_uid}`);
+                  navigate(`/order/complete?imp_uid=${rsp.imp_uid}`, {
+                    state: { selectedCoupon }, // 쿠폰 정보 추가
+                  });
                 }
+
+                // 결제 후 localStorage 초기화
+                localStorage.removeItem("selectedCartItems");
               })
               .catch(() => alert("장바구니 주문 처리 중 오류 발생"));
           } else {
@@ -151,16 +179,21 @@ const OrderPage = () => {
             const singleProductData = {
               ...formData,
               userId: profile.userId,
-              productCode: state.productCode,
-              quantity: quantity,
+              productCode: productInfo.productCode,
+              quantity: 1,
               impUid: rsp.imp_uid,
             };
 
             sendOrderConfirm(singleProductData, token)
               .then(() => {
                 if (window.innerWidth > 768) {
-                  navigate(`/order/complete?imp_uid=${rsp.imp_uid}`);
+                  navigate(`/order/complete?imp_uid=${rsp.imp_uid}`, {
+                    state: { selectedCoupon }, // 쿠폰 정보 추가
+                  });
                 }
+
+                // 결제 후 localStorage 초기화
+                localStorage.removeItem("productInfo");
               })
               .catch(() => alert("주문 처리 중 오류 발생"));
           }
@@ -170,6 +203,53 @@ const OrderPage = () => {
       }
     );
   };
+
+  // 할인 금액 계산
+  const getDiscountedPrice = (price, benefit) => {
+    if (!benefit) return price;
+
+    const discountPercent =
+      typeof benefit === "string" && benefit.includes("%")
+        ? parseInt(benefit.replace("%", ""), 10)
+        : benefit;
+
+    const discountAmount = (price * discountPercent) / 100;
+    return price - discountAmount;
+  };
+
+  // 할인 비율 계산
+  const getDiscountRate = (benefit) => {
+    if (!benefit) return 0; // 할인 혜택이 없다면 0 반환
+
+    const discountPercent =
+      typeof benefit === "string" && benefit.includes("%")
+        ? parseInt(benefit.replace("%", ""), 10) // "%""이 포함된 문자열에서 숫자만 추출
+        : benefit; // 숫자 형태의 benefit이 오면 그대로 사용
+
+    return discountPercent; // 할인 비율을 반환
+  };
+  // cartItems와 productInfo의 가격 계산
+  const originalPrice = isFromCart
+    ? cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0)
+    : productInfo && productInfo.price
+    ? productInfo.price
+    : 0;
+
+  const discountedPrice = selectedCoupon
+    ? getDiscountedPrice(originalPrice, selectedCoupon.benefits)
+    : originalPrice;
+
+  const discountRate = selectedCoupon
+    ? getDiscountRate(selectedCoupon.benefits)
+    : 0;
+
+  // 할인액 계산 (원래 가격에서 할인된 가격을 뺀 값)
+  // const discountAmount = getDiscountAmount(
+  //   originalPrice,
+  //   selectedCoupon.benefits
+  // );
+
+  //const discountAmount = originalPrice - discountedPrice;
 
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white shadow rounded">
@@ -260,17 +340,14 @@ const OrderPage = () => {
           className="border p-2 rounded"
         />
       </div>
-      <br></br>
-      <hr></hr>
+      <br />
+      <hr />
 
       {/* 상품 이미지와 이름 표시 */}
-      <div className="my-6">
-        {isFromCart ? (
-          selectedItems.map((item) => (
-            <div
-              key={item.productCode}
-              className="flex items-center justify-between mb-4"
-            >
+      {isFromCart ? (
+        cartItems.map((item, index) => (
+          <div className="my-4" key={index}>
+            <div className="flex items-center justify-between mb-4">
               <img
                 src={item.image}
                 alt={item.productName}
@@ -279,48 +356,65 @@ const OrderPage = () => {
               <div className="flex-1">
                 <h3>{item.productName}</h3>
                 <p>
-                  {item.price.toLocaleString()}원 / {item.quantity}개
+                  {item.price.toLocaleString()}원 * {item.quantity}개
                 </p>
               </div>
             </div>
-          ))
-        ) : (
+          </div>
+        ))
+      ) : productInfo ? (
+        <div className="my-4">
           <div className="flex items-center justify-between mb-4">
             <img
-              src={state.image}
-              alt={state.productName}
+              src={productInfo.image}
+              alt={productInfo.productName}
               className="w-20 h-20 object-cover rounded-md mr-4"
             />
             <div className="flex-1">
-              <h3>{state.productName}</h3>
-              <p>
-                {state.price.toLocaleString()}원 * {quantity}개
-              </p>
+              <h3>{productInfo.productName}</h3>
+              <p>{productInfo.price.toLocaleString()}원</p>
             </div>
           </div>
-        )}
-
-        {/* 쿠폰 사용 버튼 추가 */}
-        <div className="w-full">
-          <button
-            onClick={() => navigate("/mypage/usecoupon")}
-            className="w-full px-4 py-2 rounded-md bg-gray-500 text-white"
-          >
-            쿠폰 사용
-          </button>
         </div>
-      </div>
+      ) : (
+        <p>상품 정보가 없습니다.</p>
+      )}
 
-      <hr></hr>
+      <button
+        onClick={handleCouponClick}
+        className="w-full px-4 py-2 rounded-md bg-gray-500 text-white"
+      >
+        쿠폰 사용
+      </button>
+
+      {/* 선택된 쿠폰이 있다면 */}
+      {selectedCoupon && (
+        <div className="mt-1 mb-3">
+          <h3 className="font-bold">선택된 쿠폰</h3>
+          <p>
+            {selectedCoupon.couponName} - {selectedCoupon.benefits}
+          </p>
+        </div>
+      )}
+
+      <hr />
 
       {/* 전체 결제 금액 */}
       <div className="my-6 text-right">
         <h3 className="text-lg font-bold">총 결제 금액</h3>
-        <p className="text-xl font-semibold text-red-500">
-          {totalAmount.toLocaleString()} 원
-        </p>
+        {selectedCoupon ? (
+          <>
+            <p className="line-through">{originalPrice.toLocaleString()}원</p>
+            <p className="text-xl font-semibold text-red-500">
+              {discountedPrice.toLocaleString()}원
+            </p>
+          </>
+        ) : (
+          <p className="text-xl font-semibold">
+            {originalPrice.toLocaleString()}원
+          </p>
+        )}
       </div>
-
       <div className="mt-6 grid grid-cols-2 gap-4">
         <button
           onClick={() => handlePayment("kakaopay.TC0ONETIME")}

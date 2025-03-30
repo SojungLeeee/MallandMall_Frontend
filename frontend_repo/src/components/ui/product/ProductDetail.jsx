@@ -111,15 +111,22 @@ const ProductDetail = () => {
   const handleGoToOrder = () => {
     if (!product) return;
 
-    navigate("/order", {
-      state: {
+    localStorage.removeItem("selectedCartItems");
+
+    // Save the product information to localStorage
+    localStorage.setItem(
+      "productInfo",
+      JSON.stringify({
         productCode: product.productCode,
         quantity: 1,
         productName: product.productName,
         price: product.price,
         image: product.image,
-      },
-    });
+      })
+    );
+
+    // Navigate to the order page
+    navigate("/order");
   };
 
   if (loading)
