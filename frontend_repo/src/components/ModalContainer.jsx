@@ -45,49 +45,37 @@ const ModalContainer = ({ isOpen }) => {
   };
 
   return (
-    <div className="relative">
-      <h4 className="text-xl font-semibold mb-1 text-center">
-        [ 전국 지점 통합 이벤트 ]
-      </h4>
-
+    <div>
+      {" "}
       {/* Error and Loading State */}
       {loading && (
         <p className="text-center text-gray-500">이벤트를 불러오는 중...</p>
       )}
       {error && <p className="text-center text-red-500">{error}</p>}
-
       {/* Grid Layout for Events */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1">
         {events.map((event, index) => (
-          <div key={index} className="mb-4">
+          <div key={index} className="">
+            {" "}
+            {/* Adding relative here for proper absolute positioning */}
             {/* Modal for each event */}
             <Modal
               isOpen={openModals[index]}
               onClose={() => toggleModal(index)}
               event={event}
             />
-
             {/* Event Image with hover effect */}
             <div
-              className="cursor-pointer relative group"
+              className="cursor-pointer relative group flex justify-center"
               onClick={() => toggleModal(index)}
             >
               <img
                 src={event.image}
                 alt={event.eventTitle}
-                className="w-full h-40 object-cover rounded-lg shadow-md transform transition duration-300 group-hover:scale-105"
+                className="object-cover shadow-md rounded-sm mt-1"
+                height="20"
+                width="330"
               />
-
-              {/* event.category 위에 표시 */}
-              <div className="absolute top-0 left-0 w-full bg-black bg-opacity-50 p-2 text-white text-sm font-semibold">
-                {event.eventTitle} {/* 여기에 event.eventTitle 텍스트로 추가 */}
-              </div>
-
-              <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <p className="text-white text-lg font-semibold">
-                  {event.eventTitle}
-                </p>
-              </div>
             </div>
           </div>
         ))}
