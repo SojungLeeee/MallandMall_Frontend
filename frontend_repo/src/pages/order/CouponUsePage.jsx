@@ -116,7 +116,7 @@ function CouponUsePage() {
       )}
 
       {/* 쿠폰 목록 아래에 "적용하기" 버튼 추가 */}
-      <div className="flex justify-center mt-4">
+      <div className="flex justify-center mt-2">
         <button
           className="bg-gray-800 text-white py-2 px-6 rounded-lg hover:bg-gray-700"
           onClick={handleGoOrder}

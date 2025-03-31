@@ -7,6 +7,7 @@ export default function Admin() {
 
   // 상품 관련 핸들러
   const handleProductSearch = () => {
+    console.log("handleProductSearch 눌림");
     navigate("/admin/product/search");
   };
 

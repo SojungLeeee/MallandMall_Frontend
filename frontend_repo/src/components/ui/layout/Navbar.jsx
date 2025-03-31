@@ -1,5 +1,5 @@
 import { Link, useNavigate, useRouteLoaderData } from "react-router-dom";
-import Button from "../../Button";
+import LoginButton from "../../LoginButton";
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { MdAdminPanelSettings } from "react-icons/md";
@@ -97,7 +97,7 @@ export default function Navbar() {
                   <MdAdminPanelSettings className="text-4xl animate-pop-up" />
                 </Link>
               )}
-              <Button
+              <LoginButton
                 text={"Logout"}
                 onClick={handleLogout}
                 className="flex items-center"
@@ -106,7 +106,7 @@ export default function Navbar() {
           )}
           {!token && (
             <>
-              <Button text={"Login"} onClick={handleLogin} />
+              <LoginButton text={"Login"} onClick={handleLogin} />
             </>
           )}
         </nav>
