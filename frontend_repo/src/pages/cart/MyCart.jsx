@@ -125,7 +125,15 @@ const MyCart = () => {
       alert("선택된 상품이 없습니다.");
       return;
     }
+    localStorage.removeItem("productInfo");
 
+    // Save selected items to localStorage
+    localStorage.setItem(
+      "selectedCartItems",
+      JSON.stringify(selectedCartItems)
+    );
+
+    // Navigate to the order page
     navigate("/order", {
       state: { selectedItems: selectedCartItems },
     });

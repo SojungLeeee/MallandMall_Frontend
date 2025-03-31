@@ -32,10 +32,29 @@ export async function fetchOfflineCoupon(userId) {
   return response;
 }
 
-// 특정 사용자의 쿠폰 목록 가져오기기
+// 특정 사용자의 쿠폰 목록 가져오기
 export async function fetchAllCouponList(token) {
   const response = await instance.get(`/coupon/list`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   return response.data;
+}
+
+export async function fetchDeleteCoupon(couponId) {
+  try {
+    // DELETE 요청 보내기
+    const response = await instance.delete(`/coupon/delete/${couponId}`);
+
+    console.log("fetchDeleteCoupon.response: ", response);
+
+    // 응답 상태가 200 또는 204인 경우만 정상 처리
+    if (response.status !== 200 && response.status !== 204) {
+      throw new Error("fetchDeleteCoupon 예외발생");
+    }
+
+    return response; // 응답 반환
+  } catch (error) {
+    console.error("삭제 실패:", error); // 에러 디버깅
+    throw new Error("fetchDeleteCoupon 예외발생");
+  }
 }

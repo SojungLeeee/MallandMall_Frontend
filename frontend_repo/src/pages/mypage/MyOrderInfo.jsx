@@ -11,6 +11,8 @@ const MyOrderInfo = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [productDetails, setProductDetails] = useState({}); // 상품 상세 정보를 저장하는 상태
+  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
+  const [ordersPerPage] = useState(5); // 페이지당 표시할 주문 수
 
   const { token } = getAuthToken();
   const navigate = useNavigate();
@@ -67,6 +69,17 @@ const MyOrderInfo = () => {
   if (error)
     return <p className="text-center text-red-500 font-medium">{error}</p>;
 
+  // 페이지당 보여줄 주문 목록
+  const indexOfLastOrder = currentPage * ordersPerPage;
+  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
+  const currentOrders = orders.slice(indexOfFirstOrder, indexOfLastOrder);
+
+  // 페이지 번호 계산
+  const totalPages = Math.ceil(orders.length / ordersPerPage);
+
+  // 페이지 변경 함수
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   return (
     <div className="w-full max-w-md mt-6 border-t border-gray-100 pt-6 bg-white">
       <h3 className="text-xl font-bold mb-6 text-black">
@@ -75,15 +88,15 @@ const MyOrderInfo = () => {
 
       {/* 주문 내역 리스트 */}
       <div className="mt-4 space-y-5">
-        {orders.map((order) => {
+        {currentOrders.map((order) => {
           const product = productDetails[order.productCode];
           return (
             <div
               key={order.orderId}
-              className="border border-gray-200 p-4 rounded-sm bg-white shadow-sm hover:border-gray-300 transition-all"
+              className="border border-gray-200 p-3 rounded-sm bg-white shadow-sm hover:border-gray-300 transition-all"
             >
               {/* 상품 정보 섹션 */}
-              <div className="flex items-start border-b border-gray-100 pb-3 mb-3">
+              <div className="flex items-start border-b border-gray-100 pb-3 mb-1">
                 {/* 상품 이미지 */}
                 {product ? (
                   <div
@@ -113,13 +126,13 @@ const MyOrderInfo = () => {
                         {product.productName}
                       </p>
                       <p className="text-sm text-gray-600 mt-1">
-                        상품 코드: {order.productCode}
+                        상품 코드 : {order.productCode}
                       </p>
                       <p className="text-sm text-gray-600">
-                        수량: {order.quantity}
+                        수량 : {order.quantity}
                       </p>
-                      <p className="text-sm text-black">
-                        주문 ID: {order.orderId}
+                      <p className="text-sm text-gray-600">
+                        주문일자 : {order.orderDate}
                       </p>
                     </div>
                   ) : (
@@ -131,7 +144,7 @@ const MyOrderInfo = () => {
               </div>
 
               {/* 배송 정보 섹션 */}
-              <div className="mt-2 ">
+              <div className="mt-2">
                 <h4 className="text-sm font-medium text-black mb-2">
                   배송 정보
                 </h4>
@@ -154,6 +167,27 @@ const MyOrderInfo = () => {
             주문 내역이 없습니다.
           </div>
         )}
+      </div>
+
+      {/* 페이지 네비게이션 */}
+      <div className="flex justify-center mt-4 mb-4">
+        <button
+          onClick={() => paginate(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="px-4 py-2 text-white bg-gray-700 rounded-md disabled:bg-gray-300"
+        >
+          이전
+        </button>
+        <span className="mx-2 text-lg font-medium text-gray-700">
+          {currentPage} / {totalPages}
+        </span>
+        <button
+          onClick={() => paginate(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className="px-4 py-2 text-white bg-gray-700 rounded-md disabled:bg-gray-300"
+        >
+          다음
+        </button>
       </div>
     </div>
   );

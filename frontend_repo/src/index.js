@@ -139,33 +139,35 @@ const router = createBrowserRouter([
       { path: "/products/:categoryName", element: <CategoryPage /> }, // 카테고리별 상품 페이지
       { path: "/search/:productName", element: <SearchPage /> },
 
+      //관리자 기능
+      { path: "/admin", element: <Admin /> },
+      //관리자 기능 - Product
+      { path: "/admin/product/search", element: <AdminAllProducts /> },
+      { path: "/admin/product/delete", element: <AdminDeleteProducts /> },
+      { path: "/admin/product/register", element: <AdminAddProducts /> },
+      { path: "/admin/product/update", element: <AdminUpdateProducts /> },
+
+      { path: "/admin/item/search", element: <AdminAllGoods /> },
+      { path: "/admin/item/delete", element: <AdminDeleteGoods /> },
+      { path: "/admin/item/register", element: <AdminAddGoods /> },
+      { path: "/admin/item/update", element: <AdminUpdateProducts /> },
+
+      //관리자 기능 - Event
+      { path: "/admin/event/search", element: <AdminAllEvent /> },
+      { path: "/admin/event/delete", element: <AdminDeleteEvent /> },
+      { path: "/admin/event/register", element: <AdminAddEvent /> },
+      { path: "/admin/event/update", element: <AdminUpdateEvent /> },
+
+      //관리자 기능 - Branch
+      { path: "/admin/branch/search", element: <AdminAllBranch /> },
       {
-        path: "/admin",
-        element: <Admin />,
-        children: [
-          // Product 관련 관리자 페이지
-          { path: "product/search", element: <AdminAllProducts /> },
-          { path: "product/delete", element: <AdminDeleteProducts /> },
-          { path: "product/register", element: <AdminAddProducts /> },
-          { path: "product/update", element: <AdminUpdateProducts /> },
-
-          // Goods 관련 관리자 페이지
-          { path: "item/search", element: <AdminAllGoods /> },
-          { path: "item/delete", element: <AdminDeleteGoods /> },
-          { path: "item/register", element: <AdminAddGoods /> },
-
-          // Event 관련 관리자 페이지
-          { path: "event/search", element: <AdminAllEvent /> },
-          { path: "event/delete", element: <AdminDeleteEvent /> },
-          { path: "event/register", element: <AdminAddEvent /> },
-          { path: "event/update", element: <AdminUpdateEvent /> },
-
-          // Branch 관련 관리자 페이지
-          { path: "branch/search", element: <AdminAllBranch /> },
-          { path: "branch/delete", element: <AdminDeleteBranch /> },
-          { path: "branch/register", element: <AdminAddBranch /> },
-          { path: "branch/update", element: <AdminUpdateBranch /> },
-        ],
+        path: "/admin/branch/delete",
+        element: <AdminDeleteBranch />,
+      },
+      { path: "/admin/branch/register", element: <AdminAddBranch /> },
+      {
+        path: "/admin/branch/update",
+        element: <AdminUpdateBranch />,
       },
       {
         path: "/admin/questions",

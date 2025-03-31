@@ -40,14 +40,7 @@ function CouponPage({}) {
 
   return (
     <div className="coupon-page-container p-3">
-      <h2 className="text-2xl font-bold mb-1 text-center">내 쿠폰 목록</h2>
-      <p className="mb-1 font-bold">
-        쿠폰은{" "}
-        <span style={{ color: "red", textDecoration: "underline" }}>
-          중복 사용이 불가능
-        </span>
-        합니다.
-      </p>
+      <h2 className="text-2xl font-bold mb-3 text-center">내 쿠폰 목록</h2>
 
       {/* 쿠폰 목록이 없으면 "쿠폰이 없습니다" 메시지 */}
       {coupons.length === 0 ? (
