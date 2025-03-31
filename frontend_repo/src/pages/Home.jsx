@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import Banner from "../components/ui/layout/Banner";
 import AllProducts from "../pages/product/AllProducts";
 import Favorites from "../pages/mypage/Favorites";
-import ModalContainer from "../components/ModalContainer"; // ModalContainer 컴포넌트 임포트
+import ModalContainer from "../components/ModalContainer"; // ModalContainer 임포트
 
 export default function Home() {
   const location = useLocation(); // 현재 경로를 확인
@@ -18,14 +18,19 @@ export default function Home() {
 
   return (
     <>
-      <Banner />
-      {/* '/favorites' 페이지일 때만 모달을 렌더링 */}
+      {/* '/favorites' 경로일 때는 Banner를 숨기기 */}
+      {location.pathname !== "/favorites" && <Banner />}
+
+      {/* '/favorites' 페이지일 때만 Favorites 컴포넌트와 ModalContainer를 렌더링 */}
       {location.pathname === "/favorites" && (
-        <ModalContainer isOpen={isModalOpen} />
+        <>
+          <ModalContainer isOpen={isModalOpen} />
+          <Favorites />
+        </>
       )}
 
-      {/* '/favorites' 페이지일 때는 Favorites 컴포넌트, 그 외에는 AllProducts 컴포넌트 */}
-      {location.pathname === "/favorites" ? <Favorites /> : <AllProducts />}
+      {/* '/favorites' 페이지가 아닐 때는 AllProducts 컴포넌트 렌더링 */}
+      {location.pathname !== "/favorites" && <AllProducts />}
     </>
   );
 }
