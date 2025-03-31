@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { fetchAllCouponList } from "../../api/httpCouponService"; // 쿠폰 API 임포트
 import { getAuthToken } from "../../context/tokenProviderService";
 import MyCoupon from "../../components/ui/SelectCoupon"; // 쿠폰 정보 컴포넌트 임포트
 
-function CouponUsePage({}) {
+function CouponUsePage() {
+  const location = useLocation(); // useLocation 훅으로 state 가져오기
+  const { originalPrice } = location.state || {}; // state에서 originalPrice 추출
+  // originalPrice를 prop으로 받습니다.
   const [coupons, setCoupons] = useState([]); // 쿠폰 목록 상태
   const [loading, setLoading] = useState(true); // 로딩 상태
   const [error, setError] = useState(null); // 에러 상태
   const [selectedCoupon, setSelectedCoupon] = useState(null); // 선택된 쿠폰 상태
+  const [couponError, setCouponError] = useState(null); // 쿠폰 조건 에러 메시지
   const navigate = useNavigate(); // 페이지 이동을 위한 훅
   const { token } = getAuthToken(); // 토큰 가져오기
 
@@ -19,8 +23,17 @@ function CouponUsePage({}) {
 
   // 주문 페이지로 쿠폰 정보 전달하면서 이동하는 함수
   const handleGoOrder = () => {
+    console.log(originalPrice);
     if (selectedCoupon) {
-      navigate("/order", { state: { selectedCoupon } }); // 쿠폰 정보를 state로 전달
+      // 선택된 쿠폰이 있고, 최소 주문 금액 조건을 충족하는 경우에만 쿠폰 사용
+      const minPrice = selectedCoupon.minPrice;
+      if (originalPrice >= minPrice) {
+        navigate("/order", { state: { selectedCoupon } }); // 쿠폰 정보를 state로 전달
+      } else {
+        setCouponError(
+          `최소 주문 금액 ${minPrice.toLocaleString()}원 이상일 때만 사용 가능`
+        );
+      }
     } else {
       alert("쿠폰을 선택해주세요.");
     }
@@ -55,6 +68,7 @@ function CouponUsePage({}) {
   // 쿠폰 선택 처리 함수
   const handleCouponSelect = (coupon) => {
     setSelectedCoupon(coupon);
+    setCouponError(null); // 쿠폰을 새로 선택했으므로 에러 메시지 초기화
   };
 
   return (
@@ -94,6 +108,13 @@ function CouponUsePage({}) {
         </div>
       )}
 
+      {/* 쿠폰 조건을 만족하지 않는 경우 에러 메시지 */}
+      {couponError && (
+        <div className="mt-4 text-center text-red-500 font-bold">
+          {couponError}
+        </div>
+      )}
+
       {/* 쿠폰 목록 아래에 "적용하기" 버튼 추가 */}
       <div className="flex justify-center mt-4">
         <button
@@ -103,17 +124,6 @@ function CouponUsePage({}) {
           적용하기
         </button>
       </div>
-
-      {/* 선택된 쿠폰 표시 */}
-      {selectedCoupon && (
-        <div className="mt-4 text-center">
-          <h3 className="text-xl font-bold">선택된 쿠폰</h3>
-          <p>
-            {selectedCoupon.couponName} - {selectedCoupon.discountAmount} 원
-            할인
-          </p>
-        </div>
-      )}
     </div>
   );
 }

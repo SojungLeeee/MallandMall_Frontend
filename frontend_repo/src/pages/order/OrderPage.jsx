@@ -6,6 +6,7 @@ const OrderPage = () => {
   const { state } = useLocation(); // state로 전달된 정보 받기
   const [selectedCoupon, setSelectedCoupon] = useState(null); // 선택된 쿠폰 상태
   const navigate = useNavigate();
+  const [couponError, setCouponError] = useState(null);
   const [profile, setProfile] = useState(null);
   const [formData, setFormData] = useState({
     receiverName: "",
@@ -19,8 +20,12 @@ const OrderPage = () => {
   const [cartItems, setCartItems] = useState([]); // 여러 품목 장바구니 아이템
   const [isFromCart, setIsFromCart] = useState(false); // 장바구니에서 왔는지 확인하는 상태
 
+  // handleCouponClick 함수에서 originalPrice를 전달
   const handleCouponClick = () => {
-    navigate("/mypage/usecoupon"); // /mypage/coupon 페이지로 이동
+    console.log(originalPrice);
+    navigate("/mypage/usecoupon", {
+      state: { originalPrice: originalPrice }, // originalPrice를 state로 전달
+    });
   };
 
   useEffect(() => {
@@ -228,6 +233,7 @@ const OrderPage = () => {
 
     return discountPercent; // 할인 비율을 반환
   };
+
   // cartItems와 productInfo의 가격 계산
   const originalPrice = isFromCart
     ? cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0)
@@ -243,17 +249,19 @@ const OrderPage = () => {
     ? getDiscountRate(selectedCoupon.benefits)
     : 0;
 
-  // 할인액 계산 (원래 가격에서 할인된 가격을 뺀 값)
-  // const discountAmount = getDiscountAmount(
-  //   originalPrice,
-  //   selectedCoupon.benefits
-  // );
-
-  //const discountAmount = originalPrice - discountedPrice;
-
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white shadow rounded">
-      <h2 className="text-xl font-bold mb-4">기본 배송지</h2>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-bold">기본 배송지</h2>{" "}
+        {/* 기본 배송지 텍스트 왼쪽에 배치 */}
+        <button
+          onClick={() => navigate(`/product/${productInfo.productCode}`)}
+          className="text-2xl text-gray-500 hover:text-gray-700"
+        >
+          &#10005; {/* X 버튼 */}
+        </button>
+      </div>
+
       {profile ? (
         <div className="bg-gray-100 p-4 rounded mb-6 text-left">
           <p className="mb-1">
@@ -332,17 +340,9 @@ const OrderPage = () => {
           onChange={handleChange}
           className="border p-2 rounded"
         />
-        <textarea
-          name="memo"
-          placeholder="배송 메모"
-          value={formData.memo}
-          onChange={handleChange}
-          className="border p-2 rounded"
-        />
       </div>
       <br />
       <hr />
-
       {/* 상품 이미지와 이름 표시 */}
       {isFromCart ? (
         cartItems.map((item, index) => (

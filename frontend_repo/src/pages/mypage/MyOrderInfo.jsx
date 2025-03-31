@@ -113,13 +113,13 @@ const MyOrderInfo = () => {
                         {product.productName}
                       </p>
                       <p className="text-sm text-gray-600 mt-1">
-                        상품 코드: {order.productCode}
+                        상품 코드 : {order.productCode}
                       </p>
                       <p className="text-sm text-gray-600">
-                        수량: {order.quantity}
+                        수량 : {order.quantity}
                       </p>
-                      <p className="text-sm text-black">
-                        주문 ID: {order.orderId}
+                      <p className="text-sm text-gray-600">
+                        주문일자 : {order.orderDate}
                       </p>
                     </div>
                   ) : (
