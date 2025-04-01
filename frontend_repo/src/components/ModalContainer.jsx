@@ -72,9 +72,9 @@ const ModalContainer = ({ isOpen }) => {
               <img
                 src={event.image}
                 alt={event.eventTitle}
-                className="object-cover shadow-md rounded-sm mt-1"
-                height="20"
-                width="330"
+                className="object-cover shadow-md rounded-sm mt-2"
+                height="30"
+                width="350"
               />
             </div>
           </div>
