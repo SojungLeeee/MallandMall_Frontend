@@ -74,9 +74,12 @@ export default function AdminDeleteBranch() {
   // 행 렌더링 함수 정의
   const renderRow = (branch, index) => {
     return (
-      <tr key={index} className="border-b border-gray-200 hover:bg-gray-50">
-        <td className="px-4 py-3">{branch.branchName}</td>
-        <td className="px-4 py-3">{branch.branchAddress}</td>
+      <tr
+        key={index}
+        className="border-b border-gray-200 hover:bg-gray-50 text-sm"
+      >
+        <td className="px-4 py-3 w-40">{branch.branchName}</td>
+        <td className="px-2 py-3 w-40">{branch.branchAddress}</td>
         <td className="px-4 py-3">
           <button
             onClick={() => handleRemoveBranch(branch.branchName)}
@@ -91,7 +94,7 @@ export default function AdminDeleteBranch() {
 
   return (
     <div className="w-full p-4">
-      <h2 className="text-2xl font-semibold mb-4">지점 목록</h2>
+      <h2 className="text-2xl font-semibold mb-4">지점 삭제</h2>
       <hr className="mb-4" />
 
       {/* 삭제 확인 모달 */}

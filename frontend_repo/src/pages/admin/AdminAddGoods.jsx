@@ -14,14 +14,14 @@ export default function AdminAllProducts() {
   const [goodsValues, setGoodsValues] = useState({
     productCode: "",
     branchName: "",
-    expirationDate: "",
+    expirationDate: "", // 유통기한 추가
   });
 
   // 상품 양식 필드 정의
   const productFields = [
     { id: "productCode", label: "상품 코드", type: "text" },
     { id: "branchName", label: "지점명", type: "text" },
-    { id: "expirationDate", label: "유통기한", type: "text" },
+    { id: "expirationDate", label: "유통기한", type: "datetime-local" }, // 유통기한을 datetime-local로 설정
   ];
 
   // 재고 데이터를 가져오는 함수
@@ -80,7 +80,7 @@ export default function AdminAllProducts() {
   // 행 렌더링 함수 정의
   const renderRow = (inventory, index) => {
     return (
-      <tr key={index}>
+      <tr key={index} className="text-sm">
         <td className="px-3 py-2">{inventory.productCode}</td>
         <td className="px-3 py-2">{inventory.quantity}</td>
         <td className="px-3 py-2">{inventory.branchName}</td>

@@ -6,6 +6,18 @@ export default function AdminAllProducts() {
   const [error, setError] = useState(null); // 오류 상태
   const [productData, setProductData] = useState([]); // 상품 데이터를 위한 상태
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  };
+
   useEffect(() => {
     async function fetchProductData() {
       try {
@@ -39,10 +51,18 @@ export default function AdminAllProducts() {
   // 행 렌더링 함수 정의
   const renderRow = (product, index) => {
     return (
-      <tr key={index}>
-        <td className="px-3 py-2">{product.productCode}</td>
+      <tr key={index} className="text-xs">
+        <td className="px-3 py-2 w-10">{product.productCode}</td>
         <td className="px-3 py-2">{product.branchName}</td>
-        <td className="px-3 py-2">{product.expirationDate}</td>
+        <td
+          className={`px-3 py-2 ${
+            new Date(product.expirationDate) < new Date()
+              ? "bg-red-500 text-white"
+              : ""
+          }`}
+        >
+          {formatDate(product.expirationDate)} {/* 날짜 형식 변환 */}
+        </td>
       </tr>
     );
   };

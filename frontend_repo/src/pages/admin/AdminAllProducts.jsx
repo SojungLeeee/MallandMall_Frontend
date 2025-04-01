@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { fetchFindAllProductCode } from "../../api/httpAdminService";
-import ListComponents from "../../components/ui/admin/ListComponents"; // ListComponents 컴포넌트 임포트
+import ListComponents, {
+  getCategoryBackgroundColor,
+} from "../../components/ui/admin/ListComponents"; // Import getCategoryBackgroundColor
 
 export default function AdminAllProducts() {
   const [error, setError] = useState(null); // 오류 상태
   const [productData, setProductData] = useState([]); // 상품 데이터를 위한 상태
+  const [selectedCategory, setSelectedCategory] = useState(null); // 선택된 카테고리 (1개만)
 
   useEffect(() => {
     async function fetchProductData() {
@@ -27,6 +30,18 @@ export default function AdminAllProducts() {
     fetchProductData();
   }, []);
 
+  // 카테고리 필터링: 선택된 카테고리에 해당하는 상품만 필터링
+  const filteredProducts = selectedCategory
+    ? productData.filter((product) => product.category === selectedCategory)
+    : productData; // 선택된 카테고리가 없으면 모든 상품 표시
+
+  // 카테고리 토글 함수 (1개만 선택 가능)
+  const handleCategoryToggle = (category) => {
+    setSelectedCategory(
+      (prevCategory) => (prevCategory === category ? null : category) // 선택된 카테고리와 동일하면 해제, 아니면 새로 선택
+    );
+  };
+
   // 오류가 있으면 화면에 오류 메시지 표시
   if (error) {
     return (
@@ -38,28 +53,63 @@ export default function AdminAllProducts() {
 
   // 행 렌더링 함수 정의
   const renderRow = (product, index) => {
+    // 카테고리별 배경색 설정
+    const categoryBackgroundColor = getCategoryBackgroundColor(
+      product.category
+    );
+
     return (
-      <tr key={index}>
+      <tr key={index} className="border-b border-gray-300 text-xs">
         <td className="px-3 py-2">{product.productCode}</td>
-        <td className="px-3 py-2">{product.category}</td>
-        <td className="px-3 py-2">{product.productName}</td>
-        <td className="px-3 py-2">{product.price}</td>
-        <td className="px-3 py-2">{product.image}</td>
+
+        {/* Apply background color only to the category cell */}
+        <td className={`px-3 py-2 ${categoryBackgroundColor}`}>
+          {product.category}
+        </td>
+
+        <td className="px-3 py-2 text-left">{product.productName}</td>
+        <td className="px-3 py-2">{product.price.toLocaleString()}</td>
       </tr>
     );
   };
 
+  // 모든 카테고리 리스트 추출 (중복된 카테고리 제거)
+  const allCategories = [
+    ...new Set(productData.map((product) => product.category)),
+  ];
+
   return (
     <div className="w-full p-4">
       <h2 className="text-2xl font-semibold mb-4">상품 코드 목록</h2>
+
+      {/* 카테고리 토글 UI (헤더에 카테고리 버튼 포함) */}
+      <div className="mb-4">
+        <div className="flex flex-wrap gap-2">
+          {allCategories.map((category) => (
+            <button
+              key={category}
+              onClick={() => handleCategoryToggle(category)}
+              className={`py-2 border rounded-md ${
+                selectedCategory === category
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-200 text-black"
+              } w-full sm:w-[calc(25%-0.5rem)]`} // 한 줄에 4개 버튼
+            >
+              {category}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <hr className="mb-4" />
-      {productData.length > 0 ? (
+
+      {filteredProducts.length > 0 ? (
         <ListComponents
-          data={productData} // 상품 데이터
+          data={filteredProducts} // 상품 데이터 (필터된 데이터)
           dataType="product" // 데이터 타입 예시
           renderRow={renderRow} // 행 렌더링 함수
           showDeleteCheckbox={false} // 삭제 체크박스 여부
-          text1="상품코드" // 헤더 텍스트
+          text1="코드" // 헤더 텍스트
           text2="카테고리"
           text3="상품명"
           text4="가격"

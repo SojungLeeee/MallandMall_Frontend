@@ -3,7 +3,9 @@ import {
   fetchFindAllProductCode,
   fetchAddProductCode,
 } from "../../api/httpAdminService";
-import ListComponents from "../../components/ui/admin/ListComponents";
+import ListComponents, {
+  getCategoryBackgroundColor,
+} from "../../components/ui/admin/ListComponents"; // Import getCategoryBackgroundColor
 import GenericForm from "../../components/ui/admin/AddComponents"; // 재사용 가능한 양식 컴포넌트 import
 
 export default function AdminAllProducts() {
@@ -88,13 +90,18 @@ export default function AdminAllProducts() {
 
   // 행 렌더링 함수 정의
   const renderRow = (product, index) => {
+    // 카테고리별 배경색 설정
+    const categoryBackgroundColor = getCategoryBackgroundColor(
+      product.category
+    );
     return (
-      <tr key={index}>
+      <tr key={index} className="border-b border-gray-300 text-xs">
         <td className="px-3 py-2">{product.productCode}</td>
-        <td className="px-3 py-2">{product.category}</td>
-        <td className="px-3 py-2">{product.productName}</td>
-        <td className="px-3 py-2">{product.price}</td>
-        <td className="px-3 py-2">{product.image}</td>
+        <td className={`px-3 py-2 ${categoryBackgroundColor}`}>
+          {product.category}
+        </td>
+        <td className="px-3 py-2 text-left">{product.productName}</td>
+        <td className="px-3 py-2">{product.price.toLocaleString()}</td>
       </tr>
     );
   };
@@ -125,11 +132,10 @@ export default function AdminAllProducts() {
           dataType="product"
           renderRow={renderRow}
           showDeleteCheckbox={false}
-          text1="상품코드"
+          text1="코드"
           text2="카테고리"
           text3="상품명"
           text4="가격"
-          text5="삭제"
         />
       ) : (
         <div className="p-4 text-center bg-gray-100 rounded">

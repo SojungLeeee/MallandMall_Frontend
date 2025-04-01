@@ -45,9 +45,12 @@ export default function AdminAllBranch() {
   // 행 렌더링 함수 정의 - 지점 엔티티에 맞게 수정
   const renderRow = (branch, index) => {
     return (
-      <tr key={index} className="border-b border-gray-200 hover:bg-gray-50">
+      <tr
+        key={index}
+        className="border-b border-gray-200 hover:bg-gray-50 text-sm"
+      >
         <td className="px-4 py-3">{branch.branchName}</td>
-        <td className="px-4 py-3">{branch.branchAddress}</td>
+        <td className="px-2 py-3">{branch.branchAddress}</td>
       </tr>
     );
   };

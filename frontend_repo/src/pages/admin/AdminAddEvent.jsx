@@ -9,6 +9,18 @@ export default function AdminAddEvent() {
   const [eventData, setEventData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  };
+
   // 이벤트 추가 양식을 위한 상태 및 필드 정의
   const [eventValues, setEventValues] = useState({
     category: "",
@@ -87,12 +99,19 @@ export default function AdminAddEvent() {
   // 행 렌더링 함수 정의
   const renderRow = (event, index) => {
     return (
-      <tr key={index} className="border-b border-gray-200 hover:bg-gray-50">
-        <td className="px-4 py-3">{event.eventId}</td>
-        <td className="px-4 py-3">{event.category}</td>
-        <td className="px-4 py-3">{event.eventTitle}</td>
-        <td className="px-4 py-3">{event.startDate}</td>
-        <td className="px-4 py-3">{event.endDate}</td>
+      <tr
+        key={index}
+        className="border-b border-gray-200 hover:bg-gray-50 text-xs"
+      >
+        <td className="px-4 py-3 text-xs">{event.eventId}</td>
+        <td className="px-3 py-3  text-xs">{event.category}</td>
+        <td className="px-3 py-3  text-xs w-40">{event.eventTitle}</td>
+        <td className={"px-3 py-2 text-xs w-20"}>
+          {formatDate(event.endDate)} {/* 날짜 형식 변환 */}
+        </td>
+        <td className={"px-3 py-2 text-xs w-20"}>
+          {formatDate(event.endDate)} {/* 날짜 형식 변환 */}
+        </td>
       </tr>
     );
   };
@@ -128,7 +147,7 @@ export default function AdminAddEvent() {
           dataType="event"
           renderRow={renderRow}
           showDeleteCheckbox={false}
-          text1="이벤트 ID"
+          text1="ID"
           text2="카테고리"
           text3="이벤트명"
           text4="시작일자"

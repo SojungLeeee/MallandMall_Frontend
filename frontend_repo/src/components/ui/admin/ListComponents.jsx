@@ -30,8 +30,13 @@ const getCategoryBackgroundColor = (category) => {
 export const GenericTableBody = ({
   data, // 어떤 종류의 배열이든 받을 수 있음 (products, branch, event 등)
   renderRow, // 각 데이터 항목을 행으로 렌더링하는 함수
+  showText5, // text5에 대한 표시 여부
 }) => {
-  return <tbody>{data.map((item, index) => renderRow(item, index))}</tbody>;
+  return (
+    <tbody>
+      {data.map((item, index) => renderRow(item, index, showText5))}
+    </tbody>
+  );
 };
 
 // 메인 테이블 컴포넌트
@@ -49,18 +54,46 @@ const ListComponents = ({
   children, // 직접 tbody 컴포넌트를 넘겨줄 수도 있음
   renderRow, // 커스텀 행 렌더링 함수
 }) => {
+  // 각 textX가 존재하면 true, 아니면 false
+  const showText1 = Boolean(text1);
+  const showText2 = Boolean(text2);
+  const showText3 = Boolean(text3);
+  const showText4 = Boolean(text4);
+  const showText5 = Boolean(text5);
+  const showText6 = Boolean(text6);
+
   return (
-    <div className="overflow-x-auto shadow-lg rounded-lg">
+    <div className="overflow-x-auto shadow-lg rounded-sm">
       <table className="min-w-full table-fixed border-separate border-spacing-0">
-        <thead className="bg-gray-100 text-gray-600">
-          <tr className="border-b-2 border-gray-300">
-            <th className="px-4 py-3 text-left font-medium text-sm">{text1}</th>
-            <th className="px-4 py-3 text-left font-medium text-sm">{text2}</th>
-            <th className="px-4 py-3 text-left font-medium text-sm">{text3}</th>
-            <th className="px-4 py-3 text-left font-medium text-sm">{text4}</th>
-            <th className="px-4 py-3 text-left font-medium text-sm">{text5}</th>
-            {showDeleteCheckbox && (
-              <th className="px-4 py-3 text-left font-medium text-sm">
+        <thead className="bg-black text-white">
+          <tr className="border-b-2 border-gray-300 border-seperate">
+            {showText1 && (
+              <th className="px-2 py-2 text-center font-bold text-sm">
+                {text1}
+              </th>
+            )}
+            {showText2 && (
+              <th className="px-2 py-2 text-center font-bold text-sm">
+                {text2}
+              </th>
+            )}
+            {showText3 && (
+              <th className="px-2 py-2 text-center font-bold text-sm">
+                {text3}
+              </th>
+            )}
+            {showText4 && (
+              <th className="px-2 py-2 text-center font-bold text-sm">
+                {text4}
+              </th>
+            )}
+            {showText5 && (
+              <th className="px-2 py-2 text-center font-bold text-sm">
+                {text5}
+              </th>
+            )}
+            {showDeleteCheckbox && showText6 && (
+              <th className="px-2 py-2 text-center font-bold text-sm">
                 {text6}
               </th>
             )}

@@ -72,6 +72,9 @@ const DetailComponents = ({
         inputType = "textarea";
       } else if (typeof value === "number") {
         inputType = "number";
+      } else if (fieldName === "startDate" || fieldName === "endDate") {
+        // startDate, endDate는 datetime-local로 처리
+        inputType = "datetime-local";
       }
 
       return (

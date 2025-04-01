@@ -11,6 +11,18 @@ export default function AdminAllgoodss() {
   const [delgoodsId, setDelgoodsId] = useState(null); // 삭제할 상품 코드
   const modal_dialog = useRef(null); // 모달 ref
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  };
+
   // 상품 데이터를 불러오는 함수
   useEffect(() => {
     async function fetchgoodsData() {
@@ -71,11 +83,19 @@ export default function AdminAllgoodss() {
   // 행 렌더링 함수 정의
   const renderRow = (goods, index) => {
     return (
-      <tr key={index}>
+      <tr key={index} className="text-xs">
         <td className="px-3 py-2">{goods.goodsId}</td>
         <td className="px-3 py-2">{goods.productCode}</td>
         <td className="px-3 py-2">{goods.branchName}</td>
-        <td className="px-3 py-2">{goods.expirationDate}</td>
+        <td
+          className={`px-3 py-2 ${
+            new Date(goods.expirationDate) < new Date()
+              ? "bg-red-500 text-white"
+              : ""
+          }`}
+        >
+          {formatDate(goods.expirationDate)} {/* 날짜 형식 변환 */}
+        </td>
         <td className="px-3 py-2">
           <button
             onClick={() => handleRemovegoods(goods.goodsId)}
@@ -89,8 +109,8 @@ export default function AdminAllgoodss() {
   };
 
   return (
-    <div className="w-full p-4">
-      <h2 className="text-2xl font-semibold mb-4">개별 상품 목록</h2>
+    <div className="w-full p-2">
+      <h2 className="text-2xl font-semibold mb-4">개별 상품 삭제</h2>
       <hr className="mb-4" />
 
       {/* 삭제 확인 모달 */}
@@ -128,10 +148,10 @@ export default function AdminAllgoodss() {
           renderRow={renderRow} // 행 렌더링 함수
           showDeleteCheckbox={true} // 삭제 체크박스 여부
           text1="상품ID"
-          text2="상품코드" // 헤더 텍스트
+          text2="코드" // 헤더 텍스트
           text3="지점명"
           text4="유통기한"
-          text5="삭제"
+          text5="❌"
         />
       ) : (
         <div>Loading...</div>

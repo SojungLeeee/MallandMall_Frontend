@@ -9,6 +9,18 @@ export default function AdminDeleteEvent() {
   const [isLoading, setIsLoading] = useState(true); // 로딩 상태
   const modal_dialog = useRef(null); // 모달 ref
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  };
+
   // 이벤트 데이터를 불러오는 함수
   useEffect(() => {
     async function fetchEventData() {
@@ -64,13 +76,20 @@ export default function AdminDeleteEvent() {
   // 행 렌더링 함수 정의
   const renderRow = (event, index) => {
     return (
-      <tr key={index} className="border-b border-gray-200 hover:bg-gray-50">
-        <td className="px-4 py-3">{event.eventId}</td>
-        <td className="px-4 py-3">{event.category}</td>
-        <td className="px-4 py-3">{event.eventTitle}</td>
-        <td className="px-4 py-3">{event.startDate}</td>
-        <td className="px-4 py-3">{event.endDate}</td>
-        <td className="px-4 py-3">
+      <tr
+        key={index}
+        className="border-b border-gray-200 hover:bg-gray-50 text-xs"
+      >
+        <td className="py-3 text-xs">{event.eventId}</td>
+        <td className="px-3 py-3  text-xs">{event.category}</td>
+        <td className="px-3 py-3  text-xs w-40">{event.eventTitle}</td>
+        <td className={"px-1 py-2 text-xs w-30"}>
+          {formatDate(event.endDate)} {/* 날짜 형식 변환 */}
+        </td>
+        <td className={"px-1 py-2 text-xs w-30"}>
+          {formatDate(event.endDate)} {/* 날짜 형식 변환 */}
+        </td>
+        <td className="py-3">
           <button
             onClick={() => handleRemoveEvent(event.eventId)}
             className="bg-white hover:bg-red-100 p-1 rounded"
@@ -95,7 +114,7 @@ export default function AdminDeleteEvent() {
 
   return (
     <div className="w-full p-4">
-      <h2 className="text-2xl font-semibold mb-4">이벤트 목록</h2>
+      <h2 className="text-2xl font-semibold mb-4">이벤트 삭제</h2>
       <hr className="mb-4" />
 
       {/* 삭제 확인 모달 */}
@@ -138,12 +157,12 @@ export default function AdminDeleteEvent() {
           dataType="event" // 데이터 타입
           renderRow={renderRow} // 행 렌더링 함수
           showDeleteCheckbox={true} // 삭제 체크박스 여부
-          text1="이벤트 ID"
+          text1="ID"
           text2="카테고리"
           text3="이벤트명"
           text4="시작일자"
           text5="마감일자"
-          text6="삭제"
+          text6="❌"
         />
       ) : (
         <div className="p-4 text-center bg-gray-100 rounded">

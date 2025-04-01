@@ -3,12 +3,15 @@ import {
   fetchFindAllProductCode,
   fetchDeleteProductCode,
 } from "../../api/httpAdminService";
-import ListComponents from "../../components/ui/admin/ListComponents"; // ListComponents 컴포넌트 임포트
+import ListComponents, {
+  getCategoryBackgroundColor,
+} from "../../components/ui/admin/ListComponents"; // Import getCategoryBackgroundColor
 
 export default function AdminAllProducts() {
   const [error, setError] = useState(null); // 오류 상태
   const [productData, setProductData] = useState([]); // 상품 데이터를 위한 상태
   const [delProductCode, setDelProductCode] = useState(null); // 삭제할 상품 코드
+  const [selectedCategory, setSelectedCategory] = useState(null); // 선택된 카테고리
   const modal_dialog = useRef(null); // 모달 ref
 
   // 상품 데이터를 불러오는 함수
@@ -32,6 +35,11 @@ export default function AdminAllProducts() {
 
     fetchProductData();
   }, []);
+
+  // 카테고리 필터링: 선택된 카테고리에 해당하는 상품만 필터링
+  const filteredProducts = selectedCategory
+    ? productData.filter((product) => product.category === selectedCategory)
+    : productData; // 선택된 카테고리가 없으면 모든 상품 표시
 
   // 상품 삭제 처리 함수
   const handleRemoveProduct = (productCode) => {
@@ -68,14 +76,27 @@ export default function AdminAllProducts() {
     );
   }
 
+  // 카테고리 선택 처리 함수
+  const handleCategorySelect = (category) => {
+    setSelectedCategory(
+      (prevCategory) => (prevCategory === category ? null : category) // 이미 선택된 카테고리라면 해제, 아니면 선택
+    );
+  };
+
   // 행 렌더링 함수 정의
   const renderRow = (product, index) => {
+    // 카테고리별 배경색 설정
+    const categoryBackgroundColor = getCategoryBackgroundColor(
+      product.category
+    );
     return (
-      <tr key={index}>
+      <tr key={index} className="border-b border-gray-300 text-xs">
         <td className="px-3 py-2">{product.productCode}</td>
-        <td className="px-3 py-2">{product.category}</td>
-        <td className="px-3 py-2">{product.productName}</td>
-        <td className="px-3 py-2">{product.price}</td>
+        <td className={`px-3 py-2 ${categoryBackgroundColor}`}>
+          {product.category}
+        </td>
+        <td className="px-3 py-2 text-left text-xs">{product.productName}</td>
+        <td className="px-3 py-2">{product.price.toLocaleString()}</td>
         <td className="px-3 py-2">
           <button
             onClick={() => handleRemoveProduct(product.productCode)}
@@ -88,10 +109,34 @@ export default function AdminAllProducts() {
     );
   };
 
+  // 모든 카테고리 리스트 추출 (중복된 카테고리 제거)
+  const allCategories = [
+    ...new Set(productData.map((product) => product.category)),
+  ];
+
   return (
-    <div className="w-full p-4">
-      <h2 className="text-2xl font-semibold mb-4">상품 코드 목록</h2>
+    <div className="w-full p-2">
+      <h2 className="text-2xl font-semibold mb-4">상품 삭제</h2>
       <hr className="mb-4" />
+
+      {/* 카테고리 선택 UI */}
+      <div className="mb-4">
+        <div className="flex flex-wrap gap-2">
+          {allCategories.map((category) => (
+            <button
+              key={category}
+              onClick={() => handleCategorySelect(category)}
+              className={`px-4 py-2 border rounded-md ${
+                selectedCategory === category
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-200 text-black"
+              }`}
+            >
+              {category}
+            </button>
+          ))}
+        </div>
+      </div>
 
       {/* 삭제 확인 모달 */}
       <dialog
@@ -108,7 +153,7 @@ export default function AdminAllProducts() {
           <button
             type="button"
             onClick={handleDeleteConfirm}
-            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+            className="px-1 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
           >
             삭제
           </button>
@@ -123,13 +168,13 @@ export default function AdminAllProducts() {
       </dialog>
 
       {/* 상품 목록 표시 */}
-      {productData.length > 0 ? (
+      {filteredProducts.length > 0 ? (
         <ListComponents
-          data={productData} // 상품 데이터
+          data={filteredProducts} // 필터링된 상품 데이터
           dataType="product" // 데이터 타입 예시
           renderRow={renderRow} // 행 렌더링 함수
           showDeleteCheckbox={true} // 삭제 체크박스 여부
-          text1="상품코드" // 헤더 텍스트
+          text1="코드" // 헤더 텍스트
           text2="카테고리"
           text3="상품명"
           text4="가격"
