@@ -54,7 +54,7 @@ export default function MyPage() {
               <div className="w-12 h-12 flex items-center justify-center mb-2">
                 <MessageSquare size={24} />
               </div>
-              <span className="text-sm">내가 쓴 리뷰</span>
+              <span className="text-sm">리뷰</span>
             </button>
           </div>
 

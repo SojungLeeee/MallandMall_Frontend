@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { fetchSearchProducts } from "../../api/httpSearchService"; // axios 요청을 가져옵니다.
 import ProductCard from "../../components/ui/product/ProductCard"; // ProductCard 컴포넌트 import
 import NaverMap from "../../components/ui/map/NaverMap";
+import findinventroy from "./Findinventroy";
 
 const SearchPage = () => {
   const { productName } = useParams(); // URL에서 productName을 가져옵니다.
@@ -62,13 +63,15 @@ const SearchPage = () => {
           이 키워드를 포함하는 상품명이 없습니다.
         </div>
       ) : (
-        <ProductCard
-          products={products} // 상품 데이터 전달
-          loading={loading} // 로딩 상태 전달
-          error={error} // 에러 상태 전달
-          basePath="/product" // 기본 경로 지정
-          columns={2} // 그리드 열 개수 지정
-        />
+        <div>
+          <ProductCard
+            products={products} // 상품 데이터 전달
+            loading={loading} // 로딩 상태 전달
+            error={error} // 에러 상태 전달
+            basePath="/product" // 기본 경로 지정
+            columns={2} // 그리드 열 개수 지정
+          />
+        </div>
       )}
     </div>
   );
