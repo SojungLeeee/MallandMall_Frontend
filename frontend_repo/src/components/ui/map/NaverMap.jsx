@@ -41,15 +41,15 @@ const NaverMap = () => {
   }, []);
 
   return (
-    <div className="relative w-100px h-100px h-screen">
+    <div className="relative w-full h-96 md:h-80 lg:h-96 max-w-3xl mx-auto rounded-lg overflow-hidden shadow-md">
       {loading && (
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30 bg-white bg-opacity-80 p-5 rounded-lg font-bold">
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30 bg-white bg-opacity-80 p-4 rounded-lg font-bold">
           로딩 중...
         </div>
       )}
 
       {error && (
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30 bg-red-50 p-5 rounded-lg text-red-600 font-bold">
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30 bg-red-50 p-4 rounded-lg text-red-600 font-bold">
           {error}
         </div>
       )}
