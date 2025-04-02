@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import ProductCard from "../../components/ui/product/ProductCard";
+
 import { fetchProductHome } from "../../api/httpMemberService";
 import CircularMenuItem from "../../components/CircularMenuitem";
 import { useNavigate } from "react-router-dom";
 
 const AllProducts = () => {
   const navigate = useNavigate();
+
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -23,6 +25,11 @@ const AllProducts = () => {
   // 메뉴 아이템 클릭 핸들러
   const handleMenuClick = (path) => {
     navigate(path);
+  };
+
+  // 재고조회로 이동하는 함수
+  const handleClick = () => {
+    navigate("/map"); // Navigate가 아닌 navigate 함수 사용
   };
 
   useEffect(() => {

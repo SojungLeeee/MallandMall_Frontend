@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 
 const NaverMap = () => {
@@ -9,6 +9,12 @@ const NaverMap = () => {
   const [selectedBranch, setSelectedBranch] = useState(null);
   const [markers, setMarkers] = useState([]);
   const [branchInventory, setBranchInventory] = useState({});
+
+  // GPS 관련 상태 추가
+  const [currentLocation, setCurrentLocation] = useState(null);
+  const [currentLocationMarker, setCurrentLocationMarker] = useState(null);
+  const [gpsEnabled, setGpsEnabled] = useState(false);
+  const watchIdRef = useRef(null);
 
   // 상품 검색 관련 상태 변수들
   const [searchTerm, setSearchTerm] = useState("");
@@ -144,7 +150,142 @@ const NaverMap = () => {
     };
 
     initMap();
+
+    // 컴포넌트 언마운트 시 위치 추적 중지
+    return () => {
+      if (watchIdRef.current) {
+        navigator.geolocation.clearWatch(watchIdRef.current);
+      }
+    };
   }, []);
+
+  // GPS 기능 활성화/비활성화 토글 함수
+  const toggleGPS = () => {
+    if (gpsEnabled) {
+      // GPS 비활성화
+      if (watchIdRef.current) {
+        navigator.geolocation.clearWatch(watchIdRef.current);
+        watchIdRef.current = null;
+      }
+
+      // 현재 위치 마커 제거
+      if (currentLocationMarker) {
+        currentLocationMarker.setMap(null);
+        setCurrentLocationMarker(null);
+      }
+
+      // 현재 위치 상태 초기화
+      setCurrentLocation(null);
+      setGpsEnabled(false);
+
+      console.log("GPS 비활성화됨, 마커 제거됨");
+    } else {
+      // GPS 활성화
+      startGPSTracking();
+    }
+  };
+
+  // GPS 추적 시작 함수
+  const startGPSTracking = () => {
+    if (!navigator.geolocation) {
+      alert("이 브라우저에서는 위치 정보를 지원하지 않습니다.");
+      return;
+    }
+
+    setGpsEnabled(true);
+
+    const options = {
+      enableHighAccuracy: true, // 높은 정확도 사용
+      timeout: 10000, // 10초 타임아웃
+      maximumAge: 0, // 캐시된 위치 정보 사용 안 함
+    };
+
+    // 위치 추적 시작
+    watchIdRef.current = navigator.geolocation.watchPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        const latLng = new window.naver.maps.LatLng(latitude, longitude);
+
+        setCurrentLocation(latLng);
+
+        // 맵이 로드되었는지 확인
+        if (map) {
+          // 현재 위치로 지도 중심 이동
+          map.setCenter(latLng);
+
+          // 현재 위치 마커 생성 또는 업데이트
+          if (currentLocationMarker) {
+            currentLocationMarker.setPosition(latLng);
+          } else {
+            const markerContent = document.createElement("div");
+            markerContent.innerHTML = `
+              <div style="
+                width: 18px;
+                height: 18px;
+                border-radius: 50%;
+                background-color: #4285F4;
+                border: 3px solid #ffffff;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+                animation: pulse 1.5s infinite;
+              "></div>
+              <style>
+                @keyframes pulse {
+                  0% {
+                    transform: scale(1);
+                    box-shadow: 0 0 0 0 rgba(66, 133, 244, 0.7);
+                  }
+                  
+                  70% {
+                    transform: scale(1.1);
+                    box-shadow: 0 0 0 10px rgba(66, 133, 244, 0);
+                  }
+                  
+                  100% {
+                    transform: scale(1);
+                    box-shadow: 0 0 0 0 rgba(66, 133, 244, 0);
+                  }
+                }
+              </style>
+            `;
+
+            const newMarker = new window.naver.maps.Marker({
+              position: latLng,
+              map: map,
+              icon: {
+                content: markerContent,
+                anchor: new window.naver.maps.Point(12, 12),
+              },
+              zIndex: 1000, // 다른 마커보다 위에 표시
+            });
+
+            setCurrentLocationMarker(newMarker);
+          }
+        }
+      },
+      (error) => {
+        let errorMessage;
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            errorMessage = "위치 정보 접근 권한이 거부되었습니다.";
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorMessage = "위치 정보를 사용할 수 없습니다.";
+            break;
+          case error.TIMEOUT:
+            errorMessage = "위치 정보 요청이 시간 초과되었습니다.";
+            break;
+          default:
+            errorMessage = "알 수 없는 오류";
+            break;
+        }
+
+        console.error("GPS 오류:", errorMessage);
+        alert(errorMessage);
+        setGpsEnabled(false);
+      },
+      options
+    );
+  };
 
   // 브랜치 데이터를 사용하여 마커 생성
   useEffect(() => {
@@ -456,6 +597,42 @@ const NaverMap = () => {
         )}
 
         <div id="map" className="w-full h-full"></div>
+
+        {/* GPS 버튼 추가 */}
+        {map && !loading && (
+          <div className="absolute bottom-4 right-4 z-20">
+            <button
+              onClick={toggleGPS}
+              className={`flex items-center justify-center w-8 h-8 rounded-full shadow-lg ${
+                gpsEnabled ? "bg-blue-500" : "bg-white"
+              } focus:outline-none transition-colors duration-300`}
+              title={gpsEnabled ? "GPS 끄기" : "내 위치 찾기"}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className={`h-6 w-6 ${
+                  gpsEnabled ? "text-white" : "text-gray-600"
+                }`}
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+            </button>
+          </div>
+        )}
       </div>
 
       {/* 선택된 지점 정보 */}
@@ -493,7 +670,6 @@ const NaverMap = () => {
           )}
         </div>
       )}
-
       {/* 상품 검색 결과 - 지도 아래에 배치 */}
       {productLoading ? (
         <div className="p-4 text-center">
