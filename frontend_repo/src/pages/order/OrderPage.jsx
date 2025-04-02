@@ -32,6 +32,11 @@ const OrderPage = () => {
     });
   };
 
+  const handleAddressCheck = () => {
+    const OrderAddress = formData.addr1;
+    console.log("OrderAddress:", OrderAddress);
+  };
+
   useEffect(() => {
     if (state && state.selectedCoupon) {
       setSelectedCoupon(state.selectedCoupon); // 쿠폰 정보가 있으면 상태에 저장
@@ -434,6 +439,13 @@ const OrderPage = () => {
       </div>
       <br />
       <hr />
+      <button
+        onClick={handleAddressCheck} // "주소 확인" 버튼 클릭 시 실행되는 함수
+        className="w-full px-4 py-2 bg-gray-500 text-white rounded"
+      >
+        주소 확인
+      </button>
+
       {/* 전체 결제 금액 */}
       <div className="my-6 text-right">
         <h3 className="text-lg font-bold">총 결제 금액</h3>
