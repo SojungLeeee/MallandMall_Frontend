@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import ProductCard from "../../components/ui/product/ProductCard";
+import findQuantity from "../../assets/images/findQuantity.png";
+import offline from "../../assets/images/offline.png";
+import findBranch from "../../assets/images/findBranch.png";
 
 import { fetchProductHome } from "../../api/httpMemberService";
 import CircularMenuItem from "../../components/CircularMenuitem";
@@ -138,19 +141,19 @@ const AllProducts = () => {
             <CircularMenuItem
               title="재고찾기"
               icon="package"
-              bgColor="bg-blue-400"
+              bgColor="bg-blue-200"
               onClick={handleInventoryClick}
-              imageSrc="/images/inventory.jpg"
+              imageSrc={findQuantity}
             />
           </div>
 
           <div>
             <CircularMenuItem
-              title="오프라인 초특가"
+              title="초특가"
               icon="tag"
               bgColor="bg-red-400"
               onClick={handleSpecialDealsClick} // 버튼 클릭 시 할인 상품 불러오기
-              imageSrc="/images/special_deals.jpg" // 아이콘 이미지
+              imageSrc={offline} // 아이콘 이미지
             />
           </div>
 
@@ -162,7 +165,7 @@ const AllProducts = () => {
                 icon={item.icon}
                 bgColor={item.bgColor}
                 onClick={() => handleMenuClick(item.path)}
-                imageSrc={item.imageSrc}
+                // imageSrc={item.imageSrc}
               />
             </div>
           ))}
@@ -177,7 +180,7 @@ const AllProducts = () => {
               icon="shopping"
               bgColor="bg-green-400"
               onClick={handleStoreInfoClick}
-              imageSrc="/images/store.jpg"
+              imageSrc={findBranch}
             />
           </div>
 
@@ -189,7 +192,7 @@ const AllProducts = () => {
                 icon={item.icon}
                 bgColor={item.bgColor}
                 onClick={() => handleMenuClick(item.path)}
-                imageSrc={item.imageSrc}
+                // imageSrc={item.imageSrc}
               />
             </div>
           ))}

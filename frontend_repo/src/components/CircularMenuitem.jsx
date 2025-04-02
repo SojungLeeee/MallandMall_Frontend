@@ -14,6 +14,7 @@ export default function CircularMenuItem({
   icon = "package",
   bgColor = "bg-pink-400",
   textColor = "text-black",
+  imageSrc = "",
   onClick = () => console.log(`Clicked on ${title}`),
 }) {
   // 아이콘 매핑 함수
@@ -41,12 +42,21 @@ export default function CircularMenuItem({
 
   return (
     <div className="flex flex-col items-center justify-center ml-1 mt-3 px-1 py-2 flex-shrink-0">
-      {/* 원형 아이콘 */}
+      {/* 원형 아이콘 또는 이미지 */}
       <div
         className={`${bgColor} rounded-full w-12 h-12 flex items-center justify-center mb-2 shadow-sm cursor-pointer`}
         onClick={onClick}
       >
-        <div className="text-white">{getIcon(icon)}</div>
+        {/* If imageSrc is provided, show image, otherwise fallback to icon */}
+        {imageSrc ? (
+          <img
+            src={imageSrc}
+            alt={title}
+            className="w-full h-full object-cover rounded-full"
+          />
+        ) : (
+          <div className="text-white">{getIcon(icon)}</div>
+        )}
       </div>
 
       {/* 텍스트 라벨 */}
