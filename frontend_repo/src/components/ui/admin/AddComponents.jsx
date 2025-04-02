@@ -49,7 +49,7 @@ const GenericForm = ({
   return (
     <div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-md">
       <h2 className="text-2xl font-bold text-center mb-6">{title}</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} autoComplete="off">
         {fields.map((field) => (
           <FormField
             key={field.id}

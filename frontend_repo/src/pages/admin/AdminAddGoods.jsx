@@ -14,6 +14,7 @@ export default function AdminAllProducts() {
   const [goodsValues, setGoodsValues] = useState({
     productCode: "",
     branchName: "",
+    quantity: "",
     expirationDate: "", // 유통기한 추가
   });
 
@@ -21,6 +22,7 @@ export default function AdminAllProducts() {
   const productFields = [
     { id: "productCode", label: "상품 코드", type: "text" },
     { id: "branchName", label: "지점명", type: "text" },
+    { id: "quantity", label: "입고 개수", type: "number" },
     { id: "expirationDate", label: "유통기한", type: "datetime-local" }, // 유통기한을 datetime-local로 설정
   ];
 
@@ -54,6 +56,7 @@ export default function AdminAllProducts() {
         productCode: "",
         branchName: "",
         expirationDate: "",
+        quantity: "",
       });
 
       await fetchInventoryData(); // 재고 목록을 새로 불러옵니다.
