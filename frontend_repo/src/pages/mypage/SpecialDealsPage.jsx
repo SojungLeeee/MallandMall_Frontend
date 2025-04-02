@@ -51,8 +51,12 @@ const SpecialDealsPage = () => {
     <div className="relative p-4 bg-gradient-to-b from-red-50 to-white min-h-screen">
       {/* 헤더 섹션 */}
       <div className="mb-6 text-center">
-        <h1 className="text-2xl font-bold mb-2 text-red-800">오프라인 초특가 상품</h1>
-        <p className="text-sm text-gray-600">한정 수량으로 제공되는 특별 할인 상품</p>
+        <h1 className="text-2xl font-bold mb-2 text-red-800">
+          오프라인 초특가 상품
+        </h1>
+        <p className="text-sm text-gray-600">
+          한정 수량으로 제공되는 특별 할인 상품
+        </p>
       </div>
 
       {/* 초특가 문구 - 화면 우측 상단 고정 */}
@@ -61,7 +65,7 @@ const SpecialDealsPage = () => {
       </div>
 
       {/* 상품 리스트 표시 */}
-      <div className="product-list grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 max-w-full mx-auto">
+      <div className="product-list grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-2 gap-4 max-w-full mx-auto">
         {loading ? (
           <div className="flex justify-center items-center h-40">
             <div className="w-10 h-10 border-4 border-red-600 border-t-transparent rounded-full animate-spin"></div>
@@ -98,9 +102,15 @@ const SpecialDealsPage = () => {
                     className="w-full h-full object-contain" // object-contain으로 수정
                   />
                 </div>
-                <h3 className="text-lg font-semibold text-center mt-3">{product.productName}</h3>
-                <p className="text-sm text-gray-600 text-center">{product.description}</p>
-                <p className="text-xl font-bold text-red-500 text-center mt-2">{product.price.toLocaleString()}원</p>
+                <h3 className="text-lg font-semibold text-center mt-3">
+                  {product.productName}
+                </h3>
+                <p className="text-sm text-gray-600 text-center">
+                  {product.description}
+                </p>
+                <p className="text-xl font-bold text-red-500 text-center mt-2">
+                  {product.price.toLocaleString()}원
+                </p>
               </div>
             </div>
           ))
@@ -109,7 +119,9 @@ const SpecialDealsPage = () => {
 
       {/* 하단 정보 */}
       <div className="mt-6 p-3 bg-white rounded-lg shadow-sm text-center text-xs text-gray-500 max-w-[390px] mx-auto">
-        <p className="mb-1">* 상품 재고는 한정되어 있으며, 조기 품절될 수 있습니다.</p>
+        <p className="mb-1">
+          * 상품 재고는 한정되어 있으며, 조기 품절될 수 있습니다.
+        </p>
         <p>* 오프라인 매장에서만 적용되는 가격입니다.</p>
       </div>
     </div>

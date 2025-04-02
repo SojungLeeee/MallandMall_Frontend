@@ -16,7 +16,15 @@ import {
 } from "chart.js";
 
 // Chart.js 등록
-ChartJS.register(Title, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement);
+ChartJS.register(
+  Title,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement
+);
 
 const PriceHistoryChart = () => {
   const { productCode } = useParams();
@@ -85,24 +93,37 @@ const PriceHistoryChart = () => {
     },
     scales: {
       x: {
-        title: { display: true, text: "날짜", font: { size: 12, weight: "bold" } },
+        title: {
+          display: true,
+          text: "날짜",
+          font: { size: 12, weight: "bold" },
+        },
         grid: { display: false },
       },
       y: {
-        title: { display: true, text: "가격 (원)", font: { size: 12, weight: "bold" } },
+        title: {
+          display: true,
+          text: "가격 (원)",
+          font: { size: 12, weight: "bold" },
+        },
         beginAtZero: false,
         grid: { color: "rgba(0, 0, 0, 0.05)" },
       },
     },
   };
 
-  const discountRate = averagePrice > 0 ? Math.round(((averagePrice - currentPrice) / averagePrice) * 100) : 0;
+  const discountRate =
+    averagePrice > 0
+      ? Math.round(((averagePrice - currentPrice) / averagePrice) * 100)
+      : 0;
 
   return (
-    <div className="max-w-[390px] mx-auto p-4">
-      <div className="bg-gradient-to-br from-white to-red-50 rounded-xl shadow-lg overflow-hidden border border-gray-100">
-        <div className="bg-gradient-to-r from-red-600 to-red-500 px-4 py-3 text-white">
-          <h2 className="text-xl font-bold text-center">해당 상품 가격 변동 차트</h2>
+    <div className="w-full mx-auto p-4">
+      <div className="rounded-sm shadow-lg overflow-hidden border border-gray-100 ">
+        <div className="bg-gradient-to-r from-red-400 to-blue-400 px-4 py-3 text-white">
+          <h2 className="text-xl font-bold text-center">
+            해당 상품 가격 변동 차트
+          </h2>
         </div>
 
         <div className="p-4 bg-white">
@@ -121,27 +142,40 @@ const PriceHistoryChart = () => {
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-white p-3 rounded-lg shadow-sm">
               <p className="text-xs text-gray-500 mb-1">제품 평균가</p>
-              <p className="text-lg font-bold text-gray-800">{averagePrice.toLocaleString()}원</p>
+              <p className="text-lg font-bold text-gray-800">
+                {averagePrice.toLocaleString()}원
+              </p>
             </div>
             <div className="bg-white p-3 rounded-lg shadow-sm">
               <p className="text-xs text-gray-500 mb-1">현재 초특가</p>
-              <p className="text-lg font-bold text-red-600">{currentPrice.toLocaleString()}원</p>
+              <p className="text-lg font-bold text-red-600">
+                {currentPrice.toLocaleString()}원
+              </p>
             </div>
           </div>
 
           {discountRate > 0 && (
             <div className="mt-4 bg-red-100 rounded-lg p-3 flex items-center justify-center">
               <div className="text-center">
-                <p className="text-sm text-red-800 font-medium">평균 대비 할인율</p>
-                <p className="text-2xl font-bold text-red-600">{discountRate}% 할인</p>
+                <p className="text-sm text-red-800 font-medium">
+                  평균 대비 할인율
+                </p>
+                <p className="text-2xl font-bold text-red-600">
+                  {discountRate}% 할인
+                </p>
               </div>
             </div>
           )}
         </div>
 
         <div className="p-4">
-          <button className="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition-colors shadow-sm flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+          <button className="rounded-sm w-full py-3 bg-black hover:bg-red-700 text-white font-bold rounded-lg transition-colors shadow-sm flex items-center justify-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5 mr-2"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
               <path
                 fillRule="evenodd"
                 d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
