@@ -95,11 +95,11 @@ const SpecialDealsPage = () => {
 
               {/* 상품 카드 래퍼 */}
               <div className="w-full p-3">
-                <div className="w-full h-48 bg-gray-100">
+                <div className="w-full h-48">
                   <img
                     src={product.image}
                     alt={product.productName}
-                    className="w-full h-full object-contain" // object-contain으로 수정
+                    className="border w-full h-full object-contain" // object-contain으로 수정
                   />
                 </div>
                 <h3 className="text-lg font-semibold text-center mt-3">

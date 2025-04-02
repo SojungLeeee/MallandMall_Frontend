@@ -15,7 +15,7 @@ const RankedSearchComponent = ({ foodItems }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md px-6 py-3  max-w-6xl mx-auto text-sm">
+    <div className="bg-white rounded-lg shadow-md px-6 py-3 max-w-6xl mx-auto text-sm">
       <h4 className="text-xl font-bold text-center text-emerald-600 my-4 border-b-2 border-emerald-300 pb-2">
         몰앤몰 추천 검색어
       </h4>
@@ -33,7 +33,8 @@ const RankedSearchComponent = ({ foodItems }) => {
                 <span className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 font-semibold mr-3">
                   {item.rank}
                 </span>
-                <span className="text-gray-700 font-medium">{item.name}</span>
+                <span className="text-gray-700 font-bold">{item.name}</span>{" "}
+                {/* font-bold 추가 */}
               </li>
             ))}
           </ol>
@@ -51,7 +52,8 @@ const RankedSearchComponent = ({ foodItems }) => {
                 <span className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 font-semibold mr-3">
                   {item.rank}
                 </span>
-                <span className="text-gray-700 font-medium">{item.name}</span>
+                <span className="text-gray-700 font-bold">{item.name}</span>{" "}
+                {/* font-bold 추가 */}
               </li>
             ))}
           </ol>

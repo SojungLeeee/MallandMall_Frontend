@@ -10,7 +10,7 @@ export default function FoundId() {
 
   return (
     <div className="flex items-center justify-center w-full h-full bg-white  p-5">
-      <div className="bg-[#fff6e2] p-8 rounded-xl shadow-lg w-full max-w-md">
+      <div className="bg-[#f7f4ed] p-8 rounded-sm shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-bold mb-5 text-center">
           아이디 찾기 결과
         </h2>
@@ -33,13 +33,13 @@ export default function FoundId() {
         <div className="space-y-4 text-center">
           <button
             onClick={() => navigate("/login")} // 로그인 페이지로 이동
-            className="w-full py-3 text-xl bg-[#cbe8ac] rounded-xl font-bold hover:bg-[#e2d267] focus:outline-none"
+            className="w-full py-3 text-xl bg-[#cbe8ac] rounded-sm font-bold hover:bg-[#e2d267] focus:outline-none"
           >
             로그인하기
           </button>
           <button
             onClick={() => navigate("/reset-password")} // 비밀번호 재설정 페이지로 이동
-            className="w-full py-3 text-xl bg-[#f9e687] rounded-xl font-bold hover:bg-[#e2d267] focus:outline-none"
+            className="w-full py-3 text-xl bg-[#f9e687] rounded-sm font-bold hover:bg-[#e2d267] focus:outline-none"
           >
             비밀번호 재설정
           </button>

@@ -520,7 +520,7 @@ const NaverMap = () => {
                   ? "상품명을 입력하세요"
                   : "카테고리를 입력하세요"
               }
-              className="w-full px- py-2 pr-1 border border-gray-300 rounded-sm"
+              className="w-full px-2 py-2 pr-1 border border-gray-300 rounded-sm"
             />
           </div>
 
