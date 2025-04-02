@@ -356,141 +356,16 @@ const NaverMap = () => {
   };
 
   return (
-    <div className="flex flex-col space-y-4 max-w-3xl mx-auto">
-      {/* 상품 검색 섹션 */}
-      <div className="flex flex-col space-y-1">
-        <div className="flex space-x-1.5">
-          <select
-            value={searchType}
-            onChange={handleSearchTypeChange}
-            className="px-3 py-2 border border-gray-300 rounded-sm"
-          >
-            <option value="productName">상품명</option>
-            <option value="category">카테고리</option>
-          </select>
-
-          <div className="relative flex-1">
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={handleSearchTermChange}
-              placeholder={
-                searchType === "productName"
-                  ? "상품명을 입력하세요"
-                  : "카테고리를 입력하세요"
-              }
-              className="w-full px- py-2 pr-1 border border-gray-300 rounded-sm"
-            />
-          </div>
-
-          <button
-            onClick={searchProducts}
-            className="bg-black hover:bg-gray-800 text-white px-4 py-2  rounded-sm shadow-md 
-                     shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-1px_rgba(0,0,0,0.06)] 
-                     hover:translate-y-[-3px] transition-transform 
-                     focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75 
-                     duration-300 ease-in-out"
-          >
-            검색
-          </button>
-        </div>
-      </div>
-
-      {/* 선택된 상품 정보 */}
-      {selectedProduct && (
-        <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-md">
-          <div className="flex justify-between items-start">
-            <div className="flex items-center">
-              {selectedProduct.image && (
-                <img
-                  src={selectedProduct.image}
-                  alt={selectedProduct.productName}
-                  className="w-16 h-16 object-cover rounded mr-4"
-                />
-              )}
-              <div>
-                <h2 className="text-lg font-bold text-gray-900">
-                  {selectedProduct.productName}
-                </h2>
-                <div className="text-sm text-gray-600 mb-1">
-                  카테고리: {selectedProduct.category}
-                </div>
-                <div className="font-medium text-green-600">
-                  가격: {selectedProduct.price?.toLocaleString() || 0}원
-                </div>
-              </div>
-            </div>
-            <button
-              className="text-gray-500 hover:text-gray-700"
-              onClick={() => setSelectedProduct(null)}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </button>
-          </div>
+    <div className="relative w-full h-96 md:h-80 lg:h-96 max-w-3xl mx-auto rounded-lg overflow-hidden shadow-md">
+      {loading && (
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30 bg-white bg-opacity-80 p-4 rounded-lg font-bold">
+          로딩 중...
         </div>
       )}
 
-      {/* 지도 컨테이너 */}
-      <div className="relative w-full h-96 md:h-80 lg:h-96 rounded-lg overflow-hidden shadow-md">
-        {loading && (
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30 bg-white bg-opacity-80 p-4 rounded-lg font-bold">
-            로딩 중...
-          </div>
-        )}
-
-        {error && (
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30 bg-red-50 p-4 rounded-lg text-red-600 font-bold">
-            {error}
-          </div>
-        )}
-
-        <div id="map" className="w-full h-full"></div>
-      </div>
-
-      {/* 선택된 지점 정보 */}
-      {selectedBranch && (
-        <div className="p-4 border border-gray-200 rounded-lg shadow-sm bg-white">
-          <h3 className="text-lg font-bold mb-2">
-            {selectedBranch.branchName}
-          </h3>
-          <p className="text-gray-600 mb-2">{selectedBranch.branchAddress}</p>
-          {selectedProduct && (
-            <div className="mt-2 p-3 bg-blue-50 rounded-md">
-              <div className="flex items-center">
-                {selectedProduct.image && (
-                  <img
-                    src={selectedProduct.image}
-                    alt={selectedProduct.productName}
-                    className="w-12 h-12 object-cover rounded mr-3"
-                  />
-                )}
-                <div>
-                  <p className="font-medium">
-                    <span className="text-blue-600">
-                      {selectedProduct.productName}
-                    </span>
-                  </p>
-                  <p className="text-sm mt-1">
-                    재고 수량:{" "}
-                    <span className="font-bold">
-                      {selectedBranch.goodsCount}개
-                    </span>
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
+      {error && (
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30 bg-red-50 p-4 rounded-lg text-red-600 font-bold">
+          {error}
         </div>
       )}
 

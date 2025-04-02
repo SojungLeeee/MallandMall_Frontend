@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from "react";
 import ProductCard from "../../components/ui/product/ProductCard";
-import { fetchProductHome } from "../../api/httpMemberService";
-import CircularMenuItem from "../../components/CircularMenuitem";
-import { useNavigate } from "react-router-dom";
+
+import { fetchProductHome } from "../../api/httpMemberService"; // API 호출
+import SemiWideComponent from "../../components/SemiWideComponent";
+import { useNavigate } from "react-router-dom"; // Navigate가 아닌 useNavigate 임포트
+
+/**
+ * 모든 상품을 보여주는 Products 페이지 컴포넌트
+ * ProductList 컴포넌트를 활용하여 리팩토링
+ */
 
 const AllProducts = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // 컴포넌트 내부에서 useNavigate 훅 호출
+
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -23,6 +30,11 @@ const AllProducts = () => {
   // 메뉴 아이템 클릭 핸들러
   const handleMenuClick = (path) => {
     navigate(path);
+  };
+
+  // 재고조회로 이동하는 함수
+  const handleClick = () => {
+    navigate("/map"); // Navigate가 아닌 navigate 함수 사용
   };
 
   useEffect(() => {
@@ -110,60 +122,23 @@ const AllProducts = () => {
 
   return (
     <div>
-      {/* 스크롤 가능한 원형 메뉴 - 두 줄로 표시 */}
-      <div className="mb-2 mt-2">
-        {/* 첫 번째 줄 - 첫번째에 재고찾기 배치 */}
-        <div className="flex flex-row justify-start ml-0 gap-2 mb-1">
-          {/* 재고찾기 메뉴를 첫 번째로 배치 */}
-          <div>
-            <CircularMenuItem
+      <div className="mb-2">
+        <div className="flex flex-col md:flex-row justify-center ml-6">
+          <div className="w-full md:w-1/2">
+            <SemiWideComponent
               title="재고찾기"
-              icon="package"
-              bgColor="bg-blue-400"
-              onClick={handleInventoryClick}
-              imageSrc="/images/inventory.jpg"
+              subtitle="내 근처의 매장 찾기"
+              noMargin={true}
+              onClick={handleClick} // 여기에 클릭 핸들러 연결
             />
           </div>
-
-          {/* 나머지 메뉴 아이템 */}
-          {firstRowMenuItems.map((item, index) => (
-            <div key={index}>
-              <CircularMenuItem
-                title={item.title}
-                icon={item.icon}
-                bgColor={item.bgColor}
-                onClick={() => handleMenuClick(item.path)}
-                imageSrc={item.imageSrc}
-              />
-            </div>
-          ))}
-        </div>
-
-        {/* 두 번째 줄 */}
-        <div className="flex flex-row justify-start ml-0 gap-2">
-          {/* 매장안내를 첫 번째로 배치 */}
-          <div>
-            <CircularMenuItem
+          <div className="w-full md:w-1/2">
+            <SemiWideComponent
               title="매장안내"
-              icon="shopping"
-              bgColor="bg-green-400"
-              onClick={handleStoreInfoClick}
-              imageSrc="/images/store.jpg"
+              subtitle="가까운 매장 찾기"
+              noMargin={true}
             />
           </div>
-
-          {/* 나머지 메뉴 아이템 */}
-          {secondRowMenuItems.map((item, index) => (
-            <div key={index}>
-              <CircularMenuItem
-                title={item.title}
-                icon={item.icon}
-                bgColor={item.bgColor}
-                onClick={() => handleMenuClick(item.path)}
-                imageSrc={item.imageSrc}
-              />
-            </div>
-          ))}
         </div>
       </div>
 
