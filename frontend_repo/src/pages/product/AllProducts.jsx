@@ -4,6 +4,7 @@ import ProductCard from "../../components/ui/product/ProductCard";
 import { fetchProductHome } from "../../api/httpMemberService";
 import CircularMenuItem from "../../components/CircularMenuitem";
 import { useNavigate } from "react-router-dom";
+import { fetchDiscountedProducts } from "../../api/httpChartService";
 
 const AllProducts = () => {
   const navigate = useNavigate();
@@ -50,6 +51,17 @@ const AllProducts = () => {
 
     fetchProducts();
   }, []);
+
+  // 오프라인 초특가
+  const handleSpecialDealsClick = async () => {
+    try {
+      const discountedProducts = await fetchDiscountedProducts(); // 할인된 상품 가져오기
+      setProducts(discountedProducts); // 할인 상품으로 상태 업데이트
+      navigate("/special-deals"); // SpecialDealsPage로 이동
+    } catch (err) {
+      setError("할인 상품을 불러오는 중 오류가 발생했습니다.");
+    }
+  };
 
   // 메뉴 아이템 설정
   const menuItems = [
@@ -129,6 +141,16 @@ const AllProducts = () => {
               bgColor="bg-blue-400"
               onClick={handleInventoryClick}
               imageSrc="/images/inventory.jpg"
+            />
+          </div>
+
+          <div>
+            <CircularMenuItem
+              title="오프라인 초특가"
+              icon="tag"
+              bgColor="bg-red-400"
+              onClick={handleSpecialDealsClick} // 버튼 클릭 시 할인 상품 불러오기
+              imageSrc="/images/special_deals.jpg" // 아이콘 이미지
             />
           </div>
 

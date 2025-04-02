@@ -13,12 +13,8 @@ import FindId from "./pages/login/FindId";
 import { action as authAction } from "./pages/login/Login";
 import Mypage, { loader as mypageLoader } from "./pages/mypage/Mypage";
 import FoundId from "../src/pages/login/FoundId";
-import DeleteAccount, {
-  loader as deleteAccountLoader,
-} from "./pages/mypage/DeleteAccount";
-import EditProfile, {
-  loader as editProfileLoader,
-} from "./pages/mypage/EditProfile";
+import DeleteAccount, { loader as deleteAccountLoader } from "./pages/mypage/DeleteAccount";
+import EditProfile, { loader as editProfileLoader } from "./pages/mypage/EditProfile";
 import Signup from "./pages/login/Signup";
 import { action as signUpAction } from "./pages/login/Signup";
 import SelectCategory from "./pages/login/SelectCategory";
@@ -72,6 +68,9 @@ import OrderComplete from "./pages/order/OrderComplete";
 import NaverMap from "./components/ui/map/NaverMap";
 
 import AdminQuestionDetail from "./pages/admin/AdminQuestionDetail";
+import OfflinePriceChart from "./components/ui/chart/OfflinePriceChart";
+import SpecialDealsPage from "./pages/mypage/SpecialDealsPage";
+import PriceHistoryChart from "./pages/mypage/PriceHistoryChart";
 
 const router = createBrowserRouter([
   // AppTwo 기반 라우트
@@ -196,6 +195,9 @@ const router = createBrowserRouter([
         path: "/map",
         element: <NaverMap />,
       },
+
+      { path: "/special-deals", element: <SpecialDealsPage /> },
+      { path: "/product-chart/:productCode", element: <PriceHistoryChart /> },
     ],
   },
 ]);
