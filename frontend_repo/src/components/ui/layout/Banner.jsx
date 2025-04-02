@@ -20,7 +20,7 @@ export default function Banner() {
   ];
 
   return (
-    <section className="w-[393px] h-[175px] relative">
+    <section className="w-full h-[175px] relative">
       {/* CSS 스타일 추가 */}
       <style>
         {`

@@ -124,7 +124,7 @@ const AllProducts = () => {
   ];
 
   // 각 줄에 표시할 메뉴 아이템 (첫 번째 줄은 재고찾기 + 메뉴 4개, 총 5개)
-  const firstRowMenuItems = menuItems.slice(0, 4);
+  const firstRowMenuItems = menuItems.slice(0, 3);
   const secondRowMenuItems = menuItems.slice(4);
 
   return (
