@@ -8,10 +8,12 @@ import {
 import { fetchDeleteCoupon } from "../../api/httpCouponService";
 
 const OrderPage = () => {
-  const { state } = useLocation(); // state로 전달된 정보 받기
+  const { state } = useLocation();
   const [selectedCoupon, setSelectedCoupon] = useState(null); // 선택된 쿠폰 상태
   const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
+  const [coordinates, setCoordinates] = useState(null);
+  const [naverMapLoaded, setNaverMapLoaded] = useState(false);
   const [formData, setFormData] = useState({
     receiverName: "",
     post: "",
@@ -19,10 +21,133 @@ const OrderPage = () => {
     addr2: "",
     phoneNumber: "",
     memo: "",
+    latitude: null,
+    longitude: null,
   });
   const [productInfo, setProductInfo] = useState(null); // 하나의 품목 정보
   const [cartItems, setCartItems] = useState([]); // 여러 품목 장바구니 아이템
   const [isFromCart, setIsFromCart] = useState(false); // 장바구니에서 왔는지 확인하는 상태
+
+  // 네이버 맵 스크립트 로드 (NaverMap 컴포넌트와 동일한 방식)
+  useEffect(() => {
+    // 이미 로드되었는지 확인
+    if (document.getElementById("naver-map-script")) {
+      // 이미 로드된 경우, API가 사용 가능한지 확인
+      if (window.naver && window.naver.maps) {
+        setNaverMapLoaded(true);
+      } else {
+        // API 객체를 기다림
+        const checkNaverApi = setInterval(() => {
+          if (window.naver && window.naver.maps) {
+            setNaverMapLoaded(true);
+            clearInterval(checkNaverApi);
+          }
+        }, 500);
+
+        // 30초 후 시간 초과 처리
+        setTimeout(() => {
+          clearInterval(checkNaverApi);
+        }, 30000);
+      }
+      return;
+    }
+
+    // 스크립트 로드
+    const script = document.createElement("script");
+    script.id = "naver-map-script";
+    script.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${process.env.REACT_APP_NAVER_CLIENT_ID}&submodules=geocoder`;
+    script.async = true;
+
+    script.onload = () => {
+      console.log("네이버 지도 API 로드 완료");
+      // API가 완전히 로드될 때까지 기다림
+      const checkNaverApi = setInterval(() => {
+        if (window.naver && window.naver.maps) {
+          setNaverMapLoaded(true);
+          clearInterval(checkNaverApi);
+        }
+      }, 500);
+
+      // 10초 후 시간 초과 처리
+      setTimeout(() => {
+        clearInterval(checkNaverApi);
+      }, 10000);
+    };
+
+    script.onerror = (error) => {
+      console.error("네이버 지도 스크립트 로드 실패:", error);
+    };
+
+    document.body.appendChild(script);
+  }, []);
+
+  // 지오코딩을 수행하는 함수 - NaverMap의 방식 참고하여 수정
+  const getCoordinatesFromAddress = () => {
+    // 주소가 모두 입력되었는지 확인
+    if (!formData.addr1 || !formData.addr2) {
+      return;
+    }
+
+    // 네이버 맵 API가 로드되지 않은 경우
+    if (!naverMapLoaded || !window.naver || !window.naver.maps) {
+      console.log("네이버 지도 API가 아직 로드되지 않았습니다.");
+      return;
+    }
+
+    try {
+      const fullAddress = `${formData.addr1} ${formData.addr2}`;
+      console.log("지오코딩 시도:", fullAddress);
+
+      // window.naver 사용
+      window.naver.maps.Service.geocode(
+        {
+          query: fullAddress,
+        },
+        function (status, response) {
+          if (status !== window.naver.maps.Service.Status.OK) {
+            console.error("지오코딩 에러:", status);
+            return;
+          }
+
+          if (!response || !response.v2 || response.v2.meta.totalCount === 0) {
+            console.error("검색 결과가 없습니다.");
+            return;
+          }
+
+          const item = response.v2.addresses[0];
+          const point = {
+            latitude: parseFloat(item.y),
+            longitude: parseFloat(item.x),
+          };
+
+          console.log("좌표 정보:", point);
+          setCoordinates(point);
+
+          setFormData((prev) => ({
+            ...prev,
+            latitude: point.latitude,
+            longitude: point.longitude,
+          }));
+        }
+      );
+    } catch (error) {
+      console.error("지오코딩 처리 중 오류 발생:", error);
+    }
+  };
+
+  // 주소가 업데이트될 때 좌표 정보도 업데이트
+  useEffect(() => {
+    if (formData.addr1 && formData.addr2 && naverMapLoaded) {
+      getCoordinatesFromAddress();
+    }
+  }, [formData.addr1, formData.addr2, naverMapLoaded]);
+
+  // API 로드 완료 시 주소가 있으면 좌표 획득
+  useEffect(() => {
+    if (naverMapLoaded && formData.addr1 && formData.addr2) {
+      getCoordinatesFromAddress();
+    }
+  }, [naverMapLoaded]);
 
   // handleCouponClick 함수에서 originalPrice를 전달
   const handleCouponClick = () => {
@@ -35,6 +160,10 @@ const OrderPage = () => {
   const handleAddressCheck = () => {
     const OrderAddress = formData.addr1;
     console.log("OrderAddress:", OrderAddress);
+    // 좌표 정보가 있다면 함께 표시
+    if (formData.latitude && formData.longitude) {
+      console.log("주소 좌표:", formData.latitude, formData.longitude);
+    }
   };
 
   useEffect(() => {
@@ -95,6 +224,8 @@ const OrderPage = () => {
       addr2: profile.addr2,
       phoneNumber: profile.phoneNumber,
       memo: "",
+      latitude: null, // 초기화
+      longitude: null, // 초기화
     });
   };
 
@@ -106,6 +237,8 @@ const OrderPage = () => {
       addr2: "",
       phoneNumber: "",
       memo: "",
+      latitude: null, // 초기화
+      longitude: null, // 초기화
     });
   };
 
@@ -116,6 +249,9 @@ const OrderPage = () => {
           ...prev,
           post: data.zonecode,
           addr1: data.roadAddress || data.jibunAddress,
+          // 주소가 변경되면 좌표 정보 초기화
+          latitude: null,
+          longitude: null,
         }));
       },
     }).open();
@@ -134,113 +270,21 @@ const OrderPage = () => {
       return; // 빈 값이 있으면 결제 처리 중단
     }
 
-    const { IMP } = window;
-    IMP.init("imp42828803");
-
-    // 결제 요청을 위한 금액 계산
-    const totalAmount = discountedPrice;
-
-    // 결제 상품 이름 설정
-    const productName = isFromCart
-      ? `${cartItems[0].productName} 외 ${cartItems.length - 1}개`
-      : productInfo.productName;
-
-    IMP.request_pay(
-      {
-        pg: pgProvider,
-        pay_method: "card",
-        merchant_uid: `mid_${new Date().getTime()}`,
-        name: productName,
-        amount: totalAmount, // 총 결제 금액
-        buyer_email: profile.email,
-        buyer_name: formData.receiverName,
-        buyer_tel: formData.phoneNumber,
-        buyer_addr: formData.addr1 + " " + formData.addr2,
-        buyer_postcode: formData.post,
-        m_redirect_url: "http://localhost:3000/order/complete",
-      },
-      (rsp) => {
-        if (rsp.success) {
-          const token = localStorage.getItem("jwtAuthToken");
-
-          // 장바구니 다수 상품 결제
-          if (isFromCart) {
-            const multiProductData = {
-              ...formData,
-              userId: profile.userId,
-              impUid: rsp.imp_uid,
-              orders: cartItems.map((item) => ({
-                productCode: item.productCode,
-                quantity: item.quantity,
-              })),
-              discountedPrice: discountRate,
-            };
-
-            sendOrderConfirm(multiProductData, token)
-              .then(() => {
-                if (window.innerWidth > 768) {
-                  navigate(`/order/complete?imp_uid=${rsp.imp_uid}`, {
-                    state: { selectedCoupon }, // 쿠폰 정보 추가
-                  });
-                }
-                // 장바구니에서 해당 품목들을 삭제
-                const cartIdsToDelete = cartItems.map((item) => item.cartId); // cartId 목록 생성
-                console.log(cartIdsToDelete);
-                fetchDeleteCartItems(cartIdsToDelete);
-
-                // 결제 후 localStorage 초기화
-                localStorage.removeItem("selectedCartItems");
-
-                // 결제 성공 후 쿠폰 삭제
-                if (selectedCoupon) {
-                  const couponId = selectedCoupon.couponId; // selectedCoupon에서 couponId 가져오기
-                  fetchDeleteCoupon(couponId)
-                    .then(() => {
-                      console.log(`쿠폰 ${couponId} 삭제 완료`);
-                    })
-                    .catch(() => alert("쿠폰 삭제 실패"));
-                }
-              })
-
-              .catch(() => alert("장바구니 주문 처리 중 오류 발생"));
-          } else {
-            // 단일 상품 결제
-            const singleProductData = {
-              ...formData,
-              userId: profile.userId,
-              productCode: productInfo.productCode,
-              quantity: 1,
-              impUid: rsp.imp_uid,
-            };
-
-            sendOrderConfirm(singleProductData, token)
-              .then(() => {
-                if (window.innerWidth > 768) {
-                  navigate(`/order/complete?imp_uid=${rsp.imp_uid}`, {
-                    state: { selectedCoupon }, // 쿠폰 정보 추가
-                  });
-                }
-
-                // 결제 후 localStorage 초기화
-                localStorage.removeItem("productInfo");
-
-                // 결제 성공 후 쿠폰 삭제
-                if (selectedCoupon) {
-                  const couponId = selectedCoupon.couponId; // selectedCoupon에서 couponId 가져오기
-                  fetchDeleteCoupon(couponId)
-                    .then(() => {
-                      console.log(`쿠폰 ${couponId} 삭제 완료`);
-                    })
-                    .catch(() => alert("쿠폰 삭제 실패"));
-                }
-              })
-              .catch(() => alert("주문 처리 중 오류 발생"));
-          }
-        } else {
-          alert("결제 실패: " + rsp.error_msg);
-        }
+    // 좌표 정보가 없고 네이버 맵이 로드된 경우 한 번 더 시도
+    if (!formData.latitude || !formData.longitude) {
+      if (naverMapLoaded) {
+        getCoordinatesFromAddress();
+        // 좌표를 얻는 것은 비동기 작업이므로, 잠시 대기 후 결제 진행
+        setTimeout(() => {
+          proceedToPayment(pgProvider);
+        }, 1000);
+      } else {
+        // 네이버 맵 API가 로드되지 않은 경우에도 결제 진행
+        proceedToPayment(pgProvider);
       }
-    );
+    } else {
+      proceedToPayment(pgProvider);
+    }
   };
 
   // 할인 금액 계산
@@ -282,6 +326,115 @@ const OrderPage = () => {
   const discountRate = selectedCoupon
     ? getDiscountRate(selectedCoupon.benefits)
     : 0;
+
+  const proceedToPayment = (pgProvider) => {
+    const { IMP } = window;
+    IMP.init("imp42828803");
+
+    // 결제 요청을 위한 금액 계산
+    const totalAmount = discountedPrice;
+
+    // 결제 상품 이름 설정
+    const productName = isFromCart
+      ? `${cartItems[0].productName} 외 ${cartItems.length - 1}개`
+      : productInfo.productName;
+
+    IMP.request_pay(
+      {
+        pg: pgProvider,
+        pay_method: "card",
+        merchant_uid: `mid_${new Date().getTime()}`,
+        name: productName,
+        amount: totalAmount, // 총 결제 금액
+        buyer_email: profile.email,
+        buyer_name: formData.receiverName,
+        buyer_tel: formData.phoneNumber,
+        buyer_addr: formData.addr1 + " " + formData.addr2,
+        buyer_postcode: formData.post,
+        m_redirect_url: "http://localhost:3000/order/complete",
+      },
+      (rsp) => {
+        if (rsp.success) {
+          const token = localStorage.getItem("jwtAuthToken");
+
+          // 장바구니 다수 상품 결제
+          if (isFromCart) {
+            const multiProductData = {
+              ...formData, // 여기에 latitude, longitude 포함
+              userId: profile.userId,
+              impUid: rsp.imp_uid,
+              orders: cartItems.map((item) => ({
+                productCode: item.productCode,
+                quantity: item.quantity,
+              })),
+              discountedPrice: discountRate,
+            };
+
+            sendOrderConfirm(multiProductData, token)
+              .then(() => {
+                if (window.innerWidth > 768) {
+                  navigate(`/order/complete?imp_uid=${rsp.imp_uid}`, {
+                    state: { selectedCoupon }, // 쿠폰 정보 추가
+                  });
+                }
+                // 장바구니에서 해당 품목들을 삭제
+                const cartIdsToDelete = cartItems.map((item) => item.cartId); // cartId 목록 생성
+                console.log(cartIdsToDelete);
+                fetchDeleteCartItems(cartIdsToDelete);
+
+                // 결제 후 localStorage 초기화
+                localStorage.removeItem("selectedCartItems");
+
+                // 결제 성공 후 쿠폰 삭제
+                if (selectedCoupon) {
+                  const couponId = selectedCoupon.couponId; // selectedCoupon에서 couponId 가져오기
+                  fetchDeleteCoupon(couponId)
+                    .then(() => {
+                      console.log(`쿠폰 ${couponId} 삭제 완료`);
+                    })
+                    .catch(() => alert("쿠폰 삭제 실패"));
+                }
+              })
+              .catch(() => alert("장바구니 주문 처리 중 오류 발생"));
+          } else {
+            // 단일 상품 결제
+            const singleProductData = {
+              ...formData, // 여기에 latitude, longitude 포함
+              userId: profile.userId,
+              productCode: productInfo.productCode,
+              quantity: 1,
+              impUid: rsp.imp_uid,
+            };
+
+            sendOrderConfirm(singleProductData, token)
+              .then(() => {
+                if (window.innerWidth > 768) {
+                  navigate(`/order/complete?imp_uid=${rsp.imp_uid}`, {
+                    state: { selectedCoupon }, // 쿠폰 정보 추가
+                  });
+                }
+
+                // 결제 후 localStorage 초기화
+                localStorage.removeItem("productInfo");
+
+                // 결제 성공 후 쿠폰 삭제
+                if (selectedCoupon) {
+                  const couponId = selectedCoupon.couponId; // selectedCoupon에서 couponId 가져오기
+                  fetchDeleteCoupon(couponId)
+                    .then(() => {
+                      console.log(`쿠폰 ${couponId} 삭제 완료`);
+                    })
+                    .catch(() => alert("쿠폰 삭제 실패"));
+                }
+              })
+              .catch(() => alert("주문 처리 중 오류 발생"));
+          }
+        } else {
+          alert("결제 실패: " + rsp.error_msg);
+        }
+      }
+    );
+  };
 
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white shadow rounded">
@@ -381,7 +534,8 @@ const OrderPage = () => {
       <div className="flex gap-4 mb-4">
         <button
           onClick={handleDefaultToggle}
-          className="px-4 py-2 bg-blue-500 text-white rounded"
+          className="px-4 py-2 bg-blue-500
+           text-white rounded"
         >
           기본 배송지 사용
         </button>
@@ -436,6 +590,20 @@ const OrderPage = () => {
           onChange={handleChange}
           className="border p-2 rounded"
         />
+        <textarea
+          name="memo"
+          placeholder="배송 메모"
+          value={formData.memo}
+          onChange={handleChange}
+          className="border p-2 rounded"
+        />
+
+        {/* 좌표 정보 표시 (선택적, 개발 중에만 사용) */}
+        {coordinates && (
+          <div className="text-xs text-gray-500">
+            좌표: {coordinates.latitude}, {coordinates.longitude}
+          </div>
+        )}
       </div>
       <br />
       <hr />

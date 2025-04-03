@@ -38,8 +38,11 @@ export async function fetchQuantityByProductCodeAndBranchName(
 ) {
   console.log("fetchQuantityByProductCodeAndBranchName 요청");
 
+  // 브랜치명을 URL 인코딩 처리
+  const encodedBranchName = encodeURIComponent(branchName);
+
   const response = await instance.get(
-    `/inventory/findByProductCodeAndBranchName/${productCode}/${branchName}`
+    `/inventory/findByProductCodeAndBranchName/${productCode}/${encodedBranchName}`
   );
 
   console.log("fetchQuantityByProductCodeAndBranchName.response:", response);
