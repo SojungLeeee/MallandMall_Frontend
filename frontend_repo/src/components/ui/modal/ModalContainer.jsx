@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { fetchFindLikeCategories } from "../api/httpCategoryService"; // Assuming your API is in a file called api.js
-import { getAuthToken } from "../context/tokenProviderService";
-import Modal from "../components/EventModal"; // Modal 컴포넌트 임포트
-import eventImage1 from "../assets/images/event/event.png";
+import { fetchFindLikeCategories } from "../../../api/httpCategoryService"; // Assuming your API is in a file called api.js
+import { getAuthToken } from "../../../context/tokenProviderService";
+import Modal from "../../ui/modal/EventModal"; // Modal 컴포넌트 임포트
 
 const ModalContainer = ({ isOpen }) => {
   const [events, setEvents] = useState([]);

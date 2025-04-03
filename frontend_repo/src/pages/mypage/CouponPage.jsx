@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchAllCouponList } from "../../api/httpCouponService"; // 쿠폰 API 임포트
 import { getAuthToken } from "../../context/tokenProviderService";
-import Coupon from "../../components/ui/MyCoupon"; // 쿠폰 정보 컴포넌트 임포트
+import Coupon from "../../components/ui/coupon/MyCoupon"; // 쿠폰 정보 컴포넌트 임포트
 
 function CouponPage({}) {
   const [coupons, setCoupons] = useState([]); // 쿠폰 목록 상태

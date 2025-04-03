@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { fetchSearchProducts } from "../../api/httpSearchService"; // axios 요청을 가져옵니다.
 import ProductCard from "../../components/ui/product/ProductCard"; // ProductCard 컴포넌트 import
-import NaverMap from "../../components/ui/map/NaverMap";
-import findinventroy from "./Findinventroy";
 
 const SearchPage = () => {
   const { productName } = useParams(); // URL에서 productName을 가져옵니다.

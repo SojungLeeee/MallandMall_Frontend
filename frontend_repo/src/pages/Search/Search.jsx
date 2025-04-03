@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import RankedSearchComponent from "../../components/ui/RankedSearchComponent"; // 순위 컴포넌트 임포트
+import RankedSearchComponent from "../../components/RankedSearchComponent"; // 순위 컴포넌트 임포트
 
 // 더미 데이터: 식료품 목록 (순위별)
 const foodItems = [

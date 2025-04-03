@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { fetchFindLikeCategories } from "../api/httpCategoryService"; // Assuming your API is in a file called api.js
-import { getAuthToken } from "../context/tokenProviderService";
+import { fetchFindLikeCategories } from "../../../api/httpCategoryService"; // Assuming your API is in a file called api.js
+import { getAuthToken } from "../../../context/tokenProviderService";
 
 const Modal = ({ isOpen, onClose, event }) => {
   const { token } = getAuthToken();

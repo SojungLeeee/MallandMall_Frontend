@@ -1,76 +1,93 @@
+// 필수 라이브러리 및 기본 컴포넌트
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
+import AppTwo from "./AppTwo";
 import reportWebVitals from "./reportWebVitals";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { tokenProviderLoader } from "./auth/tokenProviderService";
 import NotFound from "./pages/error/NotFound";
 import Home from "./pages/Home";
-import MyCart from "./pages/cart/MyCart";
-import ResetPassword from "./pages/login/ResetPassword";
+
+// 인증 및 로그인 관련
 import Login from "./pages/login/Login";
-import FindId from "./pages/login/FindId";
 import { action as authAction } from "./pages/login/Login";
-import Mypage, { loader as mypageLoader } from "./pages/mypage/Mypage";
-import FoundId from "../src/pages/login/FoundId";
-import DeleteAccount, { loader as deleteAccountLoader } from "./pages/mypage/DeleteAccount";
-import EditProfile, { loader as editProfileLoader } from "./pages/mypage/EditProfile";
 import Signup from "./pages/login/Signup";
 import { action as signUpAction } from "./pages/login/Signup";
+import FindId from "./pages/login/FindId";
+import FoundId from "../src/pages/login/FoundId";
+import ResetPassword from "./pages/login/ResetPassword";
 import SelectCategory from "./pages/login/SelectCategory";
+import KakaoCallback from "./util/KakaoCallback";
+
+// 마이페이지 관련
+import Mypage, { loader as mypageLoader } from "./pages/mypage/Mypage";
+import EditProfile, {
+  loader as editProfileLoader,
+} from "./pages/mypage/EditProfile";
+import DeleteAccount, {
+  loader as deleteAccountLoader,
+} from "./pages/mypage/DeleteAccount";
+import MyOrderInfo from "./pages/mypage/MyOrderInfo";
+import MyReviews from "./pages/mypage/MyReview";
+import EditCategory from "./pages/mypage/EditCategory";
+import CouponPage from "./pages/mypage/CouponPage";
+
+// 상품 및 카테고리 관련
+import AllProducts from "./pages/product/AllProducts";
+import ProductDetail from "./components/ui/product/ProductDetail";
 import CategoryList from "./pages/category/CategoryList";
 import CategoryPage from "./pages/category/CategoryPage";
+import Search from "./pages/Search/Search";
 import SearchPage from "./pages/Search/SearchPage";
-import { tokenProviderLoader } from "./auth/tokenProviderService";
-import MyOrderInfo from "./pages/mypage/MyOrderInfo";
+
+// 오프라인 및 차트 관련
+import SpecialDealsPage from "./pages/offline/SpecialDealsPage";
+import PriceHistoryChart from "./pages/offline/PriceHistoryChart";
+import NaverMap from "./components/ui/map/NaverMap";
+
+// 장바구니 및 주문 관련
+import MyCart from "./pages/cart/MyCart";
+import OrderPage from "./pages/order/OrderPage";
+import OrderComplete from "./pages/order/OrderComplete";
 import CouponUsePage from "./pages/order/CouponUsePage";
 
-import AllProducts from "./pages/product/AllProducts";
+// 고객센터/문의 관련
+import CustomerServiceScreen from "./pages/board/CustomerServiceScreen";
 
-import ProductDetail from "./components/ui/product/ProductDetail";
-import MyReviews from "./pages/mypage/MyReview";
+// 관리자 - 기본
+import Admin from "./pages/admin/Admin";
+
+// 관리자 - 상품 관리
 import AdminAllProducts from "./pages/admin/AdminAllProducts";
 import AdminDeleteProducts from "./pages/admin/AdminDeleteProducts";
 import AdminUpdateProducts from "./pages/admin/AdminUpdateProducts";
 import AdminAddProducts from "./pages/admin/AdminAddProducts";
 
-import KakaoCallback from "./util/KakaoCallback";
-
+// 관리자 - 아이템 관리
 import AdminAllGoods from "./pages/admin/AdminAllGoods";
 import AdminDeleteGoods from "./pages/admin/AdminDeleteGoods";
 //import AdminUpdateGoods from "./pages/admin/AdminUpdateGoods";
 import AdminAddGoods from "./pages/admin/AdminAddGoods";
-//import AdminAllBranch from "./pages/admin/AdminAllBranch";
-import CustomerServiceScreen from "./pages/board/CustomerServiceScreen";
-import AppTwo from "./AppTwo";
-import Search from "./pages/Search/Search";
-import Admin from "./pages/admin/Admin";
-//어드민 Branch 임포트
+
+// 관리자 - 지점 관리
 import AdminAllBranch from "./pages/admin/AdminAllBranch";
 import AdminDeleteBranch from "./pages/admin/AdminDeleteBranch";
 import AdminUpdateBranch from "./pages/admin/AdminUpdateBranch";
 import AdminAddBranch from "./pages/admin/AdminAddBranch";
-//어드민 Event 임포트
+
+// 관리자 - 이벤트 관리
 import AdminAllEvent from "./pages/admin/AdminAllEvent";
 import AdminDeleteEvent from "./pages/admin/AdminDeleteEvent";
 import AdminUpdateEvent from "./pages/admin/AdminUpdateEvent";
 import AdminAddEvent from "./pages/admin/AdminAddEvent";
 
-//어드민 게시판 임포트
+// 관리자 - 게시판/질문 관리
 import AdminQuestionManagement from "./pages/admin/AdminQuestionManagement";
-import EditCategory from "./pages/mypage/EditCategory";
-import CouponPage from "./pages/mypage/CouponPage";
-
-import OrderPage from "./pages/order/OrderPage";
-import Favorites from "./pages/mypage/Favorites";
-
-import OrderComplete from "./pages/order/OrderComplete";
-import NaverMap from "./components/ui/map/NaverMap";
-
 import AdminQuestionDetail from "./pages/admin/AdminQuestionDetail";
-import OfflinePriceChart from "./components/ui/chart/OfflinePriceChart";
-import SpecialDealsPage from "./pages/mypage/SpecialDealsPage";
-import PriceHistoryChart from "./pages/mypage/PriceHistoryChart";
+
+// 관리자 - 차트/재고 관리
 import StockPage from "./pages/adminchart/StockPage";
 import StockChartDetailPage from "./pages/adminchart/StockChartDetailPage";
 

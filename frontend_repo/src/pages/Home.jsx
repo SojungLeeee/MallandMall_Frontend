@@ -4,7 +4,7 @@ import Banner from "../components/ui/layout/Banner";
 import AllProducts from "../pages/product/AllProducts";
 import Favorites from "../pages/mypage/Favorites";
 
-import ModalContainer from "../components/ModalContainer"; // ModalContainer 컴포넌트 임포트
+import ModalContainer from "../components/ui/modal/ModalContainer"; // ModalContainer 컴포넌트 임포트
 
 export default function Home() {
   const location = useLocation(); // 현재 경로를 확인

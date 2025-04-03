@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { fetchAllCouponList } from "../../api/httpCouponService"; // 쿠폰 API 임포트
 import { getAuthToken } from "../../context/tokenProviderService";
-import MyCoupon from "../../components/ui/SelectCoupon"; // 쿠폰 정보 컴포넌트 임포트
+import MyCoupon from "../../components/ui/coupon/SelectCoupon"; // 쿠폰 정보 컴포넌트 임포트
 
 function CouponUsePage() {
   const location = useLocation(); // useLocation 훅으로 state 가져오기
