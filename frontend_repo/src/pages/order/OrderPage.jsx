@@ -6,6 +6,7 @@ import {
   fetchDeleteCartItems,
 } from "../../api/httpOrderService";
 import { fetchDeleteCoupon } from "../../api/httpCouponService";
+import axios from "axios"; // 필요한 경우 추가
 
 const OrderPage = () => {
   const { state } = useLocation();
@@ -27,6 +28,14 @@ const OrderPage = () => {
   const [productInfo, setProductInfo] = useState(null); // 하나의 품목 정보
   const [cartItems, setCartItems] = useState([]); // 여러 품목 장바구니 아이템
   const [isFromCart, setIsFromCart] = useState(false); // 장바구니에서 왔는지 확인하는 상태
+
+  // 지점 관련 상태 변수 추가
+  const [defaultBranch, setDefaultBranch] = useState("이마트 연제점");
+  const [nearestBranch, setNearestBranch] = useState(null);
+  const [alternativeBranch, setAlternativeBranch] = useState(null); // 대체 지점 (재고 있는)
+  const [hasAlternativeBranch, setHasAlternativeBranch] = useState(false); // 대체 지점 존재 여부
+  const [useAlternativeBranch, setUseAlternativeBranch] = useState(false); // 대체 지점 사용 여부
+  const [isProcessing, setIsProcessing] = useState(false);
 
   // 네이버 맵 스크립트 로드 (NaverMap 컴포넌트와 동일한 방식)
   useEffect(() => {
@@ -81,7 +90,7 @@ const OrderPage = () => {
     document.body.appendChild(script);
   }, []);
 
-  // 지오코딩을 수행하는 함수 - NaverMap의 방식 참고하여 수정
+  // 지오코딩을 수행하는 함수
   const getCoordinatesFromAddress = () => {
     // 주소가 모두 입력되었는지 확인
     if (!formData.addr1 || !formData.addr2) {
@@ -128,12 +137,117 @@ const OrderPage = () => {
             latitude: point.latitude,
             longitude: point.longitude,
           }));
+
+          // 좌표가 확인되면 재고 확인과 함께 가장 가까운 지점 찾기
+          findNearestBranchWithStock(point.latitude, point.longitude);
         }
       );
     } catch (error) {
       console.error("지오코딩 처리 중 오류 발생:", error);
     }
   };
+
+  // 가장 가까운 매장 찾기 함수 (재고 확인 포함)
+  const findNearestBranchWithStock = async (latitude, longitude) => {
+    if (!latitude || !longitude) {
+      return;
+    }
+
+    setIsProcessing(true);
+
+    try {
+      // 상품 코드 배열 준비
+      const productCodes = isFromCart
+        ? cartItems.map((item) => item.productCode)
+        : productInfo
+        ? [productInfo.productCode]
+        : [];
+
+      if (productCodes.length === 0) {
+        console.error("상품 정보가 없습니다.");
+        return;
+      }
+
+      // 가장 가까운 매장과 재고 정보 요청
+      const response = await axios.post(
+        "http://localhost:8090/emart/admin/branch/nearestWithStock",
+        {
+          latitude: latitude,
+          longitude: longitude,
+          productCodes: productCodes,
+          limit: 5, // 상위 5개 지점 요청
+        }
+      );
+
+      const branchesWithStock = response.data;
+      console.log("근처 매장들과 재고 정보:", branchesWithStock);
+
+      if (branchesWithStock && branchesWithStock.length > 0) {
+        // 첫 번째 매장 정보 설정 (가장 가까운 매장)
+        const closestBranch = branchesWithStock[0];
+        setNearestBranch(closestBranch);
+
+        // 재고 있는 지점이 있다면 다른 지점 목록 저장
+        if (closestBranch.hasStock) {
+          // 가장 가까운 매장에 재고가 있는 경우
+          console.log("가장 가까운 매장에 재고가 있습니다.");
+          setHasAlternativeBranch(false);
+          setUseAlternativeBranch(false);
+        } else {
+          // 가장 가까운 매장에 재고가 없는 경우, 재고 있는 다른 지점 찾기
+          const otherBranchesWithStock = branchesWithStock.filter(
+            (branch) => branch.hasStock
+          );
+
+          if (otherBranchesWithStock.length > 0) {
+            console.log("재고 있는 다른 매장들:", otherBranchesWithStock);
+            // 재고 있는 지점 중 가장 가까운 지점을 추천
+            setAlternativeBranch(otherBranchesWithStock[0]);
+            setHasAlternativeBranch(true);
+            setUseAlternativeBranch(false); // 초기값은 false, 사용자가 선택 가능
+          } else {
+            console.log("모든 근처 매장에 재고가 없습니다.");
+            setHasAlternativeBranch(false);
+            setUseAlternativeBranch(false);
+          }
+        }
+      } else {
+        // 매장 정보가 없는 경우 기본적인 가까운 매장 정보만 가져오기
+        const fallbackResponse = await axios.post(
+          "http://localhost:8090/emart/admin/branch/nearest",
+          {
+            latitude: latitude,
+            longitude: longitude,
+          }
+        );
+
+        setNearestBranch({
+          ...fallbackResponse.data,
+          hasStock: false,
+        });
+        setHasAlternativeBranch(false);
+        setUseAlternativeBranch(false);
+      }
+    } catch (error) {
+      console.error("매장 및 재고 정보 조회 실패:", error);
+      setHasAlternativeBranch(false);
+      setUseAlternativeBranch(false);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  // 대체 지점 선택 토글
+  const toggleAlternativeBranch = () => {
+    setUseAlternativeBranch(!useAlternativeBranch);
+  };
+
+  // 좌표가 변경될 때 가장 가까운 매장 찾기
+  useEffect(() => {
+    if (formData.latitude && formData.longitude) {
+      findNearestBranchWithStock(formData.latitude, formData.longitude);
+    }
+  }, [formData.latitude, formData.longitude]);
 
   // 주소가 업데이트될 때 좌표 정보도 업데이트
   useEffect(() => {
@@ -163,6 +277,26 @@ const OrderPage = () => {
     // 좌표 정보가 있다면 함께 표시
     if (formData.latitude && formData.longitude) {
       console.log("주소 좌표:", formData.latitude, formData.longitude);
+    }
+    // 매장 정보가 있다면 표시
+    if (nearestBranch) {
+      console.log(
+        "가장 가까운 매장:",
+        nearestBranch.branchName,
+        nearestBranch.distance.toFixed(2) + "km",
+        nearestBranch.hasStock ? "(재고 있음)" : "(재고 없음)"
+      );
+
+      if (useAlternativeBranch && alternativeBranch) {
+        console.log(
+          "대체 배송 매장:",
+          alternativeBranch.branchName,
+          alternativeBranch.distance.toFixed(2) + "km",
+          "(재고 있음)"
+        );
+      }
+    } else {
+      console.log("기본 매장:", defaultBranch);
     }
   };
 
@@ -257,36 +391,6 @@ const OrderPage = () => {
     }).open();
   };
 
-  const handlePayment = (pgProvider) => {
-    // 필수 입력값 체크
-    if (
-      !formData.receiverName ||
-      !formData.post ||
-      !formData.addr1 ||
-      !formData.addr2 ||
-      !formData.phoneNumber
-    ) {
-      alert("모든 기본 정보를 입력해주세요.");
-      return; // 빈 값이 있으면 결제 처리 중단
-    }
-
-    // 좌표 정보가 없고 네이버 맵이 로드된 경우 한 번 더 시도
-    if (!formData.latitude || !formData.longitude) {
-      if (naverMapLoaded) {
-        getCoordinatesFromAddress();
-        // 좌표를 얻는 것은 비동기 작업이므로, 잠시 대기 후 결제 진행
-        setTimeout(() => {
-          proceedToPayment(pgProvider);
-        }, 1000);
-      } else {
-        // 네이버 맵 API가 로드되지 않은 경우에도 결제 진행
-        proceedToPayment(pgProvider);
-      }
-    } else {
-      proceedToPayment(pgProvider);
-    }
-  };
-
   // 할인 금액 계산
   const getDiscountedPrice = (price, benefit) => {
     if (!benefit) return price;
@@ -327,7 +431,20 @@ const OrderPage = () => {
     ? getDiscountRate(selectedCoupon.benefits)
     : 0;
 
-  const proceedToPayment = (pgProvider) => {
+  // 결제 처리 함수
+  const handlePayment = (pgProvider) => {
+    // 필수 입력값 체크
+    if (
+      !formData.receiverName ||
+      !formData.post ||
+      !formData.addr1 ||
+      !formData.addr2 ||
+      !formData.phoneNumber
+    ) {
+      alert("모든 기본 정보를 입력해주세요.");
+      return; // 빈 값이 있으면 결제 처리 중단
+    }
+
     const { IMP } = window;
     IMP.init("imp42828803");
 
@@ -357,10 +474,25 @@ const OrderPage = () => {
         if (rsp.success) {
           const token = localStorage.getItem("jwtAuthToken");
 
+          // 매장 정보: 대체 지점 사용 여부에 따라 결정
+          const branchName =
+            useAlternativeBranch && alternativeBranch
+              ? alternativeBranch.branchName
+              : nearestBranch
+              ? nearestBranch.branchName
+              : defaultBranch;
+
+          // 재고 정보
+          const hasStock = useAlternativeBranch
+            ? true // 대체 지점을 사용하면 재고 있음
+            : nearestBranch
+            ? nearestBranch.hasStock
+            : false;
+
           // 장바구니 다수 상품 결제
           if (isFromCart) {
             const multiProductData = {
-              ...formData, // 여기에 latitude, longitude 포함
+              ...formData,
               userId: profile.userId,
               impUid: rsp.imp_uid,
               orders: cartItems.map((item) => ({
@@ -368,13 +500,26 @@ const OrderPage = () => {
                 quantity: item.quantity,
               })),
               discountedPrice: discountRate,
+              branchName: branchName, // 지점 정보 추가
+              hasStock: hasStock, // 재고 상태 추가
+              isAlternativeBranch: useAlternativeBranch, // 대체 지점 사용 여부
             };
+
+            console.log("전송 데이터:", multiProductData);
 
             sendOrderConfirm(multiProductData, token)
               .then(() => {
                 if (window.innerWidth > 768) {
                   navigate(`/order/complete?imp_uid=${rsp.imp_uid}`, {
-                    state: { selectedCoupon }, // 쿠폰 정보 추가
+                    state: {
+                      selectedCoupon,
+                      branchName: branchName, // 지점 정보 추가
+                      distance: useAlternativeBranch
+                        ? alternativeBranch?.distance
+                        : nearestBranch?.distance, // 거리 정보 추가
+                      hasStock: hasStock,
+                      isAlternativeBranch: useAlternativeBranch,
+                    },
                   });
                 }
                 // 장바구니에서 해당 품목들을 삭제
@@ -395,7 +540,10 @@ const OrderPage = () => {
                     .catch(() => alert("쿠폰 삭제 실패"));
                 }
               })
-              .catch(() => alert("장바구니 주문 처리 중 오류 발생"));
+              .catch((err) => {
+                console.error("주문 처리 중 오류:", err);
+                alert("장바구니 주문 처리 중 오류가 발생했습니다.");
+              });
           } else {
             // 단일 상품 결제
             const singleProductData = {
@@ -404,13 +552,26 @@ const OrderPage = () => {
               productCode: productInfo.productCode,
               quantity: 1,
               impUid: rsp.imp_uid,
+              branchName: branchName, // 지점 정보 추가
+              hasStock: hasStock, // 재고 상태 추가
+              isAlternativeBranch: useAlternativeBranch, // 대체 지점 사용 여부
             };
+
+            console.log("전송 데이터:", singleProductData);
 
             sendOrderConfirm(singleProductData, token)
               .then(() => {
                 if (window.innerWidth > 768) {
                   navigate(`/order/complete?imp_uid=${rsp.imp_uid}`, {
-                    state: { selectedCoupon }, // 쿠폰 정보 추가
+                    state: {
+                      selectedCoupon,
+                      branchName: branchName, // 지점 정보 추가
+                      distance: useAlternativeBranch
+                        ? alternativeBranch?.distance
+                        : nearestBranch?.distance, // 거리 정보 추가
+                      hasStock: hasStock,
+                      isAlternativeBranch: useAlternativeBranch,
+                    },
                   });
                 }
 
@@ -427,7 +588,10 @@ const OrderPage = () => {
                     .catch(() => alert("쿠폰 삭제 실패"));
                 }
               })
-              .catch(() => alert("주문 처리 중 오류 발생"));
+              .catch((err) => {
+                console.error("주문 처리 중 오류:", err);
+                alert("주문 처리 중 오류가 발생했습니다.");
+              });
           }
         } else {
           alert("결제 실패: " + rsp.error_msg);
@@ -440,9 +604,8 @@ const OrderPage = () => {
     <div className="max-w-2xl mx-auto p-6 bg-white shadow rounded">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-bold">주문 상품 정보</h2>{" "}
-        {/* 기본 배송지 텍스트 왼쪽에 배치 */}
         <button
-          onClick={() => navigate(`/product/${productInfo.productCode}`)}
+          onClick={() => navigate(`/product/${productInfo?.productCode}`)}
           className="text-3xl text-gray-500 hover:text-gray-700"
         >
           &#8592; {/* ← 돌아가기 화살표 */}
@@ -510,6 +673,7 @@ const OrderPage = () => {
         </div>
       )}
       <hr />
+
       <div className="flex items-center justify-between mb-">
         <h2 className="text-xl font-bold mt-3 mb-3">기본 배송지</h2>{" "}
       </div>
@@ -613,6 +777,104 @@ const OrderPage = () => {
       >
         주소 확인
       </button>
+
+      {/* 처리 중 표시 */}
+      {isProcessing && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
+            <p className="text-center mt-4">
+              처리 중입니다. 잠시만 기다려주세요.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* 가장 가까운 매장 정보 표시 */}
+      {nearestBranch && (
+        <div className="mt-4 p-4 bg-blue-50 rounded-lg mb-4">
+          <h3 className="font-medium text-blue-800 text-center mb-2">
+            배송지 주변 매장
+          </h3>
+          <div className="flex flex-col items-center mt-2">
+            <p className="font-bold text-lg text-center">
+              {nearestBranch.branchName}
+            </p>
+            <p className="text-sm text-gray-600 text-center mt-1">
+              {nearestBranch.branchAddress}
+            </p>
+            <p className="text-xs text-gray-500 mt-2">
+              거리: 약 {nearestBranch.distance.toFixed(1)}km
+            </p>
+
+            {/* 재고 없음 표시 */}
+            {nearestBranch.hasStock === false && (
+              <div className="mt-3 px-3 py-2 bg-red-50 border border-red-200 rounded-md w-full">
+                <p className="text-sm text-red-700 text-center">
+                  ⚠️ 이 지점에는 일부 상품의 재고가 없습니다.
+                </p>
+              </div>
+            )}
+
+            {/* 대체 지점 추천 */}
+            {hasAlternativeBranch && alternativeBranch && (
+              <div className="mt-3 border-t border-blue-200 pt-3 w-full">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-medium text-blue-800">
+                    재고 있는 다른 지점:
+                  </p>
+                  <div className="flex items-center">
+                    <input
+                      type="checkbox"
+                      id="useAlternativeBranch"
+                      checked={useAlternativeBranch}
+                      onChange={toggleAlternativeBranch}
+                      className="mr-2 h-4 w-4"
+                    />
+                    <label
+                      htmlFor="useAlternativeBranch"
+                      className="text-sm cursor-pointer"
+                    >
+                      이 지점에서 배송 받기
+                    </label>
+                  </div>
+                </div>
+
+                <div
+                  className={`mt-2 p-3 rounded-md ${
+                    useAlternativeBranch
+                      ? "bg-green-50 border border-green-200"
+                      : "bg-gray-50"
+                  }`}
+                >
+                  <p className="font-medium">
+                    {alternativeBranch.branchName}
+                    <span className="ml-2 text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full">
+                      재고 있음
+                    </span>
+                  </p>
+                  <p className="text-xs text-gray-600 mt-1">
+                    {alternativeBranch.branchAddress}
+                  </p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    거리: 약 {alternativeBranch.distance.toFixed(1)}km (현재
+                    위치에서
+                    {(
+                      alternativeBranch.distance - nearestBranch.distance
+                    ).toFixed(1)}
+                    km 더 멈)
+                  </p>
+                  {useAlternativeBranch && (
+                    <p className="text-xs text-green-600 mt-1 font-medium">
+                      ✅ 해당 지점에서 주문 상품을 배송합니다
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* 전체 결제 금액 */}
       <div className="my-6 text-right">
