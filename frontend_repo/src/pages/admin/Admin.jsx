@@ -67,6 +67,14 @@ export default function Admin() {
         onUpdate={() => navigate("/admin/branch/update")}
         onDelete={() => navigate("/admin/branch/delete")}
       />
+
+      {/* 재고 그래프 확인하기 버튼 */}
+      <button
+        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+        onClick={() => navigate("/admin/stock")}
+      >
+        재고 그래프 확인하기
+      </button>
     </div>
   );
 }
