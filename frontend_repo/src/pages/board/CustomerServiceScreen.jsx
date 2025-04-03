@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { ChevronLeft, Edit, X } from "lucide-react"; // X 아이콘 추가
+import { useNavigate } from "react-router-dom"; // useNavigate 추가
 import ConversationView from "./ConversationView";
 import InquiryWriteForm from "./InquiryWriteForm";
 import InquiryEditForm from "./InquiryEditForm";
@@ -25,9 +26,12 @@ export async function getUserQuestions(userId, token) {
 // 질문 삭제하기 함수
 export async function deleteQuestion(questionId, token) {
   try {
-    const response = await axios.delete(`/questions/delete/${questionId}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const response = await axios.delete(
+      `http://localhost:8090/emart/questions/delete/${questionId}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
     return response.data; // 성공적으로 삭제된 경우 서버의 응답 반환
   } catch (error) {
     console.log("토큰 값:", token);
@@ -58,36 +62,40 @@ const CustomerServiceScreen = () => {
     return localStorage.getItem("userId"); // 로컬 스토리지에서 userId 가져오기
   };
 
+  const navigate = useNavigate(); // useNavigate 훅 사용
+
+  // 문의 목록을 가져오는 함수
+  const fetchInquiries = async () => {
+    const userId = getAuthenticatedUserId();
+    if (!userId || !token) return;
+
+    try {
+      const response = await axios.get(
+        `http://localhost:8090/emart/questions/${userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // API 응답 데이터 변환
+      const formattedData = response.data.map((item) => ({
+        id: item.questionId,
+        title: item.title,
+        createDate: item.createDate.split("T")[0],
+        content: item.content,
+        status: item.status, // status 값 추가
+      }));
+
+      setInquiries(formattedData);
+    } catch (error) {
+      console.error("❌ 문의 내역을 불러오는 중 오류 발생:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchInquiries = async () => {
-      const userId = getAuthenticatedUserId();
-      if (!userId || !token) return;
-
-      try {
-        const response = await axios.get(
-          `http://localhost:8090/emart/questions/${userId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        // API 응답 데이터 변환
-        const formattedData = response.data.map((item) => ({
-          id: item.questionId,
-          title: item.title,
-          createDate: item.createDate.split("T")[0],
-          content: item.content,
-        }));
-
-        setInquiries(formattedData);
-      } catch (error) {
-        console.error("❌ 문의 내역을 불러오는 중 오류 발생:", error);
-      }
-    };
-
-    fetchInquiries();
+    fetchInquiries(); // 컴포넌트가 마운트될 때 초기 목록 불러오기
   }, [token]);
 
   // 문의 작성 버튼 클릭 시 실행될 함수
@@ -109,6 +117,7 @@ const CustomerServiceScreen = () => {
     if (!userId || !token) return;
 
     try {
+      console.log("삭제할 질문 ID:", questionId); // 디버깅을 위한 로그
       await deleteQuestion(questionId, token); // 질문 삭제
       setInquiries(inquiries.filter((inquiry) => inquiry.id !== questionId)); // 화면에서 삭제된 질문 제거
       console.log("✅ 질문이 삭제되었습니다.");
@@ -122,6 +131,12 @@ const CustomerServiceScreen = () => {
     setSelectedConversation(null);
     setIsWriting(false);
     setIsEditing(false);
+    fetchInquiries(); // 문의 작성 후 목록 갱신
+  };
+
+  // ChevronLeft 버튼 클릭 시 홈으로 이동
+  const handleChevronLeftClick = () => {
+    navigate("/"); // 홈 페이지로 이동
   };
 
   // 렌더링 조건부 처리
@@ -142,19 +157,29 @@ const CustomerServiceScreen = () => {
   }
 
   return (
-    <div className="max-w-md mx-auto h-screen flex flex-col bg-white relative">
+    <div className="max-w-md mx-auto h-full flex flex-col bg-white relative">
       <div className="flex items-center p-4 border-b">
-        <ChevronLeft className="mr-4" />
-        <div className="flex-grow text-center font-bold">고객센터</div>
+        {/* ChevronLeft 클릭 시 홈으로 이동 */}
+        <ChevronLeft
+          onClick={handleChevronLeftClick}
+          className="cursor-pointer"
+        />
+        <div className="flex-grow text-center font-bold mr-5">고객문의</div>
       </div>
 
       <div className="flex border-b">
-        <div className="flex-1 text-center p-3 font-bold border-b-2 border-blue-500 text-blue-500">
+        <div className="flex-1 text-center p-3 font-bold border-b-2 border-[#787669] text-[#787669]">
           문의내역
         </div>
       </div>
 
-      <div className="flex-grow overflow-y-auto">
+      <div
+        className="flex-grow overflow-y-auto"
+        style={{
+          scrollbarWidth: "none", // Firefox에서 스크롤바 숨기기
+          msOverflowStyle: "none", // Internet Explorer 10+에서 스크롤바 숨기기
+        }}
+      >
         {inquiries.length > 0 ? (
           inquiries.map((inquiry) => (
             <div
@@ -169,19 +194,31 @@ const CustomerServiceScreen = () => {
                 <div className="text-xs text-gray-400 mt-1">
                   {inquiry.createDate}
                 </div>
+                <div className="text-xs text-gray-500 mt-1">
+                  상태:{" "}
+                  <span
+                    className={`font-bold ${
+                      inquiry.status === "ANSWERED"
+                        ? "text-green-500"
+                        : "text-red-500"
+                    }`}
+                  >
+                    {inquiry.status}
+                  </span>
+                </div>
               </div>
               <div className="flex items-center">
                 <button
                   onClick={() => onEditClick(inquiry)}
                   className="ml-2 p-2 hover:bg-gray-200 rounded-full"
                 >
-                  <Edit size={16} className="text-gray-500" />
+                  <Edit size={24} className="text-gray-500" />
                 </button>
                 <button
                   onClick={() => onDeleteClick(inquiry.id)} // 삭제 버튼 클릭 시
                   className="ml-2 p-2 hover:bg-gray-200 rounded-full"
                 >
-                  <X size={16} className="text-red-500" />
+                  <X size={24} className="text-red-500" />
                 </button>
               </div>
             </div>
@@ -197,7 +234,7 @@ const CustomerServiceScreen = () => {
       <div className="p-4 border-t bg-white">
         <button
           onClick={onWriteClick}
-          className="px-4 py-2 bg-blue-500 text-white rounded-lg w-full"
+          className="px-4 py-3 bg-[#787669] text-white rounded-sm w-full"
         >
           문의 작성하기
         </button>

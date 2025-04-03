@@ -41,13 +41,13 @@ const InquiryWriteForm = ({ onBack }) => {
   };
 
   return (
-    <div className="max-w-md mx-auto h-screen flex flex-col bg-white">
+    <div className="max-w-md mx-auto h-full flex flex-col bg-white">
       {/* 헤더 */}
       <div className="flex items-center p-4 border-b">
-        <button onClick={onBack} className="mr-4">
+        <button onClick={onBack}>
           <ChevronLeft />
         </button>
-        <div className="flex-grow text-center font-bold">문의 작성</div>
+        <div className="flex-grow text-center font-bold mr-5">문의 작성</div>
       </div>
 
       {/* 폼 */}
@@ -66,7 +66,7 @@ const InquiryWriteForm = ({ onBack }) => {
             onChange={(e) => setTitle(e.target.value)}
             placeholder="제목을 입력하세요"
             required
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border rounded-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
@@ -83,13 +83,13 @@ const InquiryWriteForm = ({ onBack }) => {
             onChange={(e) => setContent(e.target.value)}
             placeholder="문의 내용을 입력하세요"
             required
-            className="w-full h-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+            className="w-full h-4/5 px-3 py-2 border rounded-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
           />
         </div>
 
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition-colors"
+          className="w-full bg-[#787669] text-white py-3 rounded-sm"
         >
           문의 작성 완료
         </button>

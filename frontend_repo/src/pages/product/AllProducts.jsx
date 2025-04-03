@@ -3,6 +3,7 @@ import ProductCard from "../../components/ui/product/ProductCard";
 import findQuantity from "../../assets/images/findQuantity.png";
 import offline from "../../assets/images/offline.png";
 import findBranch from "../../assets/images/findBranch.png";
+import question from "../../assets/images/question.jpg";
 
 import { fetchProductHome } from "../../api/httpMemberService";
 import CircularMenuItem from "../../components/CircularMenuitem";
@@ -66,6 +67,11 @@ const AllProducts = () => {
     }
   };
 
+  // 고객문의로 이동
+  const handleQuestionClick = () => {
+    navigate("/questions");
+  };
+
   // 메뉴 아이템 설정
   const menuItems = [
     {
@@ -127,8 +133,7 @@ const AllProducts = () => {
   ];
 
   // 각 줄에 표시할 메뉴 아이템 (첫 번째 줄은 재고찾기 + 메뉴 4개, 총 5개)
-  const firstRowMenuItems = menuItems.slice(0, 3);
-  const secondRowMenuItems = menuItems.slice(4);
+  const firstRowMenuItems = menuItems.slice(0, 1);
 
   return (
     <div>
@@ -136,66 +141,60 @@ const AllProducts = () => {
       <div className="mb-2 mt-2">
         {/* 첫 번째 줄 - 첫번째에 재고찾기 배치 */}
         <div className="flex flex-row justify-start ml-0 gap-2 mb-1">
-          {/* 재고찾기 메뉴를 첫 번째로 배치 */}
-          <div>
-            <CircularMenuItem
-              title="재고찾기"
-              icon="package"
-              bgColor="bg-blue-200"
-              onClick={handleInventoryClick}
-              imageSrc={findQuantity}
-            />
-          </div>
-
-          <div>
-            <CircularMenuItem
-              title="초특가"
-              icon="tag"
-              bgColor="bg-red-400"
-              onClick={handleSpecialDealsClick} // 버튼 클릭 시 할인 상품 불러오기
-              imageSrc={offline} // 아이콘 이미지
-            />
-          </div>
-
-          {/* 나머지 메뉴 아이템 */}
-          {firstRowMenuItems.map((item, index) => (
-            <div key={index}>
+          <div className="flex flex-row justify-start ml-0 gap-2">
+            {/* 매장안내를 첫 번째로 배치 */}
+            <div>
               <CircularMenuItem
-                title={item.title}
-                icon={item.icon}
-                bgColor={item.bgColor}
-                onClick={() => handleMenuClick(item.path)}
-                // imageSrc={item.imageSrc}
+                title="매장안내"
+                bgColor="bg-green-400"
+                onClick={handleStoreInfoClick}
+                imageSrc={findBranch}
               />
             </div>
-          ))}
-        </div>
 
-        {/* 두 번째 줄 */}
-        <div className="flex flex-row justify-start ml-0 gap-2">
-          {/* 매장안내를 첫 번째로 배치 */}
-          <div>
-            <CircularMenuItem
-              title="매장안내"
-              icon="shopping"
-              bgColor="bg-green-400"
-              onClick={handleStoreInfoClick}
-              imageSrc={findBranch}
-            />
-          </div>
-
-          {/* 나머지 메뉴 아이템 */}
-          {secondRowMenuItems.map((item, index) => (
-            <div key={index}>
+            {/* 재고찾기 메뉴를 첫 번째로 배치 */}
+            <div>
               <CircularMenuItem
-                title={item.title}
-                icon={item.icon}
-                bgColor={item.bgColor}
-                onClick={() => handleMenuClick(item.path)}
-                // imageSrc={item.imageSrc}
+                title="재고찾기"
+                icon="package"
+                bgColor="bg-blue-200"
+                onClick={handleInventoryClick}
+                imageSrc={findQuantity}
               />
             </div>
-          ))}
+
+            <div>
+              <CircularMenuItem
+                title="초특가"
+                icon="tag"
+                bgColor="bg-red-400"
+                onClick={handleSpecialDealsClick} // 버튼 클릭 시 할인 상품 불러오기
+                imageSrc={offline} // 아이콘 이미지
+              />
+            </div>
+
+            <div>
+              <CircularMenuItem
+                title="고객문의"
+                bgColor="bg-blue-200"
+                onClick={handleQuestionClick}
+                imageSrc={question}
+              />
+            </div>
+
+            {/* 나머지 메뉴 아이템 */}
+            {firstRowMenuItems.map((item, index) => (
+              <div key={index}>
+                <CircularMenuItem
+                  title={item.title}
+                  icon={item.icon}
+                  bgColor={item.bgColor}
+                  onClick={() => handleMenuClick(item.path)}
+                  // imageSrc={item.imageSrc}
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 

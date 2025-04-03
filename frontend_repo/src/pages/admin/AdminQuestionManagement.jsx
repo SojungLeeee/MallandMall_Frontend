@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import httpAdminquestion from "../../api/httpAdminquestions";
 
 const AdminQuestionManagement = () => {
   const [questions, setQuestions] = useState([]);
+  const navigate = useNavigate(); // useNavigate 훅 추가
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -46,20 +47,29 @@ const AdminQuestionManagement = () => {
     fetchQuestions();
   }, []);
 
+  // 질문 클릭 시 상세보기 페이지로 이동
+  const handleQuestionClick = (question) => {
+    navigate("/admin/question/detail", { state: { question } });
+  };
+
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">관리자 - 질문 목록</h1>
+      <h1 className="text-xl font-bold mb-4">[관리자] 질문 목록</h1>
       <div className="mb-6">
         {questions.length > 0 ? (
           questions.map((question) => (
             <div
               key={question.questionId}
-              className="border p-4 mb-4 shadow-sm"
+              className="border p-4 mb-4 shadow-sm cursor-pointer"
+              onClick={() => handleQuestionClick(question)} // 클릭 시 이동
             >
               <div className="flex justify-between items-center">
                 <div>
-                  <h2 className="text-xl font-semibold">{question.title}</h2>
-                  <p className="text-sm text-gray-500">{question.createDate}</p>
+                  <h2 className="font-semibold text-left">{question.title}</h2>
+                  <p className="text-xs text-gray-500 text-left">
+                    작성자: {question.userId}
+                  </p>
+                  <p className="text-xs text-gray-500">{question.createDate}</p>
                 </div>
                 <div
                   className={`text-sm font-bold ${
@@ -71,13 +81,6 @@ const AdminQuestionManagement = () => {
                   {question.answerStatus}
                 </div>
               </div>
-              <Link
-                to="/admin/question/detail"
-                state={{ question }}
-                className="text-blue-500 ml-4 text-xs hover:underline"
-              >
-                상세보기
-              </Link>
             </div>
           ))
         ) : (

@@ -23,21 +23,26 @@ const InquiryResponseView = ({ inquiry, onBack }) => {
     <div className="max-w-md mx-auto h-screen flex flex-col bg-white">
       {/* Header */}
       <div className="flex items-center p-4 border-b">
-        <button onClick={onBack} className="mr-4">
+        <button onClick={onBack}>
           <ChevronLeft />
         </button>
-        <div className="flex-grow text-center font-bold">문의 상세</div>
+        <div className="flex-grow text-center font-bold mr-5">문의 상세</div>
       </div>
 
       {/* Inquiry Details */}
-      <div className="p-4 border-b">
-        <div className="flex justify-between mb-2">
-          <span className="text-xs text-gray-500">{inquiry.type}</span>
-          <span className="text-xs text-blue-500">{inquiry.status}</span>
+      <div className="p-4 border-b border-gray-200">
+        {/* 제목 */}
+        <div className="text-xl font-bold text-gray-900">{inquiry.title}</div>
+
+        {/* 문의 일자 */}
+        <div className="text-xs text-gray-500 mt-1 text-right">
+          문의일자: <span className="font-medium">{inquiry.createDate}</span>
         </div>
-        <div className="text-sm font-bold">{inquiry.title}</div>
-        <div className="text-xs text-gray-400 mt-1">{inquiry.date}</div>
-        <div className="mt-2 text-sm">{inquiry.content}</div>
+
+        {/* 내용 */}
+        <div className="mt-3 text-sm text-gray-900 bg-gray-30 p-3 rounded-sm shadow-sm">
+          {inquiry.content}
+        </div>
       </div>
 
       {/* Response Section */}
