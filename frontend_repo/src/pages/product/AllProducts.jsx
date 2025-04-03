@@ -159,7 +159,7 @@ const AllProducts = () => {
                 icon="package"
                 bgColor="bg-blue-200"
                 onClick={handleInventoryClick}
-                imageSrc={findQuantity}
+                imageSrc="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExaGlvY3c1eDZocDB4dTljZXYweDZkbWdhOGd1dXR6MDczbXB0cmxpbiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/AIipJHfzehHtmto1qy/giphy.gif"
               />
             </div>
 
