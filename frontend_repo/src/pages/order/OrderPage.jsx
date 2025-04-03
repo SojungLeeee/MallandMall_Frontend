@@ -93,7 +93,7 @@ const OrderPage = () => {
   // 지오코딩을 수행하는 함수
   const getCoordinatesFromAddress = () => {
     // 주소가 모두 입력되었는지 확인
-    if (!formData.addr1 || !formData.addr2) {
+    if (!formData.addr1) {
       return;
     }
 
@@ -104,7 +104,7 @@ const OrderPage = () => {
     }
 
     try {
-      const fullAddress = `${formData.addr1} ${formData.addr2}`;
+      const fullAddress = `${formData.addr1} `;
       console.log("지오코딩 시도:", fullAddress);
 
       // window.naver 사용
@@ -251,14 +251,14 @@ const OrderPage = () => {
 
   // 주소가 업데이트될 때 좌표 정보도 업데이트
   useEffect(() => {
-    if (formData.addr1 && formData.addr2 && naverMapLoaded) {
+    if (formData.addr1 && naverMapLoaded) {
       getCoordinatesFromAddress();
     }
-  }, [formData.addr1, formData.addr2, naverMapLoaded]);
+  }, [formData.addr1, naverMapLoaded]);
 
   // API 로드 완료 시 주소가 있으면 좌표 획득
   useEffect(() => {
-    if (naverMapLoaded && formData.addr1 && formData.addr2) {
+    if (naverMapLoaded && formData.addr1) {
       getCoordinatesFromAddress();
     }
   }, [naverMapLoaded]);
@@ -763,20 +763,20 @@ const OrderPage = () => {
         />
 
         {/* 좌표 정보 표시 (선택적, 개발 중에만 사용) */}
-        {coordinates && (
+        {/* {coordinates && (
           <div className="text-xs text-gray-500">
             좌표: {coordinates.latitude}, {coordinates.longitude}
           </div>
-        )}
+        )} */}
       </div>
       <br />
       <hr />
-      <button
+      {/* <button
         onClick={handleAddressCheck} // "주소 확인" 버튼 클릭 시 실행되는 함수
         className="w-full px-4 py-2 bg-gray-500 text-white rounded"
       >
         주소 확인
-      </button>
+      </button> */}
 
       {/* 처리 중 표시 */}
       {isProcessing && (
