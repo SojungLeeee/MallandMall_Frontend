@@ -71,6 +71,8 @@ import AdminQuestionDetail from "./pages/admin/AdminQuestionDetail";
 import OfflinePriceChart from "./components/ui/chart/OfflinePriceChart";
 import SpecialDealsPage from "./pages/mypage/SpecialDealsPage";
 import PriceHistoryChart from "./pages/mypage/PriceHistoryChart";
+import StockPage from "./pages/adminchart/StockPage";
+import StockChartDetailPage from "./pages/adminchart/StockChartDetailPage";
 
 const router = createBrowserRouter([
   // AppTwo 기반 라우트
@@ -198,6 +200,8 @@ const router = createBrowserRouter([
 
       { path: "/special-deals", element: <SpecialDealsPage /> },
       { path: "/product-chart/:productCode", element: <PriceHistoryChart /> },
+      { path: "/admin/stock", element: <StockPage /> },
+      { path: "/stock-chart/:productCode", element: <StockChartDetailPage /> },
     ],
   },
 ]);
