@@ -6,11 +6,12 @@ import {
   fetchDeleteCartItems,
 } from "../../api/httpOrderService";
 import { fetchDeleteCoupon } from "../../api/httpCouponService";
-import axios from "axios"; // 필요한 경우 추가
+import axios from "axios";
+import tossPayLogo from "../../assets/images/logo/tossPayLogo.png";
 
 const OrderPage = () => {
   const { state } = useLocation();
-  const [selectedCoupon, setSelectedCoupon] = useState(null); // 선택된 쿠폰 상태
+  const [selectedCoupon, setSelectedCoupon] = useState(null);
   const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
   const [coordinates, setCoordinates] = useState(null);
@@ -25,27 +26,24 @@ const OrderPage = () => {
     latitude: null,
     longitude: null,
   });
-  const [productInfo, setProductInfo] = useState(null); // 하나의 품목 정보
-  const [cartItems, setCartItems] = useState([]); // 여러 품목 장바구니 아이템
-  const [isFromCart, setIsFromCart] = useState(false); // 장바구니에서 왔는지 확인하는 상태
+  const [productInfo, setProductInfo] = useState(null);
+  const [cartItems, setCartItems] = useState([]);
+  const [isFromCart, setIsFromCart] = useState(false);
 
-  // 지점 관련 상태 변수 추가
+  // 지점 관련 상태 변수
   const [defaultBranch, setDefaultBranch] = useState("이마트 연제점");
   const [nearestBranch, setNearestBranch] = useState(null);
-  const [alternativeBranch, setAlternativeBranch] = useState(null); // 대체 지점 (재고 있는)
-  const [hasAlternativeBranch, setHasAlternativeBranch] = useState(false); // 대체 지점 존재 여부
-  const [useAlternativeBranch, setUseAlternativeBranch] = useState(false); // 대체 지점 사용 여부
+  const [alternativeBranch, setAlternativeBranch] = useState(null);
+  const [hasAlternativeBranch, setHasAlternativeBranch] = useState(false);
+  const [useAlternativeBranch, setUseAlternativeBranch] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  // 네이버 맵 스크립트 로드 (NaverMap 컴포넌트와 동일한 방식)
+  // 네이버 맵 스크립트 로드
   useEffect(() => {
-    // 이미 로드되었는지 확인
     if (document.getElementById("naver-map-script")) {
-      // 이미 로드된 경우, API가 사용 가능한지 확인
       if (window.naver && window.naver.maps) {
         setNaverMapLoaded(true);
       } else {
-        // API 객체를 기다림
         const checkNaverApi = setInterval(() => {
           if (window.naver && window.naver.maps) {
             setNaverMapLoaded(true);
@@ -53,7 +51,6 @@ const OrderPage = () => {
           }
         }, 500);
 
-        // 30초 후 시간 초과 처리
         setTimeout(() => {
           clearInterval(checkNaverApi);
         }, 30000);
@@ -61,7 +58,6 @@ const OrderPage = () => {
       return;
     }
 
-    // 스크립트 로드
     const script = document.createElement("script");
     script.id = "naver-map-script";
     script.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${process.env.REACT_APP_NAVER_CLIENT_ID}&submodules=geocoder`;
@@ -69,7 +65,6 @@ const OrderPage = () => {
 
     script.onload = () => {
       console.log("네이버 지도 API 로드 완료");
-      // API가 완전히 로드될 때까지 기다림
       const checkNaverApi = setInterval(() => {
         if (window.naver && window.naver.maps) {
           setNaverMapLoaded(true);
@@ -77,7 +72,6 @@ const OrderPage = () => {
         }
       }, 500);
 
-      // 10초 후 시간 초과 처리
       setTimeout(() => {
         clearInterval(checkNaverApi);
       }, 10000);
@@ -90,24 +84,19 @@ const OrderPage = () => {
     document.body.appendChild(script);
   }, []);
 
-  // 지오코딩을 수행하는 함수
+  // 지오코딩 함수
   const getCoordinatesFromAddress = () => {
-    // 주소가 모두 입력되었는지 확인
-    if (!formData.addr1) {
-      return;
-    }
+    if (!formData.addr1) return;
 
-    // 네이버 맵 API가 로드되지 않은 경우
     if (!naverMapLoaded || !window.naver || !window.naver.maps) {
       console.log("네이버 지도 API가 아직 로드되지 않았습니다.");
       return;
     }
 
     try {
-      const fullAddress = `${formData.addr1} `;
+      const fullAddress = `${formData.addr1}`;
       console.log("지오코딩 시도:", fullAddress);
 
-      // window.naver 사용
       window.naver.maps.Service.geocode(
         {
           query: fullAddress,
@@ -138,7 +127,6 @@ const OrderPage = () => {
             longitude: point.longitude,
           }));
 
-          // 좌표가 확인되면 재고 확인과 함께 가장 가까운 지점 찾기
           findNearestBranchWithStock(point.latitude, point.longitude);
         }
       );
@@ -147,16 +135,13 @@ const OrderPage = () => {
     }
   };
 
-  // 가장 가까운 매장 찾기 함수 (재고 확인 포함)
+  // 가장 가까운 매장 찾기 함수
   const findNearestBranchWithStock = async (latitude, longitude) => {
-    if (!latitude || !longitude) {
-      return;
-    }
+    if (!latitude || !longitude) return;
 
     setIsProcessing(true);
 
     try {
-      // 상품 코드 배열 준비
       const productCodes = isFromCart
         ? cartItems.map((item) => item.productCode)
         : productInfo
@@ -168,14 +153,13 @@ const OrderPage = () => {
         return;
       }
 
-      // 가장 가까운 매장과 재고 정보 요청
       const response = await axios.post(
         "http://localhost:8090/emart/admin/branch/nearestWithStock",
         {
           latitude: latitude,
           longitude: longitude,
           productCodes: productCodes,
-          limit: 5, // 상위 5개 지점 요청
+          limit: 5,
         }
       );
 
@@ -183,28 +167,23 @@ const OrderPage = () => {
       console.log("근처 매장들과 재고 정보:", branchesWithStock);
 
       if (branchesWithStock && branchesWithStock.length > 0) {
-        // 첫 번째 매장 정보 설정 (가장 가까운 매장)
         const closestBranch = branchesWithStock[0];
         setNearestBranch(closestBranch);
 
-        // 재고 있는 지점이 있다면 다른 지점 목록 저장
         if (closestBranch.hasStock) {
-          // 가장 가까운 매장에 재고가 있는 경우
           console.log("가장 가까운 매장에 재고가 있습니다.");
           setHasAlternativeBranch(false);
           setUseAlternativeBranch(false);
         } else {
-          // 가장 가까운 매장에 재고가 없는 경우, 재고 있는 다른 지점 찾기
           const otherBranchesWithStock = branchesWithStock.filter(
             (branch) => branch.hasStock
           );
 
           if (otherBranchesWithStock.length > 0) {
-            console.log("재고 있는 다른 매장들:", otherBranchesWithStock);
-            // 재고 있는 지점 중 가장 가까운 지점을 추천
+            console.log("재고 보유 매장:", otherBranchesWithStock);
             setAlternativeBranch(otherBranchesWithStock[0]);
             setHasAlternativeBranch(true);
-            setUseAlternativeBranch(false); // 초기값은 false, 사용자가 선택 가능
+            setUseAlternativeBranch(false);
           } else {
             console.log("모든 근처 매장에 재고가 없습니다.");
             setHasAlternativeBranch(false);
@@ -212,7 +191,6 @@ const OrderPage = () => {
           }
         }
       } else {
-        // 매장 정보가 없는 경우 기본적인 가까운 매장 정보만 가져오기
         const fallbackResponse = await axios.post(
           "http://localhost:8090/emart/admin/branch/nearest",
           {
@@ -242,74 +220,42 @@ const OrderPage = () => {
     setUseAlternativeBranch(!useAlternativeBranch);
   };
 
-  // 좌표가 변경될 때 가장 가까운 매장 찾기
+  // useEffect 설정
   useEffect(() => {
     if (formData.latitude && formData.longitude) {
       findNearestBranchWithStock(formData.latitude, formData.longitude);
     }
   }, [formData.latitude, formData.longitude]);
 
-  // 주소가 업데이트될 때 좌표 정보도 업데이트
   useEffect(() => {
     if (formData.addr1 && naverMapLoaded) {
       getCoordinatesFromAddress();
     }
   }, [formData.addr1, naverMapLoaded]);
 
-  // API 로드 완료 시 주소가 있으면 좌표 획득
   useEffect(() => {
     if (naverMapLoaded && formData.addr1) {
       getCoordinatesFromAddress();
     }
   }, [naverMapLoaded]);
 
-  // handleCouponClick 함수에서 originalPrice를 전달
+  // 쿠폰 사용 처리
   const handleCouponClick = () => {
-    console.log(originalPrice);
     navigate("/mypage/usecoupon", {
-      state: { originalPrice: originalPrice }, // originalPrice를 state로 전달
+      state: { originalPrice: originalPrice },
     });
   };
 
-  const handleAddressCheck = () => {
-    const OrderAddress = formData.addr1;
-    console.log("OrderAddress:", OrderAddress);
-    // 좌표 정보가 있다면 함께 표시
-    if (formData.latitude && formData.longitude) {
-      console.log("주소 좌표:", formData.latitude, formData.longitude);
-    }
-    // 매장 정보가 있다면 표시
-    if (nearestBranch) {
-      console.log(
-        "가장 가까운 매장:",
-        nearestBranch.branchName,
-        nearestBranch.distance.toFixed(2) + "km",
-        nearestBranch.hasStock ? "(재고 있음)" : "(재고 없음)"
-      );
-
-      if (useAlternativeBranch && alternativeBranch) {
-        console.log(
-          "대체 배송 매장:",
-          alternativeBranch.branchName,
-          alternativeBranch.distance.toFixed(2) + "km",
-          "(재고 있음)"
-        );
-      }
-    } else {
-      console.log("기본 매장:", defaultBranch);
-    }
-  };
-
+  // 초기 데이터 로드
   useEffect(() => {
     if (state && state.selectedCoupon) {
-      setSelectedCoupon(state.selectedCoupon); // 쿠폰 정보가 있으면 상태에 저장
+      setSelectedCoupon(state.selectedCoupon);
     }
 
-    // 장바구니에서 넘어온 경우 처리
     const selectedCartItems = localStorage.getItem("selectedCartItems");
     if (selectedCartItems) {
       setIsFromCart(true);
-      setCartItems(JSON.parse(selectedCartItems)); // localStorage에서 불러온 장바구니 아이템 설정
+      setCartItems(JSON.parse(selectedCartItems));
     } else {
       setIsFromCart(false);
     }
@@ -337,13 +283,13 @@ const OrderPage = () => {
       })
       .catch((err) => console.error(err));
 
-    // localStorage에서 상품 정보 불러오기
     const storedProductInfo = localStorage.getItem("productInfo");
     if (storedProductInfo) {
-      setProductInfo(JSON.parse(storedProductInfo)); // 하나의 품목 정보 불러오기
+      setProductInfo(JSON.parse(storedProductInfo));
     }
   }, [navigate]);
 
+  // 폼 입력 처리
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -358,8 +304,8 @@ const OrderPage = () => {
       addr2: profile.addr2,
       phoneNumber: profile.phoneNumber,
       memo: "",
-      latitude: null, // 초기화
-      longitude: null, // 초기화
+      latitude: null,
+      longitude: null,
     });
   };
 
@@ -371,8 +317,8 @@ const OrderPage = () => {
       addr2: "",
       phoneNumber: "",
       memo: "",
-      latitude: null, // 초기화
-      longitude: null, // 초기화
+      latitude: null,
+      longitude: null,
     });
   };
 
@@ -383,7 +329,6 @@ const OrderPage = () => {
           ...prev,
           post: data.zonecode,
           addr1: data.roadAddress || data.jibunAddress,
-          // 주소가 변경되면 좌표 정보 초기화
           latitude: null,
           longitude: null,
         }));
@@ -406,17 +351,17 @@ const OrderPage = () => {
 
   // 할인 비율 계산
   const getDiscountRate = (benefit) => {
-    if (!benefit) return 0; // 할인 혜택이 없다면 0 반환
+    if (!benefit) return 0;
 
     const discountPercent =
       typeof benefit === "string" && benefit.includes("%")
-        ? parseInt(benefit.replace("%", ""), 10) // "%""이 포함된 문자열에서 숫자만 추출
-        : benefit; // 숫자 형태의 benefit이 오면 그대로 사용
+        ? parseInt(benefit.replace("%", ""), 10)
+        : benefit;
 
-    return discountPercent; // 할인 비율을 반환
+    return discountPercent;
   };
 
-  // cartItems와 productInfo의 가격 계산
+  // 가격 계산
   const originalPrice = isFromCart
     ? cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0)
     : productInfo && productInfo.price
@@ -433,7 +378,6 @@ const OrderPage = () => {
 
   // 결제 처리 함수
   const handlePayment = (pgProvider) => {
-    // 필수 입력값 체크
     if (
       !formData.receiverName ||
       !formData.post ||
@@ -442,16 +386,14 @@ const OrderPage = () => {
       !formData.phoneNumber
     ) {
       alert("모든 기본 정보를 입력해주세요.");
-      return; // 빈 값이 있으면 결제 처리 중단
+      return;
     }
 
     const { IMP } = window;
     IMP.init("imp42828803");
 
-    // 결제 요청을 위한 금액 계산
     const totalAmount = discountedPrice;
 
-    // 결제 상품 이름 설정
     const productName = isFromCart
       ? `${cartItems[0].productName} 외 ${cartItems.length - 1}개`
       : productInfo.productName;
@@ -462,7 +404,7 @@ const OrderPage = () => {
         pay_method: "card",
         merchant_uid: `mid_${new Date().getTime()}`,
         name: productName,
-        amount: totalAmount, // 총 결제 금액
+        amount: totalAmount,
         buyer_email: profile.email,
         buyer_name: formData.receiverName,
         buyer_tel: formData.phoneNumber,
@@ -474,7 +416,6 @@ const OrderPage = () => {
         if (rsp.success) {
           const token = localStorage.getItem("jwtAuthToken");
 
-          // 매장 정보: 대체 지점 사용 여부에 따라 결정
           const branchName =
             useAlternativeBranch && alternativeBranch
               ? alternativeBranch.branchName
@@ -482,14 +423,12 @@ const OrderPage = () => {
               ? nearestBranch.branchName
               : defaultBranch;
 
-          // 재고 정보
           const hasStock = useAlternativeBranch
-            ? true // 대체 지점을 사용하면 재고 있음
+            ? true
             : nearestBranch
             ? nearestBranch.hasStock
             : false;
 
-          // 장바구니 다수 상품 결제
           if (isFromCart) {
             const multiProductData = {
               ...formData,
@@ -500,9 +439,9 @@ const OrderPage = () => {
                 quantity: item.quantity,
               })),
               discountedPrice: discountRate,
-              branchName: branchName, // 지점 정보 추가
-              hasStock: hasStock, // 재고 상태 추가
-              isAlternativeBranch: useAlternativeBranch, // 대체 지점 사용 여부
+              branchName: branchName,
+              hasStock: hasStock,
+              isAlternativeBranch: useAlternativeBranch,
             };
 
             console.log("전송 데이터:", multiProductData);
@@ -513,26 +452,24 @@ const OrderPage = () => {
                   navigate(`/order/complete?imp_uid=${rsp.imp_uid}`, {
                     state: {
                       selectedCoupon,
-                      branchName: branchName, // 지점 정보 추가
+                      branchName: branchName,
                       distance: useAlternativeBranch
                         ? alternativeBranch?.distance
-                        : nearestBranch?.distance, // 거리 정보 추가
+                        : nearestBranch?.distance,
                       hasStock: hasStock,
                       isAlternativeBranch: useAlternativeBranch,
                     },
                   });
                 }
-                // 장바구니에서 해당 품목들을 삭제
-                const cartIdsToDelete = cartItems.map((item) => item.cartId); // cartId 목록 생성
+
+                const cartIdsToDelete = cartItems.map((item) => item.cartId);
                 console.log(cartIdsToDelete);
                 fetchDeleteCartItems(cartIdsToDelete);
 
-                // 결제 후 localStorage 초기화
                 localStorage.removeItem("selectedCartItems");
 
-                // 결제 성공 후 쿠폰 삭제
                 if (selectedCoupon) {
-                  const couponId = selectedCoupon.couponId; // selectedCoupon에서 couponId 가져오기
+                  const couponId = selectedCoupon.couponId;
                   fetchDeleteCoupon(couponId)
                     .then(() => {
                       console.log(`쿠폰 ${couponId} 삭제 완료`);
@@ -545,16 +482,15 @@ const OrderPage = () => {
                 alert("장바구니 주문 처리 중 오류가 발생했습니다.");
               });
           } else {
-            // 단일 상품 결제
             const singleProductData = {
-              ...formData, // 여기에 latitude, longitude 포함
+              ...formData,
               userId: profile.userId,
               productCode: productInfo.productCode,
               quantity: 1,
               impUid: rsp.imp_uid,
-              branchName: branchName, // 지점 정보 추가
-              hasStock: hasStock, // 재고 상태 추가
-              isAlternativeBranch: useAlternativeBranch, // 대체 지점 사용 여부
+              branchName: branchName,
+              hasStock: hasStock,
+              isAlternativeBranch: useAlternativeBranch,
             };
 
             console.log("전송 데이터:", singleProductData);
@@ -565,22 +501,20 @@ const OrderPage = () => {
                   navigate(`/order/complete?imp_uid=${rsp.imp_uid}`, {
                     state: {
                       selectedCoupon,
-                      branchName: branchName, // 지점 정보 추가
+                      branchName: branchName,
                       distance: useAlternativeBranch
                         ? alternativeBranch?.distance
-                        : nearestBranch?.distance, // 거리 정보 추가
+                        : nearestBranch?.distance,
                       hasStock: hasStock,
                       isAlternativeBranch: useAlternativeBranch,
                     },
                   });
                 }
 
-                // 결제 후 localStorage 초기화
                 localStorage.removeItem("productInfo");
 
-                // 결제 성공 후 쿠폰 삭제
                 if (selectedCoupon) {
-                  const couponId = selectedCoupon.couponId; // selectedCoupon에서 couponId 가져오기
+                  const couponId = selectedCoupon.couponId;
                   fetchDeleteCoupon(couponId)
                     .then(() => {
                       console.log(`쿠폰 ${couponId} 삭제 완료`);
@@ -601,29 +535,31 @@ const OrderPage = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white shadow rounded">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-bold">주문 상품 정보</h2>{" "}
+    <div className="max-w-2xl mx-auto p-8 bg-white shadow-lg rounded-lg border border-gray-100">
+      {/* 헤더 영역 */}
+      <div className="flex items-center justify-between mb-8 border-b border-gray-200 pb-4">
+        <h2 className="text-2xl font-bold text-black">주문 상품 정보</h2>
         <button
           onClick={() => navigate(`/product/${productInfo?.productCode}`)}
-          className="text-3xl text-gray-500 hover:text-gray-700"
+          className="text-3xl text-black hover:text-gray-700 transition-colors"
         >
-          &#8592; {/* ← 돌아가기 화살표 */}
+          &#8592;
         </button>
       </div>
-      {/* 상품 이미지와 이름 표시 */}
+
+      {/* 상품 정보 */}
       {isFromCart ? (
         cartItems.map((item, index) => (
           <div className="my-4" key={index}>
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center bg-gray-50 p-4 rounded-lg">
               <img
                 src={item.image}
                 alt={item.productName}
-                className="w-20 h-20 object-cover rounded-md mr-4"
+                className="w-20 h-20 object-cover rounded-md mr-4 border border-gray-200"
               />
               <div className="flex-1">
-                <h3>{item.productName}</h3>
-                <p>
+                <h3 className="font-medium text-lg">{item.productName}</h3>
+                <p className="text-gray-700 mt-1">
                   {item.price.toLocaleString()}원 * {item.quantity}개
                 </p>
               </div>
@@ -631,152 +567,197 @@ const OrderPage = () => {
           </div>
         ))
       ) : productInfo ? (
-        <div className="my-4">
-          <div className="flex items-center justify-between mb-4">
+        <div className="my-6">
+          <div className="flex items-center bg-gray-50 p-4 rounded-lg">
             <img
               src={productInfo.image}
               alt={productInfo.productName}
-              className="w-20 h-20 object-cover rounded-md mr-4"
+              className="w-20 h-20 object-cover rounded-md mr-4 border border-gray-200"
             />
             <div className="flex-1">
-              <h3>{productInfo.productName}</h3>
-              <p>{productInfo.price.toLocaleString()}원</p>
+              <h3 className="font-medium text-lg">{productInfo.productName}</h3>
+              <p className="text-gray-700 mt-1">
+                {productInfo.price?.toLocaleString()}원
+              </p>
             </div>
           </div>
         </div>
       ) : (
         <p>상품 정보가 없습니다.</p>
       )}
+
+      {/* 쿠폰 영역 */}
       <button
         onClick={handleCouponClick}
-        className="w-full px-4 py-2 rounded-md bg-gray-500 text-white mb-3"
+        className="w-full px-4 py-3 rounded-md bg-black text-white font-medium mb-5 hover:bg-gray-800 transition-colors"
       >
         쿠폰 사용
       </button>
-      <br />
-      <hr></hr>
-      {/* 선택된 쿠폰이 있다면 */}
-      {selectedCoupon && (
-        <div className="mt-4 mb-4 flex items-center justify-between">
-          <p className="mr-2">
-            <span className="font-bold text-sm">적용쿠폰 : </span>
-            <span className="text-sm">{selectedCoupon.couponName}</span> -{" "}
-            <span className="text-sm">{selectedCoupon.benefits}</span>
-          </p>
-          <span className="mx-2 text-gray-500">|</span> {/* 구분선 추가 */}
-          <button
-            onClick={() => setSelectedCoupon(null)} // 쿠폰 제거
-            className="text-red-500 font-extrabold text-xl cursor-pointer"
-          >
-            &#10005; {/* X 버튼 */}
-          </button>
-        </div>
-      )}
-      <hr />
 
-      <div className="flex items-center justify-between mb-">
-        <h2 className="text-xl font-bold mt-3 mb-3">기본 배송지</h2>{" "}
-      </div>
-      {profile ? (
-        <div className="bg-gray-100 p-4 rounded mb-6 text-left">
-          <p className="mb-1">
-            <strong>이름:</strong> {profile.userName}
-          </p>
-          <p className="mb-1">
-            <strong>주소:</strong> {profile.addr1} {profile.addr2}
-          </p>
-          <p className="mb-1">
-            <strong>우편번호:</strong> {profile.post}
-          </p>
-          <p className="mb-1">
-            <strong>연락처:</strong> {profile.phoneNumber}
-          </p>
-        </div>
-      ) : (
-        <p>배송지 정보를 불러오는 중...</p>
-      )}
-      <div className="flex gap-4 mb-4">
-        <button
-          onClick={handleDefaultToggle}
-          className="px-4 py-2 bg-blue-500
-           text-white rounded"
-        >
-          기본 배송지 사용
-        </button>
-        <button
-          onClick={handleClear}
-          className="px-4 py-2 bg-gray-400 text-white rounded"
-        >
-          직접 입력
-        </button>
-      </div>
-      <div className="grid gap-4">
-        <input
-          name="receiverName"
-          placeholder="수령인 이름"
-          value={formData.receiverName}
-          onChange={handleChange}
-          className="border p-2 rounded"
-        />
-        <div className="flex gap-2">
-          <input
-            name="post"
-            placeholder="우편번호"
-            value={formData.post}
-            onChange={handleChange}
-            className="border p-2 rounded w-full"
-          />
-          <button
-            onClick={handleAddressSearch}
-            className="px-4 bg-gray-200 rounded"
-          >
-            주소검색
-          </button>
-        </div>
-        <input
-          name="addr1"
-          placeholder="주소"
-          value={formData.addr1}
-          onChange={handleChange}
-          className="border p-2 rounded"
-        />
-        <input
-          name="addr2"
-          placeholder="상세주소"
-          value={formData.addr2}
-          onChange={handleChange}
-          className="border p-2 rounded"
-        />
-        <input
-          name="phoneNumber"
-          placeholder="연락처"
-          value={formData.phoneNumber}
-          onChange={handleChange}
-          className="border p-2 rounded"
-        />
-        <textarea
-          name="memo"
-          placeholder="배송 메모"
-          value={formData.memo}
-          onChange={handleChange}
-          className="border p-2 rounded"
-        />
-
-        {/* 좌표 정보 표시 (선택적, 개발 중에만 사용) */}
-        {/* {coordinates && (
-          <div className="text-xs text-gray-500">
-            좌표: {coordinates.latitude}, {coordinates.longitude}
+      <div className="border-t border-b border-gray-200 py-4 my-4">
+        {selectedCoupon && (
+          <div className="flex items-center justify-between">
+            <div>
+              <span className="font-bold text-sm">적용쿠폰: </span>
+              <span className="text-sm">{selectedCoupon.couponName}</span> -
+              <span className="text-sm text-red-500 ml-1">
+                {selectedCoupon.benefits}
+              </span>
+            </div>
+            <button
+              onClick={() => setSelectedCoupon(null)}
+              className="text-black font-bold text-xl hover:text-red-500 transition-colors"
+            >
+              &#10005;
+            </button>
           </div>
-        )} */}
+        )}
       </div>
-      <br />
-      <hr />
-      {/* <button
-        onClick={handleAddressCheck} // "주소 확인" 버튼 클릭 시 실행되는 함수
-        className="w-full px-4 py-2 bg-gray-500 text-white rounded"
-      >
-        주소 확인
-      </button> */}
+
+      {/* 배송지 정보 */}
+      <div className="mt-8">
+        <h2 className="text-xl font-bold text-black mb-4 flex items-center">
+          <svg
+            className="w-5 h-5 mr-2"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12 12.5C13.1046 12.5 14 11.6046 14 10.5C14 9.39543 13.1046 8.5 12 8.5C10.8954 8.5 10 9.39543 10 10.5C10 11.6046 10.8954 12.5 12 12.5Z"
+              stroke="black"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M12 21C12 21 19 16.5 19 10.5C19 6.5 15.866 3 12 3C8.13401 3 5 6.5 5 10.5C5 16.5 12 21 12 21Z"
+              stroke="black"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          기본 배송지
+        </h2>
+
+        {profile ? (
+          <div className="bg-white p-6 rounded-lg mb-6 text-left border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300">
+            <div className="grid grid-cols-[80px_1fr] gap-4">
+              <div className="font-semibold text-gray-700 text-left">이름</div>
+              <div className="text-black">{profile.userName}</div>
+
+              <div className="font-semibold text-gray-700 text-left">주소</div>
+              <div className="text-black">
+                {profile.addr1} {profile.addr2}
+              </div>
+
+              <div className="font-semibold text-gray-700 text-left">
+                우편번호
+              </div>
+              <div className="text-black">{profile.post}</div>
+
+              <div className="font-semibold text-gray-700 text-left">
+                연락처
+              </div>
+              <div className="text-black">{profile.phoneNumber}</div>
+            </div>
+          </div>
+        ) : (
+          <div className="bg-white p-6 rounded-lg mb-6 text-center border border-gray-200 shadow-sm">
+            <svg
+              className="animate-spin h-5 w-5 text-gray-400 mx-auto mb-2"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              ></circle>
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
+            <p className="text-gray-500">배송지 정보를 불러오는 중...</p>
+          </div>
+        )}
+
+        <div className="flex gap-4 mb-6">
+          <button
+            onClick={handleDefaultToggle}
+            className="px-5 py-3 bg-black text-white rounded-md font-medium hover:bg-gray-800 transition-colors flex-1"
+          >
+            기본 배송지
+          </button>
+          <button
+            onClick={handleClear}
+            className="px-5 py-3 bg-gray-200 text-gray-800 rounded-md font-medium hover:bg-gray-300 transition-colors flex-1"
+          >
+            직접 입력
+          </button>
+        </div>
+
+        {/* 배송지 입력 폼 */}
+        <div className="grid gap-4">
+          <input
+            name="receiverName"
+            placeholder="수령인 이름"
+            value={formData.receiverName}
+            onChange={handleChange}
+            className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+          />
+          <div className="flex gap-2">
+            <input
+              name="post"
+              placeholder="우편번호"
+              value={formData.post}
+              onChange={handleChange}
+              className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-black w-full"
+            />
+            <button
+              onClick={handleAddressSearch}
+              className="px-4 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors font-medium"
+            >
+              주소검색
+            </button>
+          </div>
+          <input
+            name="addr1"
+            placeholder="주소"
+            value={formData.addr1}
+            onChange={handleChange}
+            className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+          />
+          <input
+            name="addr2"
+            placeholder="상세주소"
+            value={formData.addr2}
+            onChange={handleChange}
+            className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+          />
+          <input
+            name="phoneNumber"
+            placeholder="연락처"
+            value={formData.phoneNumber}
+            onChange={handleChange}
+            className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+          />
+          <textarea
+            name="memo"
+            placeholder="배송 메모"
+            value={formData.memo}
+            onChange={handleChange}
+            className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-black h-24"
+          />
+        </div>
+      </div>
 
       {/* 처리 중 표시 */}
       {isProcessing && (
@@ -790,46 +771,131 @@ const OrderPage = () => {
         </div>
       )}
 
-      {/* 가장 가까운 매장 정보 표시 */}
+      {/* 가까운 매장 정보 - 강조된 디자인 */}
       {nearestBranch && (
-        <div className="mt-4 p-4 bg-blue-50 rounded-lg mb-4">
-          <h3 className="font-medium text-blue-800 text-center mb-2">
+        <div className="mt-8 border-t border-gray-200 pt-6">
+          <h3 className="font-bold text-xl text-black mb-4 flex items-center">
+            <svg
+              className="w-6 h-6 mr-2"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2ZM12 11.5C10.62 11.5 9.5 10.38 9.5 9C9.5 7.62 10.62 6.5 12 6.5C13.38 6.5 14.5 7.62 14.5 9C14.5 10.38 13.38 11.5 12 11.5Z"
+                fill="black"
+              />
+            </svg>
             배송지 주변 매장
           </h3>
-          <div className="flex flex-col items-center mt-2">
-            <p className="font-bold text-lg text-center">
-              {nearestBranch.branchName}
-            </p>
-            <p className="text-sm text-gray-600 text-center mt-1">
-              {nearestBranch.branchAddress}
-            </p>
-            <p className="text-xs text-gray-500 mt-2">
-              거리: 약 {nearestBranch.distance.toFixed(1)}km
-            </p>
 
-            {/* 재고 없음 표시 */}
-            {nearestBranch.hasStock === false && (
-              <div className="mt-3 px-3 py-2 bg-red-50 border border-red-200 rounded-md w-full">
-                <p className="text-sm text-red-700 text-center">
-                  ⚠️ 이 지점에는 일부 상품의 재고가 없습니다.
+          <div className="bg-black text-white p-6 rounded-lg shadow-lg mb-4">
+            <div className="flex items-center mb-3">
+              <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mr-4">
+                <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M19 7H5C3.89543 7 3 7.89543 3 9V18C3 19.1046 3.89543 20 5 20H19C20.1046 20 21 19.1046 21 18V9C21 7.89543 20.1046 7 19 7Z"
+                    stroke="black"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M16 20V5C16 4.46957 15.7893 3.96086 15.4142 3.58579C15.0391 3.21071 14.5304 3 14 3H10C9.46957 3 8.96086 3.21071 8.58579 3.58579C8.21071 3.96086 8 4.46957 8 5V20"
+                    stroke="black"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </div>
+              <div>
+                <p className="font-bold text-xl">{nearestBranch.branchName}</p>
+                <p className="text-gray-300 text-sm">
+                  {nearestBranch.branchAddress}
                 </p>
               </div>
-            )}
+            </div>
 
-            {/* 대체 지점 추천 */}
-            {hasAlternativeBranch && alternativeBranch && (
-              <div className="mt-3 border-t border-blue-200 pt-3 w-full">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm font-medium text-blue-800">
-                    재고 있는 다른 지점:
-                  </p>
-                  <div className="flex items-center">
+            <div className="flex justify-between items-center border-t border-gray-700 pt-3 mt-3">
+              <div className="flex items-center">
+                {nearestBranch.hasStock ? (
+                  <>
+                    <svg
+                      className="w-5 h-5 mr-1 text-green-400"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                    >
+                      <path
+                        d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2Z"
+                        fill="currentColor"
+                      />
+                      <path
+                        d="M8 12L11 15L16 9"
+                        stroke="white"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    <span className="text-green-400 font-medium">
+                      재고 있음
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <svg
+                      className="w-5 h-5 mr-1 text-red-400"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                    >
+                      <path
+                        d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2Z"
+                        fill="currentColor"
+                      />
+                      <path
+                        d="M15 9L9 15"
+                        stroke="white"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M9 9L15 15"
+                        stroke="white"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    <span className="text-red-400 font-medium">재고 없음</span>
+                  </>
+                )}
+              </div>
+              <div className="bg-white bg-opacity-20 px-3 py-1 rounded-full">
+                <span className="text-sm font-medium">
+                  약 {nearestBranch.distance.toFixed(1)}km
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* 대체 매장 정보 - 재고가 없을 때만 표시 */}
+          {!nearestBranch.hasStock &&
+            hasAlternativeBranch &&
+            alternativeBranch && (
+              <div className="bg-gray-100 p-5 rounded-lg border border-gray-200">
+                <div className="flex justify-between items-center mb-3">
+                  <h4 className="font-medium text-lg">재고 매장</h4>
+                  <div className="flex items-center ml-8">
+                    {" "}
+                    {/* 여기에 ml-8 (margin-left) 추가 */}
                     <input
                       type="checkbox"
                       id="useAlternativeBranch"
                       checked={useAlternativeBranch}
                       onChange={toggleAlternativeBranch}
-                      className="mr-2 h-4 w-4"
+                      className="mr-2 h-4 w-4 cursor-pointer"
                     />
                     <label
                       htmlFor="useAlternativeBranch"
@@ -839,71 +905,88 @@ const OrderPage = () => {
                     </label>
                   </div>
                 </div>
-
                 <div
-                  className={`mt-2 p-3 rounded-md ${
+                  className={`p-4 rounded-lg ${
                     useAlternativeBranch
                       ? "bg-green-50 border border-green-200"
-                      : "bg-gray-50"
+                      : "bg-white"
                   }`}
                 >
-                  <p className="font-medium">
-                    {alternativeBranch.branchName}
-                    <span className="ml-2 text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full">
-                      재고 있음
-                    </span>
-                  </p>
-                  <p className="text-xs text-gray-600 mt-1">
-                    {alternativeBranch.branchAddress}
-                  </p>
-                  <p className="text-xs text-gray-500 mt-1">
-                    거리: 약 {alternativeBranch.distance.toFixed(1)}km (현재
-                    위치에서
-                    {(
-                      alternativeBranch.distance - nearestBranch.distance
-                    ).toFixed(1)}
-                    km 더 멈)
-                  </p>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium flex items-center">
+                        {alternativeBranch.branchName}
+                        <span className="ml-2 text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full">
+                          재고 있음
+                        </span>
+                      </p>
+                      <p className="text-xs text-gray-600 mt-1">
+                        {alternativeBranch.branchAddress}
+                      </p>
+                    </div>
+                    <div className="text-xs bg-black text-white px-3 py-1 rounded-full">
+                      {alternativeBranch.distance.toFixed(1)}km
+                    </div>
+                  </div>
+
                   {useAlternativeBranch && (
-                    <p className="text-xs text-green-600 mt-1 font-medium">
+                    <p className="text-xs text-green-600 mt-3 font-medium border-t border-green-100 pt-2">
                       ✅ 해당 지점에서 주문 상품을 배송합니다
                     </p>
                   )}
                 </div>
               </div>
             )}
-          </div>
         </div>
       )}
 
-      {/* 전체 결제 금액 */}
-      <div className="my-6 text-right">
-        <h3 className="text-lg font-bold">총 결제 금액</h3>
+      {/* 결제 정보 */}
+      <div className="mt-10 mb-8 text-right border-t border-gray-200 pt-5">
+        <h3 className="text-lg font-bold text-black">총 결제 금액</h3>
         {selectedCoupon ? (
           <>
-            <p className="line-through">{originalPrice.toLocaleString()}원</p>
-            <p className="text-xl font-semibold text-red-500">
-              {discountedPrice.toLocaleString()}원
+            <p className="line-through text-gray-500">
+              {originalPrice.toLocaleString()}원
+            </p>
+            <p className="text-2xl font-bold text-black">
+              {discountedPrice.toLocaleString()}
+              <span className="text-sm ml-1">원</span>
             </p>
           </>
         ) : (
-          <p className="text-xl font-semibold">
-            {originalPrice.toLocaleString()}원
+          <p className="text-2xl font-bold text-black">
+            {originalPrice.toLocaleString()}
+            <span className="text-sm ml-1">원</span>
           </p>
         )}
       </div>
-      <div className="mt-6 grid grid-cols-2 gap-4">
+
+      {/* 결제 버튼 */}
+      <div className="mt-8 grid grid-cols-2 gap-6">
         <button
           onClick={() => handlePayment("kakaopay.TC0ONETIME")}
-          className="w-full py-2 bg-yellow-400 text-black font-bold rounded hover:bg-yellow-500"
+          className="flex items-center justify-center bg-yellow-400 rounded-md h-12 shadow-md hover:shadow-lg hover:bg-yellow-300 transition-all duration-300 px-4"
         >
-          카카오페이 결제
+          <div className="flex items-center justify-center w-full">
+            <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M12 2C6.48 2 2 5.51 2 9.83c0 2.76 1.77 5.19 4.44 6.56-.16.55-.93 3.52-.96 3.83-.04.33.13.33.27.24.11-.07 4.29-2.9 4.96-3.39.42.05.85.08 1.29.08 5.52 0 10-3.51 10-7.83C22 5.51 17.52 2 12 2z"
+                fill="#000000"
+              />
+            </svg>
+            <span className="font-bold text-black text-base text-xl">
+              kakaopay
+            </span>
+          </div>
         </button>
+
         <button
           onClick={() => handlePayment("tosspay.tosstest")}
-          className="w-full py-2 bg-blue-600 text-white font-bold rounded hover:bg-blue-700"
+          className="flex items-center justify-center bg-blue-500 rounded-md h-12 shadow-md hover:shadow-lg hover:bg-blue-400 transition-all duration-300"
         >
-          토스페이 결제
+          <div className="flex items-center">
+            <img src={tossPayLogo} alt="토스페이" className="h-8" />
+          </div>
         </button>
       </div>
     </div>
