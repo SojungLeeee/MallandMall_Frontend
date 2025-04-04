@@ -42,6 +42,9 @@ import CategoryPage from "./pages/category/CategoryPage";
 import Search from "./pages/Search/Search";
 import SearchPage from "./pages/Search/SearchPage";
 
+// 리뷰 분석 페이지 import
+import ReviewAnalysis from "../src/components/ui/product/ReviewAnalysis";
+
 // 오프라인 및 차트 관련
 import SpecialDealsPage from "./pages/offline/SpecialDealsPage";
 import PriceHistoryChart from "./pages/offline/PriceHistoryChart";
@@ -156,6 +159,9 @@ const router = createBrowserRouter([
       { path: "/product/:productCode", element: <ProductDetail /> },
       { path: "/products/:categoryName", element: <CategoryPage /> }, // 카테고리별 상품 페이지
       { path: "/search/:productName", element: <SearchPage /> },
+
+      // 리뷰 분석 페이지 경로 추가
+      { path: "/review-analysis/:productCode", element: <ReviewAnalysis /> },
 
       //관리자 기능
       { path: "/admin", element: <Admin /> },
