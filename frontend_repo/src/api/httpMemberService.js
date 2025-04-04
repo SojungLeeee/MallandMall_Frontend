@@ -159,6 +159,16 @@ export async function removeCartItem(productCode, token) {
     })
   ).data;
 }
+// 리뷰 분석 API - 수정 후
+export const fetchReviewAnalysis = async (productCode) => {
+  try {
+    const response = await instance.get(`/api/review-analysis/${productCode}`);
+    return response.data;
+  } catch (error) {
+    console.error("리뷰 분석 데이터 불러오기 실패:", error);
+    throw error;
+  }
+};
 
 export const updateCartQuantity = async (productCode, quantity, token) => {
   if (isNaN(quantity) || quantity < 1) {
