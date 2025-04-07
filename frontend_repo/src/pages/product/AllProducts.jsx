@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { fetchAllProducts } from "../../api/httpProductService";
 import ProductCard from "../../components/ui/product/ProductCard";
 import findQuantity from "../../assets/images/findQuantity.png";
 import offline from "../../assets/images/offline.png";
@@ -196,6 +197,30 @@ const AllProducts = () => {
             ))}
           </div>
         </div>
+      </div>
+
+      {/* 정렬 셀렉트 박스 */}
+      <div className="flex justify-end px-4 mt-2">
+        <select
+          onChange={async (e) => {
+            const sortValue = e.target.value;
+            try {
+              setLoading(true);
+              const sorted = await fetchAllProducts(sortValue);
+              setProducts(sorted);
+            } catch (err) {
+              console.error("정렬 중 오류:", err);
+              setError("정렬된 상품을 불러오는 중 오류가 발생했습니다.");
+            } finally {
+              setLoading(false);
+            }
+          }}
+          className="border rounded p-1"
+        >
+          <option value="default">정렬 선택</option>
+          <option value="priceAsc">가격 낮은순</option>
+          <option value="priceDesc">가격 높은순</option>
+        </select>
       </div>
 
       {/* ProductCard 섹션 */}

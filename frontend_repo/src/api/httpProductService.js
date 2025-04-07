@@ -48,3 +48,18 @@ export async function fetchQuantityByProductCodeAndBranchName(
   console.log("fetchQuantityByProductCodeAndBranchName.response:", response);
   return response;
 }
+
+// 상품 전체 조회 (정렬 옵션 포함)
+export async function fetchAllProducts(sort = "default") {
+  try {
+    const response = await instance.get(`/product`, {
+      params: {
+        sort: sort,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("상품 조회 실패:", error);
+    throw error;
+  }
+}
