@@ -184,3 +184,17 @@ export const updateCartQuantity = async (productCode, quantity, token) => {
     }
   );
 };
+
+//특정 상품 별점 별 리뷰 보기
+export async function fetchProductReviewsByRating(productCode, rating) {
+  try {
+    const response = await instance.get(`/review/${productCode}/${rating}`);
+    return response.data;
+  } catch (error) {
+    // 404 오류를 처리하여 메시지를 반환
+    if (error.response && error.response.status === 404) {
+      return { message: "해당 별점 리뷰가 없습니다" };
+    }
+    throw error; // 다른 오류는 그대로 던짐
+  }
+}

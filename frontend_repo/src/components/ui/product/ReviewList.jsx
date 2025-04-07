@@ -4,45 +4,59 @@ import {
   fetchProductReviews,
   fetchDeleteReview,
   fetchUpdateReview,
+  fetchProductReviewsByRating,
 } from "../../../api/httpMemberService";
 import ReviewForm from "./ReviewForm"; // 리뷰 작성 폼 컴포넌트
 
 const ReviewList = ({ productCode }) => {
   const [reviews, setReviews] = useState([]); // 초기값을 빈 배열로 설정
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(""); // 에러 메시지 상태
   const [editReviewId, setEditReviewId] = useState(null);
   const [editReviewText, setEditReviewText] = useState("");
   const [editRating, setEditRating] = useState(5);
+  const [selectedRating, setSelectedRating] = useState(null); // 선택된 별점 상태
 
   const userId = localStorage.getItem("userId");
   const token = localStorage.getItem("jwtAuthToken");
 
-  useEffect(() => {
-    const loadReviews = async () => {
-      try {
-        setLoading(true);
-        const reviewData = await fetchProductReviews(productCode);
-
-        if (!reviewData || !Array.isArray(reviewData)) {
-          // 데이터 검증 추가
-          throw new Error("서버에서 유효한 리뷰 데이터를 반환하지 않았습니다.");
+  // 리뷰 데이터 불러오기
+  const loadReviews = async (rating = null) => {
+    setLoading(true);
+    setError(""); // 에러 초기화
+    try {
+      let reviewData;
+      if (rating) {
+        reviewData = await fetchProductReviewsByRating(productCode, rating);
+        if (reviewData.message) {
+          setError("해당 별점 리뷰가 없습니다."); // 리뷰가 없을 경우 에러 메시지 설정
+          setReviews([]); // 리뷰가 없으면 빈 배열로 설정
+        } else {
+          setReviews(
+            reviewData.sort(
+              (a, b) => new Date(b.reviewDate) - new Date(a.reviewDate)
+            )
+          );
         }
-
-        // 최신 리뷰가 가장 위로 오도록 정렬
+      } else {
+        reviewData = await fetchProductReviews(productCode);
         setReviews(
-          [...reviewData].sort(
+          reviewData.sort(
             (a, b) => new Date(b.reviewDate) - new Date(a.reviewDate)
           )
         );
-      } catch (err) {
-        setError(err.message);
-        setReviews([]); // 오류 발생 시에도 빈 배열로 설정하여 오류 방지
-      } finally {
-        setLoading(false);
       }
-    };
-    loadReviews();
+    } catch (err) {
+      setError("리뷰를 불러오는 데 실패했습니다.");
+      setReviews([]); // 오류 발생 시에도 빈 배열로 설정하여 오류 방지
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // useEffect로 초기 렌더 시 모든 리뷰를 가져옵니다.
+  useEffect(() => {
+    loadReviews(); // 기본적으로 모든 리뷰 불러오기
   }, [productCode]);
 
   // 날짜 포맷 함수 (YYYY-MM-DD)
@@ -52,22 +66,37 @@ const ReviewList = ({ productCode }) => {
       : "N/A";
   };
 
-  // 별점 UI 생성
-  const renderStars = (selectedRating, setRatingFunction) => (
-    <div className="flex space-x-1">
-      {[1, 2, 3, 4, 5].map((star) => (
-        <span
-          key={star}
-          className={`cursor-pointer text-xl ${
-            star <= selectedRating ? "text-yellow-500" : "text-gray-200"
-          }`}
-          onClick={() => setRatingFunction && setRatingFunction(star)}
-        >
-          ★
-        </span>
-      ))}
-    </div>
-  );
+  // 별점 UI 생성 (별점에 맞는 개수만큼 별을 출력)
+  const renderStars = (rating) => {
+    const stars = ["★", "★", "★", "★", "★"];
+    return (
+      <div className="flex space-x-1">
+        {stars.map((star, index) => (
+          <span
+            key={index}
+            className={`text-xl ${
+              index < rating ? "text-yellow-500" : "text-gray-200"
+            }`}
+          >
+            {star}
+          </span>
+        ))}
+      </div>
+    );
+  };
+
+  // 별점 클릭 시 리뷰 필터링
+  const handleRatingSelect = (event) => {
+    const rating = event.target.value;
+    setSelectedRating(rating === "all" ? null : parseInt(rating)); // "all"을 선택하면 모든 리뷰로 필터링
+    loadReviews(rating === "all" ? null : parseInt(rating));
+  };
+
+  // 전체 리뷰 보기
+  const handleShowAllReviews = () => {
+    setSelectedRating(null); // 별점 필터를 해제
+    loadReviews(); // 모든 리뷰 불러오기
+  };
 
   // 리뷰 수정 시작
   const startEditingReview = (review) => {
@@ -92,8 +121,8 @@ const ReviewList = ({ productCode }) => {
       setReviews(
         updatedReviews.sort(
           (a, b) => new Date(b.reviewDate) - new Date(a.reviewDate)
-        )
-      ); // 최신순 유지
+        ) // 최신순 유지
+      );
     } catch (error) {
       console.error(
         "리뷰 업데이트 중 오류 발생:",
@@ -120,8 +149,6 @@ const ReviewList = ({ productCode }) => {
         리뷰 불러오는 중...
       </p>
     );
-  if (error)
-    return <p className="text-center text-red-500 font-medium">{error}</p>;
 
   return (
     <div className="w-full max-w-md mt-6">
@@ -159,6 +186,22 @@ const ReviewList = ({ productCode }) => {
       {/* 리뷰 작성 폼 */}
       <ReviewForm productCode={productCode} setReviews={setReviews} />
 
+      {/* 별점 필터링 select box */}
+      <div className="mt-6 flex justify-end">
+        <select
+          value={selectedRating || "all"}
+          onChange={handleRatingSelect}
+          className="px-4 py-2 border rounded-sm text-sm bg-white text-black"
+        >
+          <option value="all">전체</option>
+          {[5, 4, 3, 2, 1].map((rating) => (
+            <option key={rating} value={rating}>
+              {rating} | {Array(rating).fill("★").join("")}
+            </option>
+          ))}
+        </select>
+      </div>
+
       {/* 리뷰 리스트 */}
       <div className="mt-6 space-y-5 text-left">
         {reviews.length > 0 ? (
@@ -179,7 +222,7 @@ const ReviewList = ({ productCode }) => {
               {editReviewId === review.reviewId ? (
                 <div className="mt-3">
                   {/* 별점 수정 UI */}
-                  {renderStars(editRating, setEditRating)}
+                  {renderStars(editRating)}
 
                   <textarea
                     value={editReviewText}
@@ -204,7 +247,7 @@ const ReviewList = ({ productCode }) => {
                 </div>
               ) : (
                 <>
-                  <div className="mb-2">{renderStars(review.rating, null)}</div>
+                  <div className="mb-2">{renderStars(review.rating)}</div>
                   <p className="text-gray-800 mb-3">{review.reviewText}</p>
                 </>
               )}
@@ -229,7 +272,7 @@ const ReviewList = ({ productCode }) => {
           ))
         ) : (
           <div className="text-center py-10 text-gray-500 border border-gray-200 rounded-sm">
-            아직 작성된 리뷰가 없습니다.
+            해당 별점에 작성된 리뷰가 없습니다.
           </div>
         )}
       </div>
