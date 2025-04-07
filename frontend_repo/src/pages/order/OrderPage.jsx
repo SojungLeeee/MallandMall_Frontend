@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+
+import { consumeGoods } from "../../api/httpProductService";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   fetchUserProfile,
@@ -444,6 +446,22 @@ const OrderPage = () => {
               isAlternativeBranch: useAlternativeBranch,
             };
 
+            // 🟡 consumeGoods를 cartItems 각각에 대해 호출
+            (async () => {
+              try {
+                for (const item of cartItems) {
+                  await consumeGoods({
+                    productCode: item.productCode,
+                    branchName: branchName,
+                    quantity: item.quantity,
+                  });
+                }
+                console.log("장바구니 모든 상품 차감 완료");
+              } catch (error) {
+                console.error("장바구니 상품 차감 중 오류:", error);
+              }
+            })();
+
             console.log("전송 데이터:", multiProductData);
 
             sendOrderConfirm(multiProductData, token)
@@ -494,6 +512,20 @@ const OrderPage = () => {
             };
 
             console.log("전송 데이터:", singleProductData);
+
+            // 🟡 여기서 consumeGoods 호출
+            (async () => {
+              try {
+                await consumeGoods({
+                  productCode: singleProductData.productCode,
+                  branchName: singleProductData.branchName,
+                  quantity: 1,
+                });
+                console.log("상품 차감 완료");
+              } catch (error) {
+                console.error("상품 차감 실패:", error);
+              }
+            })();
 
             sendOrderConfirm(singleProductData, token)
               .then(() => {
