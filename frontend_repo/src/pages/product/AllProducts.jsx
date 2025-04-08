@@ -25,7 +25,7 @@ const AllProducts = () => {
 
   // 매장안내로 이동하는 함수
   const handleStoreInfoClick = () => {
-    navigate("/map"); // 기존의 map 경로 유지
+    navigate("/BranchInfo"); // 기존의 map 경로 유지
   };
 
   // 메뉴 아이템 클릭 핸들러
@@ -217,7 +217,7 @@ const AllProducts = () => {
           }}
           className="border rounded p-1"
         >
-          <option value="default">정렬 선택</option>
+          <option value="default">전체 상품</option>
           <option value="priceAsc">가격 낮은순</option>
           <option value="priceDesc">가격 높은순</option>
         </select>

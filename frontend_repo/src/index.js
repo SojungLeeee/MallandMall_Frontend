@@ -49,6 +49,7 @@ import ReviewAnalysis from "../src/components/ui/product/ReviewAnalysis";
 import SpecialDealsPage from "./pages/offline/SpecialDealsPage";
 import PriceHistoryChart from "./pages/offline/PriceHistoryChart";
 import NaverMap from "./components/ui/map/NaverMap";
+import BranchInfo from "./components/ui/map/BranchInfo";
 
 // 장바구니 및 주문 관련
 import MyCart from "./pages/cart/MyCart";
@@ -219,6 +220,11 @@ const router = createBrowserRouter([
       {
         path: "/map",
         element: <NaverMap />,
+      },
+      //branchInfo
+      {
+        path: "/BranchInfo",
+        element: <BranchInfo />,
       },
 
       { path: "/special-deals", element: <SpecialDealsPage /> },
