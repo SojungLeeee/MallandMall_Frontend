@@ -82,18 +82,17 @@ export default function AdminAllProducts() {
     <div className="w-full p-4">
       <h2 className="text-2xl font-semibold mb-4">상품 코드 목록</h2>
 
-      {/* 카테고리 토글 UI (헤더에 카테고리 버튼 포함) */}
       <div className="mb-4">
-        <div className="flex flex-wrap gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {allCategories.map((category) => (
             <button
               key={category}
               onClick={() => handleCategoryToggle(category)}
-              className={`py-2 border rounded-md ${
+              className={`w-full py-2 border rounded-md ${
                 selectedCategory === category
                   ? "bg-blue-500 text-white"
                   : "bg-gray-200 text-black"
-              } w-full sm:w-[calc(25%-0.5rem)]`} // 한 줄에 4개 버튼
+              }`}
             >
               {category}
             </button>

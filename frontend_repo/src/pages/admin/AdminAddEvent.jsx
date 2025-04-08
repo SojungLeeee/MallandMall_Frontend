@@ -28,6 +28,7 @@ export default function AdminAddEvent() {
     startDate: "",
     endDate: "",
     image: "",
+    description: "",
   });
 
   // 이벤트 양식 필드 정의
@@ -37,6 +38,7 @@ export default function AdminAddEvent() {
     { id: "startDate", label: "시작일자", type: "datetime-local" },
     { id: "endDate", label: "마감일자", type: "datetime-local" },
     { id: "image", label: "이미지", type: "text" },
+    { id: "description", label: "내용", type: "textarea" },
   ];
 
   // 이벤트 데이터를 가져오는 함수
@@ -75,6 +77,7 @@ export default function AdminAddEvent() {
         startDate: "",
         endDate: "",
         image: "",
+        descripton: "",
       });
 
       await fetchEventData(); // 이벤트 목록을 새로 불러옵니다.
@@ -101,11 +104,10 @@ export default function AdminAddEvent() {
     return (
       <tr
         key={index}
-        className="border-b border-gray-200 hover:bg-gray-50 text-xs"
+        className="border-b border-gray-200 hover:bg-gray-50 text-sm"
       >
-        <td className="px-4 py-3 text-xs">{event.eventId}</td>
-        <td className="px-3 py-3  text-xs">{event.category}</td>
-        <td className="px-3 py-3  text-xs w-40">{event.eventTitle}</td>
+        <td className="px-3 py-3  text">{event.category}</td>
+        <td className="px-3 py-3  text w-40">{event.eventTitle}</td>
         <td className={"px-3 py-2 text-xs w-20"}>
           {formatDate(event.endDate)} {/* 날짜 형식 변환 */}
         </td>
@@ -147,11 +149,10 @@ export default function AdminAddEvent() {
           dataType="event"
           renderRow={renderRow}
           showDeleteCheckbox={false}
-          text1="ID"
-          text2="카테고리"
-          text3="이벤트명"
-          text4="시작일자"
-          text5="마감일자"
+          text1="카테고리"
+          text2="이벤트명"
+          text3="시작일자"
+          text4="마감일자"
           text6=""
         />
       ) : (

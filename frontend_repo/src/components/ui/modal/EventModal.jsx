@@ -3,6 +3,7 @@ import { fetchFindLikeCategories } from "../../../api/httpCategoryService"; // A
 import { getAuthToken } from "../../../context/tokenProviderService";
 
 const Modal = ({ isOpen, onClose, event }) => {
+  console.log(event);
   const { token } = getAuthToken();
   const userId = localStorage.getItem("userId"); // 로컬 스토리지에서 userId 가져오기
 
@@ -27,9 +28,9 @@ const Modal = ({ isOpen, onClose, event }) => {
         onClick={(e) => e.stopPropagation()} // 모달 내부 클릭 시 이벤트 버블링 방지
       >
         {/* Event Display */}
-        <h3 className="font-semibold text-xl mb-2">깜짝 Event</h3>
-        <p>카테고리 : {event.category}</p>
-        <p>{event.eventTitle} (전지점)</p>
+        <h3 className="font-semibold text-xl mb-2">오프라인 전용 이벤트</h3>
+        <p>[전 지점] {event.eventTitle} 관련 이벤트</p>
+        <p>내용 : {event.description}</p>
 
         {/* 이미지 표시 */}
         {event.image && (
