@@ -4,14 +4,13 @@ import axios from "axios";
 const instance = axios.create({
   baseURL: "http://localhost:8090/emart",
 
-  timeout: 10000,
+  timeout: 50000,
   headers: { "Content-Type": "application/json" },
 });
 
 // 회원가입
 export async function fetchSignup(user) {
   console.log("fetchSignup 요청");
-
   const response = await instance.post(`/signup`, user);
   return response;
 }
