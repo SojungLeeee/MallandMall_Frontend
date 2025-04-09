@@ -23,12 +23,8 @@ import KakaoCallback from "./util/KakaoCallback";
 
 // 마이페이지 관련
 import Mypage, { loader as mypageLoader } from "./pages/mypage/Mypage";
-import EditProfile, {
-  loader as editProfileLoader,
-} from "./pages/mypage/EditProfile";
-import DeleteAccount, {
-  loader as deleteAccountLoader,
-} from "./pages/mypage/DeleteAccount";
+import EditProfile, { loader as editProfileLoader } from "./pages/mypage/EditProfile";
+import DeleteAccount, { loader as deleteAccountLoader } from "./pages/mypage/DeleteAccount";
 import MyOrderInfo from "./pages/mypage/MyOrderInfo";
 import MyReviews from "./pages/mypage/MyReview";
 import EditCategory from "./pages/mypage/EditCategory";
@@ -94,6 +90,7 @@ import AdminQuestionDetail from "./pages/admin/AdminQuestionDetail";
 // 관리자 - 차트/재고 관리
 import StockPage from "./pages/adminchart/StockPage";
 import StockChartDetailPage from "./pages/adminchart/StockChartDetailPage";
+import StockAlarmPage from "./pages/adminchart/StockAlarmPage";
 
 const router = createBrowserRouter([
   // AppTwo 기반 라우트
@@ -231,6 +228,7 @@ const router = createBrowserRouter([
       { path: "/product-chart/:productCode", element: <PriceHistoryChart /> },
       { path: "/admin/stock", element: <StockPage /> },
       { path: "/stock-chart/:productCode", element: <StockChartDetailPage /> },
+      { path: "/admin/inventory-alarm", element: <StockAlarmPage /> },
     ],
   },
 ]);

@@ -3,18 +3,19 @@ import LoginButton from "../../LoginButton";
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { MdAdminPanelSettings } from "react-icons/md";
+import { IoMdNotificationsOutline } from "react-icons/io"; // 🔔 알림 아이콘
 import Logo from "../../../assets/images/logo/Logo.png";
+import { fetchAllAlerts } from "../../../api/alertService"; // 알림 조회 함수 import
 
 export default function Navbar() {
   // 기존 코드 유지
   const { token: routerToken } = useRouteLoaderData("root");
   const navigate = useNavigate();
   const [role, setRole] = useState();
+  const [hasNewAlert, setHasNewAlert] = useState(false);
 
   // localStorage에서도 토큰을 확인
-  const [localToken, setLocalToken] = useState(
-    localStorage.getItem("jwtAuthToken")
-  );
+  const [localToken, setLocalToken] = useState(localStorage.getItem("jwtAuthToken"));
 
   // 두 토큰 중 하나라도 있으면 인증된 것으로 간주
   const token = routerToken || localToken;
@@ -56,6 +57,25 @@ export default function Navbar() {
     }
   }, [token]); // routerToken 대신 token으로 의존성 변경
 
+  // 알림 존재 여부 확인 (alertRead === false가 있는지)
+  useEffect(() => {
+    async function checkAlerts() {
+      try {
+        const alerts = await fetchAllAlerts();
+        const hasUnread = alerts.some((a) => !a.alertRead); // 안읽은 알람 있으면 빨간점 띄우기
+        setHasNewAlert(hasUnread);
+      } catch (err) {
+        console.error("알림 확인 실패:", err);
+      }
+    }
+
+    if (role === "ADMIN") {
+      checkAlerts();
+      const interval = setInterval(checkAlerts, 30000); // 30초마다 확인
+      return () => clearInterval(interval);
+    }
+  }, [role]);
+
   // 나머지 코드는 그대로 유지
   const handleLogin = () => {
     navigate("/login");
@@ -88,18 +108,22 @@ export default function Navbar() {
           {token && (
             <>
               {role === "ADMIN" && (
-                <Link
-                  to="/admin"
-                  className="flex items-center text-black font-bold font-size hover:text-yellow-600"
-                >
-                  <MdAdminPanelSettings className="text-4xl animate-pop-up" />
-                </Link>
+                <>
+                  <Link to="/admin" className="flex items-center text-black font-bold font-size hover:text-yellow-600">
+                    <MdAdminPanelSettings className="text-4xl animate-pop-up" />
+                  </Link>
+
+                  {/* 알림 아이콘 */}
+                  <Link
+                    to="/admin/inventory-alarm"
+                    className="relative flex items-center text-black hover:text-red-500 transition"
+                  >
+                    <IoMdNotificationsOutline className="text-3xl" />
+                    {hasNewAlert && <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>}
+                  </Link>
+                </>
               )}
-              <LoginButton
-                text={"Logout"}
-                onClick={handleLogout}
-                className="flex items-center"
-              />
+              <LoginButton text={"Logout"} onClick={handleLogout} className="flex items-center" />
             </>
           )}
           {!token && (
