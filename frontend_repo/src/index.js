@@ -68,7 +68,7 @@ import AdminAddProducts from "./pages/admin/AdminAddProducts";
 // 관리자 - 아이템 관리
 import AdminAllGoods from "./pages/admin/AdminAllGoods";
 import AdminDeleteGoods from "./pages/admin/AdminDeleteGoods";
-//import AdminUpdateGoods from "./pages/admin/AdminUpdateGoods";
+// import AdminUpdateGoods from "./pages/admin/AdminUpdateGoods";
 import AdminAddGoods from "./pages/admin/AdminAddGoods";
 
 // 관리자 - 지점 관리
@@ -91,6 +91,9 @@ import AdminQuestionDetail from "./pages/admin/AdminQuestionDetail";
 import StockPage from "./pages/adminchart/StockPage";
 import StockChartDetailPage from "./pages/adminchart/StockChartDetailPage";
 import StockAlarmPage from "./pages/adminchart/StockAlarmPage";
+
+// 챗봇 관련 컴포넌트 import 추가
+import ChatbotComponent from "./components/ui/chatbot/ChatbotComponent";
 
 const router = createBrowserRouter([
   // AppTwo 기반 라우트
@@ -128,6 +131,9 @@ const router = createBrowserRouter([
       { path: "/foundid", element: <FoundId /> },
       { path: "/reset-password", element: <ResetPassword /> },
       { path: "/selectCategory", element: <SelectCategory /> },
+
+      // 챗봇 관련 경로 추가
+      { path: "/chatbot", element: <ChatbotComponent /> },
 
       // 마이페이지 관련
       { path: "/mypage", element: <Mypage />, loader: mypageLoader },
