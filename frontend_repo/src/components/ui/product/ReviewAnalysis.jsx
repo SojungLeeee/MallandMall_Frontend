@@ -76,6 +76,7 @@ const ReviewAnalysis = () => {
   const [analysis, setAnalysis] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [loadingDots, setLoadingDots] = useState("");
 
   useEffect(() => {
     const fetchAnalysis = async () => {
@@ -95,6 +96,17 @@ const ReviewAnalysis = () => {
 
     fetchAnalysis();
   }, [productCode]);
+
+  // 로딩 애니메이션을 위한 useEffect
+  useEffect(() => {
+    if (!loading) return;
+
+    const interval = setInterval(() => {
+      setLoadingDots((prev) => (prev.length >= 3 ? "" : prev + "."));
+    }, 500);
+
+    return () => clearInterval(interval);
+  }, [loading]);
 
   // 별점 UI 생성
   const renderStars = (rating) => (
@@ -152,10 +164,29 @@ const ReviewAnalysis = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-black border-t-transparent rounded-full animate-spin mx-auto"></div>
-          <p className="mt-4 text-gray-700 font-medium">리뷰 분석 중...</p>
+      <div className="flex justify-center items-center min-h-screen bg-gradient-to-b from-blue-50 to-white">
+        <div className="text-center p-8 rounded-xl shadow-lg bg-white">
+          <div className="relative mx-auto w-16 h-16">
+            <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-500 rounded-full animate-spin"></div>
+            <div
+              className="absolute top-0 left-0 w-16 h-16 border-4 border-transparent border-b-blue-300 rounded-full animate-spin"
+              style={{
+                animationDirection: "reverse",
+                animationDuration: "1.5s",
+              }}
+            ></div>
+          </div>
+
+          <h2 className="mt-6 text-xl font-bold text-gray-800">리뷰 분석 중</h2>
+          <p className="mt-2 text-gray-600">
+            데이터를 처리하고 있습니다{loadingDots}
+          </p>
+
+          <div className="mt-4 w-full bg-gray-200 rounded-full h-1.5">
+            <div className="bg-blue-500 h-1.5 rounded-full animate-pulse"></div>
+          </div>
+
+          <p className="mt-4 text-xs text-gray-500">잠시만 기다려 주세요</p>
         </div>
       </div>
     );

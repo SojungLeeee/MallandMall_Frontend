@@ -5,6 +5,8 @@ import { Outlet, useLocation, matchPath } from "react-router-dom";
 import SearchBar from "./components/ui/layout/SearchBar";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { useEffect, useState } from "react";
+import chatbotComponent from "./components/ui/chatbot/ChatbotComponent";
+import ChatbotButton from "./components/ui/chatbot/ChatbotButton";
 
 function App() {
   //여기 무슨 코드??? 설명 필요
@@ -55,6 +57,7 @@ function App() {
           <Outlet /> {/* Outlet (Home 페이지의 Banner와 Products를 포함) */}
         </main>
         <FooterNav />
+        <ChatbotButton />
       </div>
     </GoogleOAuthProvider>
   );
