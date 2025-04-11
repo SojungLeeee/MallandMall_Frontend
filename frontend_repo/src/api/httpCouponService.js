@@ -7,7 +7,22 @@ const instance = axios.create({
   timeout: 10000,
   headers: { "Content-Type": "application/json" },
 });
+export async function fetchMergeCoupons(couponId1, couponId2) {
+  try {
+    console.log("fetchMergeCoupons 요청:", couponId1, couponId2);
 
+    const response = await instance.post("/coupon/merge", {
+      couponId1,
+      couponId2,
+    });
+
+    console.log("fetchMergeCoupons.response:", response);
+    return response.data;
+  } catch (error) {
+    console.error("쿠폰 강화 실패:", error);
+    throw new Error("fetchMergeCoupons 예외발생");
+  }
+}
 //회원가입 시 온라인 쿠폰 발급
 export async function fetchOnlineCoupon(userId) {
   console.log("fetchOnlineCoupon 요청");

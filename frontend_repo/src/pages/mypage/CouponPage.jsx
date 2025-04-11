@@ -1,48 +1,50 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchAllCouponList } from "../../api/httpCouponService"; // 쿠폰 API 임포트
+import { fetchAllCouponList } from "../../api/httpCouponService";
 import { getAuthToken } from "../../context/tokenProviderService";
-import Coupon from "../../components/ui/coupon/MyCoupon"; // 쿠폰 정보 컴포넌트 임포트
+import Coupon from "../../components/ui/coupon/MyCoupon";
 
 function CouponPage({}) {
-  const [coupons, setCoupons] = useState([]); // 쿠폰 목록 상태
-  const [loading, setLoading] = useState(true); // 로딩 상태
-  const [error, setError] = useState(null); // 에러 상태
-  const navigate = useNavigate(); // 페이지 이동을 위한 훅
-  const { token } = getAuthToken(); // 토큰 가져오기
-  console.log("Auth Token:", token);
+  const [coupons, setCoupons] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+  const { token } = getAuthToken();
 
-  // 컴포넌트가 마운트될 때 쿠폰 목록을 가져오는 함수
   useEffect(() => {
     const fetchCoupons = async () => {
       try {
-        const data = await fetchAllCouponList(token); // API 호출
-        setCoupons(data); // 받아온 쿠폰 데이터 상태에 저장
-        setLoading(false); // 로딩 완료
+        const data = await fetchAllCouponList(token);
+        setCoupons(data);
+        setLoading(false);
       } catch (err) {
         setError("쿠폰을 불러오는 데 실패했습니다.");
-        setLoading(false); // 로딩 완료
+        setLoading(false);
       }
     };
 
     fetchCoupons();
-  }, [token]); // token이 변경될 때마다 호출
+  }, [token]);
 
-  // 로딩 중이면 로딩 메시지 표시
-  if (loading) {
-    return <div>로딩 중...</div>;
-  }
+  const handleUpgradeClick = () => {
+    navigate("/coupon/upgrade"); // 강화 페이지로 이동
+  };
 
-  // 에러가 발생하면 에러 메시지 표시
-  if (error) {
-    return <div>{error}</div>;
-  }
+  if (loading) return <div>로딩 중...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
     <div className="coupon-page-container p-3">
-      <h2 className="text-2xl font-bold mb-3 text-center">내 쿠폰 목록</h2>
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-2xl font-bold text-center">내 쿠폰 목록</h2>
+        <button
+          onClick={handleUpgradeClick}
+          className="ml-3 px-4 py-2 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+        >
+          강화
+        </button>
+      </div>
 
-      {/* 쿠폰 목록이 없으면 "쿠폰이 없습니다" 메시지 */}
       {coupons.length === 0 ? (
         <div className="text-center">보유한 쿠폰이 없습니다.</div>
       ) : (
