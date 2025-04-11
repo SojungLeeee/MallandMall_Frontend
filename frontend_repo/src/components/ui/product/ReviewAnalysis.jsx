@@ -196,9 +196,6 @@ const ReviewAnalysis = () => {
           <style>{loaderStyle}</style>
 
           <h2 className="text-xl font-bold text-yellow-800">리뷰 분석 중</h2>
-          <p className="mt-2 text-gray-600 mb-6">
-            데이터를 처리하고 있습니다{loadingDots}
-          </p>
 
           {/* 별 로더 애니메이션 (중간 배치) - 원본 유지 */}
           <div className="mx-auto custom-loader mb-6"></div>
