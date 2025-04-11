@@ -9,7 +9,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { tokenProviderLoader } from "./auth/tokenProviderService";
 import NotFound from "./pages/error/NotFound";
 import Home from "./pages/Home";
-
+import CouponUpgradePage from "./pages/mypage/EnhancePage";
 // 인증 및 로그인 관련
 import Login from "./pages/login/Login";
 import { action as authAction } from "./pages/login/Login";
@@ -33,7 +33,7 @@ import MyOrderInfo from "./pages/mypage/MyOrderInfo";
 import MyReviews from "./pages/mypage/MyReview";
 import EditCategory from "./pages/mypage/EditCategory";
 import CouponPage from "./pages/mypage/CouponPage";
-
+import EnhancePage from "./pages/mypage/EnhancePage";
 // 상품 및 카테고리 관련
 import AllProducts from "./pages/product/AllProducts";
 import ProductDetail from "./components/ui/product/ProductDetail";
@@ -147,6 +147,10 @@ const router = createBrowserRouter([
         path: "/mypage/edit",
         element: <EditProfile />,
         loader: editProfileLoader,
+      },
+      {
+        path: "/coupon/upgrade",
+        element: <EnhancePage />,
       },
       {
         path: "/mypage/delete",

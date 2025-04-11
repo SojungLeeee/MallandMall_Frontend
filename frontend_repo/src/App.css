@@ -45,6 +45,9 @@
 
   border: 1px solid black;
   /* 화면 경계선 */
+  margin: 0 auto; /* 브라우저 기준 가운데 */
+  position: relative; /* 모달이 이 기준으로 정렬되게 만들 수 있음 */
+  overflow: hidden; /* 튀어나오는 거 방지 */
 }
 
 /* 스크롤을 숨기도록 설정 */
