@@ -3,13 +3,14 @@ import {
   fetchFindAllGoods,
   fetchDeleteGoods,
 } from "../../api/httpAdminService";
-import ListComponents from "../../components/ui/admin/ListComponents"; // AddComponents 컴포넌트 임포트
+import ListComponents from "../../components/ui/admin/ListComponents";
 
 export default function AdminAllgoodss() {
-  const [error, setError] = useState(null); // 오류 상태
-  const [goodsData, setgoodsData] = useState([]); // 상품 데이터를 위한 상태
-  const [delgoodsId, setDelgoodsId] = useState(null); // 삭제할 상품 코드
-  const modal_dialog = useRef(null); // 모달 ref
+  const [error, setError] = useState(null);
+  const [goodsData, setgoodsData] = useState([]);
+  const [delgoodsId, setDelgoodsId] = useState(null);
+  const [selectedProductCode, setSelectedProductCode] = useState(""); // 🔸 선택된 상품코드
+  const modal_dialog = useRef(null);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -23,55 +24,49 @@ export default function AdminAllgoodss() {
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
   };
 
-  // 상품 데이터를 불러오는 함수
   useEffect(() => {
     async function fetchgoodsData() {
       try {
         const goodsCodeList = await fetchFindAllGoods();
-        console.log("받아온 상품 목록:", goodsCodeList); // 받아온 데이터를 콘솔에 출력
+        console.log("받아온 상품 목록:", goodsCodeList);
 
         if (Array.isArray(goodsCodeList)) {
-          setgoodsData(goodsCodeList); // 상품 데이터를 상태에 저장
+          setgoodsData(goodsCodeList);
         } else {
           throw new Error("상품 데이터가 배열이 아닙니다.");
         }
       } catch (error1) {
         console.log("Error.name:", error1.name);
         console.log("Error.message:", error1.message);
-        setError({ mesg: error1.message }); // 오류 발생 시 상태 업데이트
+        setError({ mesg: error1.message });
       }
     }
 
     fetchgoodsData();
   }, []);
 
-  // 상품 삭제 처리 함수
   const handleRemovegoods = (goodsId) => {
-    setDelgoodsId(goodsId); // 삭제할 상품 코드 설정
-    modal_dialog.current.showModal(); // 모달 표시
+    setDelgoodsId(goodsId);
+    modal_dialog.current.showModal();
   };
 
-  // 삭제 확인 후 서버와 연동하여 상품 삭제
   const handleDeleteConfirm = async () => {
-    if (!delgoodsId) return; // 삭제할 상품 코드가 없으면 아무것도 하지 않음
+    if (!delgoodsId) return;
 
     try {
-      await fetchDeleteGoods(delgoodsId); // 서버에서 상품 삭제
+      await fetchDeleteGoods(delgoodsId);
       console.log("상품 삭제 성공");
       alert("삭제되었습니다.");
-
-      // 로컬 상태에서 해당 상품 삭제
       setgoodsData((prevData) =>
         prevData.filter((goods) => goods.goodsId !== delgoodsId)
       );
-      modal_dialog.current.close(); // 모달 닫기
+      modal_dialog.current.close();
     } catch (error) {
       console.error("상품 삭제 실패:", error);
       setError({ mesg: error.message });
     }
   };
 
-  // 오류가 있으면 화면에 오류 메시지 표시
   if (error) {
     return (
       <div>
@@ -80,7 +75,6 @@ export default function AdminAllgoodss() {
     );
   }
 
-  // 행 렌더링 함수 정의
   const renderRow = (goods, index) => {
     return (
       <tr key={index} className="text-xs">
@@ -94,7 +88,7 @@ export default function AdminAllgoodss() {
               : ""
           }`}
         >
-          {formatDate(goods.expirationDate)} {/* 날짜 형식 변환 */}
+          {formatDate(goods.expirationDate)}
         </td>
         <td className="px-3 py-2">
           <button
@@ -108,10 +102,38 @@ export default function AdminAllgoodss() {
     );
   };
 
+  // 🔸 중복 제거된 상품코드 리스트
+  const uniqueProductCodes = [...new Set(goodsData.map((g) => g.productCode))];
+
+  // 🔸 필터링된 상품 목록
+  const filteredGoods = selectedProductCode
+    ? goodsData.filter((g) => g.productCode === selectedProductCode)
+    : goodsData;
+
   return (
     <div className="w-full p-2">
       <h2 className="text-2xl font-semibold mb-4">개별 상품 삭제</h2>
       <hr className="mb-4" />
+
+      {/* 🔸 셀렉트박스 UI */}
+      <div className="mb-4">
+        <label htmlFor="productCode" className="mr-2 text-sm font-medium">
+          상품 코드 선택:
+        </label>
+        <select
+          id="productCode"
+          className="border px-2 py-1 rounded"
+          value={selectedProductCode}
+          onChange={(e) => setSelectedProductCode(e.target.value)}
+        >
+          <option value="">전체</option>
+          {uniqueProductCodes.map((code) => (
+            <option key={code} value={code}>
+              {code}
+            </option>
+          ))}
+        </select>
+      </div>
 
       {/* 삭제 확인 모달 */}
       <dialog
@@ -140,21 +162,21 @@ export default function AdminAllgoodss() {
         </div>
       </dialog>
 
-      {/* 상품 목록 표시 */}
-      {goodsData.length > 0 ? (
+      {/* 상품 목록 */}
+      {filteredGoods.length > 0 ? (
         <ListComponents
-          data={goodsData} // 상품 데이터
-          dataType="goods" // 데이터 타입 예시
-          renderRow={renderRow} // 행 렌더링 함수
-          showDeleteCheckbox={true} // 삭제 체크박스 여부
+          data={filteredGoods}
+          dataType="goods"
+          renderRow={renderRow}
+          showDeleteCheckbox={true}
           text1="상품ID"
-          text2="코드" // 헤더 텍스트
+          text2="코드"
           text3="지점명"
           text4="유통기한"
           text5="❌"
         />
       ) : (
-        <div>Loading...</div>
+        <div>해당 상품코드에 해당하는 상품이 없습니다.</div>
       )}
     </div>
   );
