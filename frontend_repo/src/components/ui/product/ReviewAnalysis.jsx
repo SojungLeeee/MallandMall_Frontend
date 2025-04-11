@@ -70,6 +70,32 @@ const legendAlignmentPlugin = {
   },
 };
 
+// CSS 로더 스타일
+const loaderStyle = `
+  .custom-loader {
+    --s: 40px;
+    height: calc(var(--s)*0.9);
+    width: calc(var(--s)*5);
+    --v1: transparent, #000 0.5deg 108deg, #0000 109deg;
+    --v2: transparent, #000 0.5deg 36deg, #0000 37deg;
+    -webkit-mask:
+      conic-gradient(from 54deg at calc(var(--s)*0.68) calc(var(--s)*0.57), var(--v1)),
+      conic-gradient(from 90deg at calc(var(--s)*0.02) calc(var(--s)*0.35), var(--v2)),
+      conic-gradient(from 126deg at calc(var(--s)*0.5) calc(var(--s)*0.7), var(--v1)),
+      conic-gradient(from 162deg at calc(var(--s)*0.5) 0, var(--v2));
+    -webkit-mask-size: var(--s) var(--s);
+    -webkit-mask-composite: xor, destination-over;
+    mask-composite: exclude, add;
+    -webkit-mask-repeat: repeat-x;
+    background: linear-gradient(#ffb940 0 0) left/0% 100% #ddd no-repeat;
+    animation: l20 2s infinite linear;
+  }
+  
+  @keyframes l20 {
+    90%, 100% {background-size: 100% 100%}
+  }
+`;
+
 const ReviewAnalysis = () => {
   const { productCode } = useParams();
   const navigate = useNavigate();
@@ -164,29 +190,20 @@ const ReviewAnalysis = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gradient-to-b from-blue-50 to-white">
-        <div className="text-center p-8 rounded-xl shadow-lg bg-white">
-          <div className="relative mx-auto w-16 h-16">
-            <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-500 rounded-full animate-spin"></div>
-            <div
-              className="absolute top-0 left-0 w-16 h-16 border-4 border-transparent border-b-blue-300 rounded-full animate-spin"
-              style={{
-                animationDirection: "reverse",
-                animationDuration: "1.5s",
-              }}
-            ></div>
-          </div>
+      <div className="flex justify-center items-center min-h-screen bg-white">
+        <div className="text-center p-8 rounded-lg shadow-md bg-white">
+          {/* 커스텀 로더 스타일 추가 */}
+          <style>{loaderStyle}</style>
 
-          <h2 className="mt-6 text-xl font-bold text-gray-800">리뷰 분석 중</h2>
-          <p className="mt-2 text-gray-600">
+          <h2 className="text-xl font-bold text-yellow-800">리뷰 분석 중</h2>
+          <p className="mt-2 text-gray-600 mb-6">
             데이터를 처리하고 있습니다{loadingDots}
           </p>
 
-          <div className="mt-4 w-full bg-gray-200 rounded-full h-1.5">
-            <div className="bg-blue-500 h-1.5 rounded-full animate-pulse"></div>
-          </div>
+          {/* 별 로더 애니메이션 (중간 배치) - 원본 유지 */}
+          <div className="mx-auto custom-loader mb-6"></div>
 
-          <p className="mt-4 text-xs text-gray-500">잠시만 기다려 주세요</p>
+          <p className="mt-4 text-sm text-yellow-700">잠시만 기다려 주세요</p>
         </div>
       </div>
     );
