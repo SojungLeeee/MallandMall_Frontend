@@ -10,15 +10,17 @@ import { setAuthToken } from "../../auth/tokenProviderService";
 import Logo from "../../assets/images/logo/Logo.png";
 import KakaoLoginButton from "../../components/ui/button/KakaoLoginButton";
 import GoogleLoginButton from "../../components/ui/button/GoogleLoginButton";
+import NaverLoginButton from "../../components/ui/button/NaverLoginButton";
 
 // 소셜 로그인 버튼 컨테이너 컴포넌트
 const SocialLoginButtons = () => {
   return (
-    <div className="w-full flex flex-col items-center">
-      <p className="text-[#6c6c6c] mb-2">소셜 계정 로그인</p>
-      <div className="flex justify-center">
+    <div className="w-full flex flex-col items-center mt-4">
+      <p className="text-[#6c6c6c] text-sm mb-3">소셜 계정 로그인</p>
+      <div className="flex justify-center items-center gap-4">
         <KakaoLoginButton />
         <GoogleLoginButton />
+        <NaverLoginButton />
       </div>
     </div>
   );

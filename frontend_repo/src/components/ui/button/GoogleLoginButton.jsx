@@ -70,7 +70,7 @@ function GoogleLoginButton() {
       {/* 커스텀 디자인 버튼 */}
       <button
         onClick={handleCustomButtonClick}
-        className="w-12 h-12 rounded-full bg-white flex items-center justify-center border border-gray-200 cursor-pointer focus:outline-none ml-2"
+        className="w-12 h-12 rounded-full bg-white flex items-center justify-center border border-gray-200 cursor-pointer focus:outline-none  mx-auto"
       >
         <div>
           <svg

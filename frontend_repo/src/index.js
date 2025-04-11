@@ -23,8 +23,12 @@ import KakaoCallback from "./util/KakaoCallback";
 
 // 마이페이지 관련
 import Mypage, { loader as mypageLoader } from "./pages/mypage/Mypage";
-import EditProfile, { loader as editProfileLoader } from "./pages/mypage/EditProfile";
-import DeleteAccount, { loader as deleteAccountLoader } from "./pages/mypage/DeleteAccount";
+import EditProfile, {
+  loader as editProfileLoader,
+} from "./pages/mypage/EditProfile";
+import DeleteAccount, {
+  loader as deleteAccountLoader,
+} from "./pages/mypage/DeleteAccount";
 import MyOrderInfo from "./pages/mypage/MyOrderInfo";
 import MyReviews from "./pages/mypage/MyReview";
 import EditCategory from "./pages/mypage/EditCategory";
@@ -95,8 +99,7 @@ import StockAlarmPage from "./pages/adminchart/StockAlarmPage";
 // 챗봇 관련 컴포넌트 import 추가
 import ChatbotComponent from "./components/ui/chatbot/ChatbotComponent";
 
-// 챗봇 관련 컴포넌트 import 추가
-import ChatbotComponent from "./components/ui/chatbot/ChatbotComponent";
+import NaverLoginCallback from "./components/ui/button/NaverCallback";
 
 const router = createBrowserRouter([
   // AppTwo 기반 라우트
@@ -221,6 +224,10 @@ const router = createBrowserRouter([
       {
         path: "/auth/kakao/callback",
         element: <KakaoCallback />,
+      },
+      {
+        path: "/login/naver/callback",
+        element: <NaverLoginCallback />,
       },
       //NaverMap
       {

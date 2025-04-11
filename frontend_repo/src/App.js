@@ -5,14 +5,32 @@ import { Outlet, useLocation, matchPath } from "react-router-dom";
 import SearchBar from "./components/ui/layout/SearchBar";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { useEffect, useState } from "react";
-import chatbotComponent from "./components/ui/chatbot/ChatbotComponent";
-import ChatbotButton from "./components/ui/chatbot/ChatbotButton";
 
 function App() {
-  //여기 무슨 코드??? 설명 필요
+  // ✅ 현재 저장된 JWT 확인 (디버깅용)
+  const token = localStorage.getItem("jwtAuthToken");
+  console.log("📌 현재 저장된 JWT:", token);
+  // 🔽 여기에 토큰 처리 useEffect만 추가
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const tokenFromUrl = urlParams.get("token");
+
+    if (tokenFromUrl) {
+      console.log("🎯 토큰 감지됨, 저장 중:", tokenFromUrl);
+      localStorage.setItem("jwtAuthToken", tokenFromUrl);
+
+      // ✅ URL에서 token 제거
+      urlParams.delete("token");
+      const newUrl =
+        window.location.pathname +
+        (urlParams.toString() ? "?" + urlParams.toString() : "");
+      window.history.replaceState({}, "", newUrl);
+    }
+  }, []);
+
   const location = useLocation();
 
-  // Define the routes where SearchBar should be visible
+  // ✅ SearchBar를 보여줄 경로 설정
   const isHomeRoute = location.pathname === "/";
   const isProductCategoryRoute = matchPath(
     "/products/:categoryName",
@@ -26,7 +44,6 @@ function App() {
   const isProductHomeRoute = location.pathname === "/product/home";
   const isFavoriteProductHome = location.pathname === "/favorites";
 
-  // Combine the checks to determine if the SearchBar should be shown
   const showSearchBar =
     isHomeRoute ||
     isProductCategoryRoute ||
@@ -35,10 +52,8 @@ function App() {
     isSearchRoute ||
     isFavoriteProductHome;
 
-  //구글 OAuth 프로바이더 설정
-  const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID; // 구글 API에서 받은 ID
-
-  // 페이지가 완전히 로드된 후에만 GoogleOAuthProvider 초기화
+  // ✅ 구글 OAuth 프로바이더 설정
+  const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
@@ -49,15 +64,11 @@ function App() {
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
       <div className="flex flex-col App">
         <Navbar />
-        {showSearchBar && <SearchBar />}{" "}
-        {/* Render SearchBar only on specific routes */}
+        {showSearchBar && <SearchBar />}
         <main className="flex-grow overflow-auto">
-          {" "}
-          {/* 스크롤을 추가하기 위해 overflow-auto 설정 */}
-          <Outlet /> {/* Outlet (Home 페이지의 Banner와 Products를 포함) */}
+          <Outlet />
         </main>
         <FooterNav />
-        <ChatbotButton />
       </div>
     </GoogleOAuthProvider>
   );
