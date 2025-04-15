@@ -9,6 +9,7 @@ export default function AdminAllgoodss() {
   const [error, setError] = useState(null);
   const [goodsData, setgoodsData] = useState([]);
   const [selectedProductCode, setSelectedProductCode] = useState("");
+  const [selectedExpirationDate, setSelectedExpirationDate] = useState(""); // 유통기한 선택 상태
   const [selectedGoodsIds, setSelectedGoodsIds] = useState([]); // ✅ 선택된 상품 ID 목록
   const modal_dialog = useRef(null);
 
@@ -17,10 +18,7 @@ export default function AdminAllgoodss() {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
-    const hours = String(date.getHours()).padStart(2, "0");
-    const minutes = String(date.getMinutes()).padStart(2, "0");
-    const seconds = String(date.getSeconds()).padStart(2, "0");
-    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    return `${year}-${month}-${day}`; // 유통기한 형식은 YYYY-MM-DD로
   };
 
   useEffect(() => {
@@ -55,6 +53,7 @@ export default function AdminAllgoodss() {
     }
   };
 
+  // 여러 상품 삭제 (bulk delete)
   const handleBulkDelete = async () => {
     if (selectedGoodsIds.length === 0) {
       alert("삭제할 상품을 선택하세요.");
@@ -64,14 +63,14 @@ export default function AdminAllgoodss() {
     if (!window.confirm("정말로 선택한 상품들을 삭제하시겠습니까?")) return;
 
     try {
-      for (const goodsId of selectedGoodsIds) {
-        await fetchDeleteGoods(goodsId);
-      }
+      // fetchDeleteGoods에 selectedGoodsIds 배열을 전달
+      await fetchDeleteGoods(selectedGoodsIds);
 
+      // 삭제된 상품 목록 업데이트
       setgoodsData((prev) =>
         prev.filter((goods) => !selectedGoodsIds.includes(goods.goodsId))
       );
-      setSelectedGoodsIds([]);
+      setSelectedGoodsIds([]); // 선택된 상품 초기화
       alert("선택된 상품이 삭제되었습니다.");
     } catch (error) {
       console.error("일괄 삭제 실패:", error);
@@ -83,11 +82,24 @@ export default function AdminAllgoodss() {
     return <div>{`Error: ${error.mesg}`}</div>;
   }
 
-  const uniqueProductCodes = [...new Set(goodsData.map((g) => g.productCode))];
+  // 선택된 상품코드에 대한 유통기한만 뽑기
+  const getExpirationDatesByProductCode = (productCode) => {
+    return [
+      ...new Set(
+        goodsData
+          .filter((g) => g.productCode === productCode) // 선택된 상품코드에 해당하는 상품들만 필터링
+          .map((g) => formatDate(g.expirationDate)) // 유통기한만 뽑아서 중복 제거
+      ),
+    ];
+  };
 
-  const filteredGoods = selectedProductCode
-    ? goodsData.filter((g) => g.productCode === selectedProductCode)
-    : goodsData;
+  // 필터링된 상품 목록 (상품 코드와 유통기한에 맞게 필터링)
+  const filteredGoods = goodsData.filter(
+    (g) =>
+      (selectedProductCode === "" || g.productCode === selectedProductCode) &&
+      (selectedExpirationDate === "" ||
+        formatDate(g.expirationDate) === selectedExpirationDate)
+  );
 
   const renderRow = (goods, index) => {
     const isChecked = selectedGoodsIds.includes(goods.goodsId);
@@ -115,42 +127,79 @@ export default function AdminAllgoodss() {
     );
   };
 
+  const handleProductCodeChange = (e) => {
+    setSelectedProductCode(e.target.value);
+    setSelectedExpirationDate(""); // 상품 코드가 변경되면 유통기한은 전체로 설정
+  };
+
   return (
     <div className="w-full p-2">
       <h2 className="text-2xl font-semibold mb-4">개별 상품 삭제</h2>
       <hr className="mb-4" />
 
-      {/* 🔸 셀렉트박스 UI */}
-      <div className="mb-4 flex items-center gap-4">
-        <label htmlFor="productCode" className="text-sm font-medium">
-          상품 코드 선택:
-        </label>
-        <select
-          id="productCode"
-          className="border px-2 py-1 rounded"
-          value={selectedProductCode}
-          onChange={(e) => setSelectedProductCode(e.target.value)}
-        >
-          <option value="">전체</option>
-          {uniqueProductCodes.map((code) => (
-            <option key={code} value={code}>
-              {code}
-            </option>
-          ))}
-        </select>
+      <button
+        className="ml-auto px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+        onClick={handleBulkDelete}
+      >
+        선택 삭제
+      </button>
 
-        <button
-          className="ml-auto px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-          onClick={handleBulkDelete}
-        >
-          선택 삭제
-        </button>
+      {/* 🔸 셀렉트박스 UI */}
+      <div className="mb-4 flex gap-8 mt-4">
+        {" "}
+        {/* flex로 묶어 두 묶음을 가로로 배치 */}
+        {/* 상품 코드 묶음 */}
+        <div className="flex flex-col w-1/2">
+          {" "}
+          {/* flex-col로 세로로 배치 */}
+          <label htmlFor="productCode" className="text-sm font-medium">
+            상품 코드 선택:
+          </label>
+          <select
+            id="productCode"
+            className="border px-2 py-1 rounded"
+            value={selectedProductCode}
+            onChange={handleProductCodeChange}
+          >
+            <option value="">전체</option>
+            {[...new Set(goodsData.map((g) => g.productCode))].map((code) => (
+              <option key={code} value={code}>
+                {code}
+              </option>
+            ))}
+          </select>
+        </div>
+        {/* 유통기한 묶음 (상품 코드가 전체일 때는 숨기기) */}
+        {selectedProductCode && (
+          <div className="flex flex-col w-1/2">
+            {" "}
+            {/* flex-col로 세로로 배치 */}
+            <label htmlFor="expirationDate" className="text-sm font-medium">
+              유통기한 선택:
+            </label>
+            <select
+              id="expirationDate"
+              className="border px-2 py-1 rounded"
+              value={selectedExpirationDate}
+              onChange={(e) => setSelectedExpirationDate(e.target.value)}
+            >
+              <option value="">전체</option>
+              {getExpirationDatesByProductCode(selectedProductCode).map(
+                (date) => (
+                  <option key={date} value={date}>
+                    {date}
+                  </option>
+                )
+              )}
+            </select>
+          </div>
+        )}
       </div>
 
       {/* 상품 목록 */}
       {filteredGoods.length > 0 ? (
         <table className="table-auto w-full border">
-          <thead className="bg-black  text-white">
+          <thead className="bg-black text-white">
             <tr>
               <th className="px-3 py-2">
                 <input
@@ -170,7 +219,7 @@ export default function AdminAllgoodss() {
           <tbody className="text-sm">{filteredGoods.map(renderRow)}</tbody>
         </table>
       ) : (
-        <div>해당 상품코드에 해당하는 상품이 없습니다.</div>
+        <div>해당 조건에 맞는 상품이 없습니다.</div>
       )}
     </div>
   );
