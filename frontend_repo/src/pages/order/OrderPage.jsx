@@ -994,33 +994,39 @@ const OrderPage = () => {
       </div>
 
       {/* 결제 버튼 */}
-      <div className="mt-8 grid grid-cols-2 gap-6">
-        <button
-          onClick={() => handlePayment("kakaopay.TC0ONETIME")}
-          className="flex items-center justify-center bg-yellow-400 rounded-md h-12 shadow-md hover:shadow-lg hover:bg-yellow-300 transition-all duration-300 px-4"
-        >
-          <div className="flex items-center justify-center w-full">
-            <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M12 2C6.48 2 2 5.51 2 9.83c0 2.76 1.77 5.19 4.44 6.56-.16.55-.93 3.52-.96 3.83-.04.33.13.33.27.24.11-.07 4.29-2.9 4.96-3.39.42.05.85.08 1.29.08 5.52 0 10-3.51 10-7.83C22 5.51 17.52 2 12 2z"
-                fill="#000000"
-              />
-            </svg>
-            <span className="font-bold text-black text-base text-xl">
-              kakaopay
-            </span>
-          </div>
-        </button>
+      {(nearestBranch?.hasStock ||
+        (!nearestBranch?.hasStock &&
+          hasAlternativeBranch &&
+          alternativeBranch &&
+          useAlternativeBranch)) && (
+        <div className="mt-8 grid grid-cols-2 gap-6">
+          <button
+            onClick={() => handlePayment("kakaopay.TC0ONETIME")}
+            className="flex items-center justify-center bg-yellow-400 rounded-md h-12 shadow-md hover:shadow-lg hover:bg-yellow-300 transition-all duration-300 px-4"
+          >
+            <div className="flex items-center justify-center w-full">
+              <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M12 2C6.48 2 2 5.51 2 9.83c0 2.76 1.77 5.19 4.44 6.56-.16.55-.93 3.52-.96 3.83-.04.33.13.33.27.24.11-.07 4.29-2.9 4.96-3.39.42.05.85.08 1.29.08 5.52 0 10-3.51 10-7.83C22 5.51 17.52 2 12 2z"
+                  fill="#000000"
+                />
+              </svg>
+              <span className="font-bold text-black text-base text-xl">
+                kakaopay
+              </span>
+            </div>
+          </button>
 
-        <button
-          onClick={() => handlePayment("tosspay.tosstest")}
-          className="flex items-center justify-center bg-blue-500 rounded-md h-12 shadow-md hover:shadow-lg hover:bg-blue-400 transition-all duration-300"
-        >
-          <div className="flex items-center">
-            <img src={tossPayLogo} alt="토스페이" className="h-8" />
-          </div>
-        </button>
-      </div>
+          <button
+            onClick={() => handlePayment("tosspay.tosstest")}
+            className="flex items-center justify-center bg-blue-500 rounded-md h-12 shadow-md hover:shadow-lg hover:bg-blue-400 transition-all duration-300"
+          >
+            <div className="flex items-center">
+              <img src={tossPayLogo} alt="토스페이" className="h-8" />
+            </div>
+          </button>
+        </div>
+      )}
     </div>
   );
 };

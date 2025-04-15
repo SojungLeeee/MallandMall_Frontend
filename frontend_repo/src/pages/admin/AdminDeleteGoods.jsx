@@ -8,8 +8,8 @@ import ListComponents from "../../components/ui/admin/ListComponents";
 export default function AdminAllgoodss() {
   const [error, setError] = useState(null);
   const [goodsData, setgoodsData] = useState([]);
-  const [delgoodsId, setDelgoodsId] = useState(null);
-  const [selectedProductCode, setSelectedProductCode] = useState(""); // 🔸 선택된 상품코드
+  const [selectedProductCode, setSelectedProductCode] = useState("");
+  const [selectedGoodsIds, setSelectedGoodsIds] = useState([]); // ✅ 선택된 상품 ID 목록
   const modal_dialog = useRef(null);
 
   const formatDate = (dateString) => {
@@ -20,7 +20,6 @@ export default function AdminAllgoodss() {
     const hours = String(date.getHours()).padStart(2, "0");
     const minutes = String(date.getMinutes()).padStart(2, "0");
     const seconds = String(date.getSeconds()).padStart(2, "0");
-
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
   };
 
@@ -28,57 +27,79 @@ export default function AdminAllgoodss() {
     async function fetchgoodsData() {
       try {
         const goodsCodeList = await fetchFindAllGoods();
-        console.log("받아온 상품 목록:", goodsCodeList);
-
         if (Array.isArray(goodsCodeList)) {
           setgoodsData(goodsCodeList);
         } else {
           throw new Error("상품 데이터가 배열이 아닙니다.");
         }
       } catch (error1) {
-        console.log("Error.name:", error1.name);
-        console.log("Error.message:", error1.message);
         setError({ mesg: error1.message });
       }
     }
-
     fetchgoodsData();
   }, []);
 
-  const handleRemovegoods = (goodsId) => {
-    setDelgoodsId(goodsId);
-    modal_dialog.current.showModal();
+  const handleSingleCheck = (goodsId) => {
+    setSelectedGoodsIds((prev) =>
+      prev.includes(goodsId)
+        ? prev.filter((id) => id !== goodsId)
+        : [...prev, goodsId]
+    );
   };
 
-  const handleDeleteConfirm = async () => {
-    if (!delgoodsId) return;
+  const handleAllCheck = () => {
+    if (selectedGoodsIds.length === filteredGoods.length) {
+      setSelectedGoodsIds([]);
+    } else {
+      setSelectedGoodsIds(filteredGoods.map((goods) => goods.goodsId));
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedGoodsIds.length === 0) {
+      alert("삭제할 상품을 선택하세요.");
+      return;
+    }
+
+    if (!window.confirm("정말로 선택한 상품들을 삭제하시겠습니까?")) return;
 
     try {
-      await fetchDeleteGoods(delgoodsId);
-      console.log("상품 삭제 성공");
-      alert("삭제되었습니다.");
-      setgoodsData((prevData) =>
-        prevData.filter((goods) => goods.goodsId !== delgoodsId)
+      for (const goodsId of selectedGoodsIds) {
+        await fetchDeleteGoods(goodsId);
+      }
+
+      setgoodsData((prev) =>
+        prev.filter((goods) => !selectedGoodsIds.includes(goods.goodsId))
       );
-      modal_dialog.current.close();
+      setSelectedGoodsIds([]);
+      alert("선택된 상품이 삭제되었습니다.");
     } catch (error) {
-      console.error("상품 삭제 실패:", error);
+      console.error("일괄 삭제 실패:", error);
       setError({ mesg: error.message });
     }
   };
 
   if (error) {
-    return (
-      <div>
-        <div>{`Error: ${error.mesg}`}</div>
-      </div>
-    );
+    return <div>{`Error: ${error.mesg}`}</div>;
   }
 
+  const uniqueProductCodes = [...new Set(goodsData.map((g) => g.productCode))];
+
+  const filteredGoods = selectedProductCode
+    ? goodsData.filter((g) => g.productCode === selectedProductCode)
+    : goodsData;
+
   const renderRow = (goods, index) => {
+    const isChecked = selectedGoodsIds.includes(goods.goodsId);
     return (
-      <tr key={index} className="text-xs">
-        <td className="px-3 py-2">{goods.goodsId}</td>
+      <tr key={index} className="text-sm">
+        <td className="px-3 py-2">
+          <input
+            type="checkbox"
+            checked={isChecked}
+            onChange={() => handleSingleCheck(goods.goodsId)}
+          />
+        </td>
         <td className="px-3 py-2">{goods.productCode}</td>
         <td className="px-3 py-2">{goods.branchName}</td>
         <td
@@ -90,25 +111,9 @@ export default function AdminAllgoodss() {
         >
           {formatDate(goods.expirationDate)}
         </td>
-        <td className="px-3 py-2">
-          <button
-            onClick={() => handleRemovegoods(goods.goodsId)}
-            className="bg-white"
-          >
-            ❌
-          </button>
-        </td>
       </tr>
     );
   };
-
-  // 🔸 중복 제거된 상품코드 리스트
-  const uniqueProductCodes = [...new Set(goodsData.map((g) => g.productCode))];
-
-  // 🔸 필터링된 상품 목록
-  const filteredGoods = selectedProductCode
-    ? goodsData.filter((g) => g.productCode === selectedProductCode)
-    : goodsData;
 
   return (
     <div className="w-full p-2">
@@ -116,8 +121,8 @@ export default function AdminAllgoodss() {
       <hr className="mb-4" />
 
       {/* 🔸 셀렉트박스 UI */}
-      <div className="mb-4">
-        <label htmlFor="productCode" className="mr-2 text-sm font-medium">
+      <div className="mb-4 flex items-center gap-4">
+        <label htmlFor="productCode" className="text-sm font-medium">
           상품 코드 선택:
         </label>
         <select
@@ -133,48 +138,37 @@ export default function AdminAllgoodss() {
             </option>
           ))}
         </select>
-      </div>
 
-      {/* 삭제 확인 모달 */}
-      <dialog
-        ref={modal_dialog}
-        className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-3/5"
-      >
-        <h3 className="text-xl font-semibold mb-4">삭제 확인</h3>
-        <p className="mb-4 text-gray-700">
-          정말로 해당 상품을 삭제하시겠습니까?
-        </p>
-        <div className="flex justify-between">
-          <button
-            type="button"
-            onClick={handleDeleteConfirm}
-            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
-          >
-            삭제
-          </button>
-          <button
-            type="button"
-            onClick={() => modal_dialog.current.close()}
-            className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400"
-          >
-            취소
-          </button>
-        </div>
-      </dialog>
+        <button
+          className="ml-auto px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+          onClick={handleBulkDelete}
+        >
+          선택 삭제
+        </button>
+      </div>
 
       {/* 상품 목록 */}
       {filteredGoods.length > 0 ? (
-        <ListComponents
-          data={filteredGoods}
-          dataType="goods"
-          renderRow={renderRow}
-          showDeleteCheckbox={true}
-          text1="상품ID"
-          text2="코드"
-          text3="지점명"
-          text4="유통기한"
-          text5="❌"
-        />
+        <table className="table-auto w-full border">
+          <thead className="bg-black  text-white">
+            <tr>
+              <th className="px-3 py-2">
+                <input
+                  type="checkbox"
+                  onChange={handleAllCheck}
+                  checked={
+                    selectedGoodsIds.length === filteredGoods.length &&
+                    filteredGoods.length > 0
+                  }
+                />
+              </th>
+              <th className="px-3 py-2">코드</th>
+              <th className="px-3 py-2">지점명</th>
+              <th className="px-3 py-2">유통기한</th>
+            </tr>
+          </thead>
+          <tbody className="text-sm">{filteredGoods.map(renderRow)}</tbody>
+        </table>
       ) : (
         <div>해당 상품코드에 해당하는 상품이 없습니다.</div>
       )}
