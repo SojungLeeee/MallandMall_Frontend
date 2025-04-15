@@ -211,7 +211,7 @@ const OrderPage = () => {
               setAlternativeBranch(otherBranchesWithStock[0]);
               setHasSufficientStock(true); // ✅ sufficientStock 을 true로 설정!
               setHasAlternativeBranch(true);
-              setUseAlternativeBranch(false);
+              setUseAlternativeBranch(true);
             } else {
               console.log("모든 근처 매장에 재고가 없습니다.");
               setHasAlternativeBranch(true);
@@ -232,6 +232,8 @@ const OrderPage = () => {
             console.log("가장 가까운 매장에 재고가 있습니다.");
             setHasAlternativeBranch(false);
             setUseAlternativeBranch(false);
+            console.log(hasAlternativeBranch);
+            console.log(useAlternativeBranch);
           } else {
             const otherBranchesWithStock = branchesWithStock.filter(
               (branch) => branch.hasStock
@@ -241,7 +243,7 @@ const OrderPage = () => {
               console.log("재고 보유 매장:", otherBranchesWithStock);
               setAlternativeBranch(otherBranchesWithStock[0]);
               setHasAlternativeBranch(true);
-              setUseAlternativeBranch(false);
+              setUseAlternativeBranch(true);
             } else {
               console.log("모든 근처 매장에 재고가 없습니다.");
               setHasAlternativeBranch(false);
@@ -909,6 +911,7 @@ const OrderPage = () => {
             <div className="flex justify-between items-center border-t border-gray-700 pt-3 mt-3">
               <div className="flex items-center">
                 {nearestBranch.hasStock &&
+                hasSufficientStock &&
                 !hasAlternativeBranch &&
                 !alternativeBranch ? (
                   <>
@@ -1057,7 +1060,7 @@ const OrderPage = () => {
         (!nearestBranch?.hasStock &&
           hasAlternativeBranch &&
           alternativeBranch &&
-          !useAlternativeBranch)) && (
+          useAlternativeBranch)) && (
         <div className="mt-8 grid grid-cols-2 gap-6">
           <button
             onClick={() => handlePayment("kakaopay.TC0ONETIME")}
