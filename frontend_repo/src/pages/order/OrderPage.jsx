@@ -18,6 +18,8 @@ const OrderPage = () => {
   const [profile, setProfile] = useState(null);
   const [coordinates, setCoordinates] = useState(null);
   const [naverMapLoaded, setNaverMapLoaded] = useState(false);
+  const [hasSufficientStock, setHasSufficientStock] = useState(false);
+
   const [formData, setFormData] = useState({
     receiverName: "",
     post: "",
@@ -161,7 +163,7 @@ const OrderPage = () => {
           latitude: latitude,
           longitude: longitude,
           productCodes: productCodes,
-          limit: 5,
+          limit: 8,
         }
       );
 
@@ -172,24 +174,79 @@ const OrderPage = () => {
         const closestBranch = branchesWithStock[0];
         setNearestBranch(closestBranch);
 
-        if (closestBranch.hasStock) {
-          console.log("가장 가까운 매장에 재고가 있습니다.");
-          setHasAlternativeBranch(false);
-          setUseAlternativeBranch(false);
-        } else {
-          const otherBranchesWithStock = branchesWithStock.filter(
-            (branch) => branch.hasStock
-          );
+        if (isFromCart) {
+          // cartItems가 존재하는 경우
+          const sufficientStock = cartItems.every((cartItem) => {
+            const stockItem =
+              branchesWithStock[0].stockDetails[cartItem.productCode];
+            return stockItem && stockItem >= cartItem.quantity;
+          });
 
-          if (otherBranchesWithStock.length > 0) {
-            console.log("재고 보유 매장:", otherBranchesWithStock);
-            setAlternativeBranch(otherBranchesWithStock[0]);
-            setHasAlternativeBranch(true);
-            setUseAlternativeBranch(false);
-          } else {
-            console.log("모든 근처 매장에 재고가 없습니다.");
+          console.log(sufficientStock);
+          setHasSufficientStock(sufficientStock);
+
+          if (sufficientStock) {
+            console.log("가장 가까운 매장에 충분한 재고가 있습니다.");
             setHasAlternativeBranch(false);
             setUseAlternativeBranch(false);
+          } else {
+            const otherBranchesWithStock = branchesWithStock.filter(
+              (branch) => {
+                return (
+                  branch.hasStock &&
+                  cartItems.every((cartItem) => {
+                    const stockAmount =
+                      branch.stockDetails[cartItem.productCode] || 0;
+                    console.log("stockAmount", stockAmount);
+                    console.log(cartItem.quantity);
+                    return stockAmount >= cartItem.quantity;
+                  })
+                );
+              }
+            );
+            console.log("other", otherBranchesWithStock);
+
+            if (otherBranchesWithStock.length > 0) {
+              console.log("재고 보유 매장:", otherBranchesWithStock);
+              setAlternativeBranch(otherBranchesWithStock[0]);
+              setHasSufficientStock(true); // ✅ sufficientStock 을 true로 설정!
+              setHasAlternativeBranch(true);
+              setUseAlternativeBranch(false);
+            } else {
+              console.log("모든 근처 매장에 재고가 없습니다.");
+              setHasAlternativeBranch(true);
+              setUseAlternativeBranch(false);
+            }
+          }
+        } else {
+          // 단일 결제의 경우
+          if (closestBranch.hasStock) {
+            // cartItems가 존재하는 경우
+            const stockItem =
+              branchesWithStock[0].stockDetails[productInfo.productCode];
+            const sufficientStock =
+              stockItem && stockItem >= productInfo.quantity;
+
+            console.log(sufficientStock);
+            setHasSufficientStock(sufficientStock);
+            console.log("가장 가까운 매장에 재고가 있습니다.");
+            setHasAlternativeBranch(false);
+            setUseAlternativeBranch(false);
+          } else {
+            const otherBranchesWithStock = branchesWithStock.filter(
+              (branch) => branch.hasStock
+            );
+
+            if (otherBranchesWithStock.length > 0) {
+              console.log("재고 보유 매장:", otherBranchesWithStock);
+              setAlternativeBranch(otherBranchesWithStock[0]);
+              setHasAlternativeBranch(true);
+              setUseAlternativeBranch(false);
+            } else {
+              console.log("모든 근처 매장에 재고가 없습니다.");
+              setHasAlternativeBranch(false);
+              setUseAlternativeBranch(false);
+            }
           }
         }
       } else {
@@ -851,7 +908,9 @@ const OrderPage = () => {
 
             <div className="flex justify-between items-center border-t border-gray-700 pt-3 mt-3">
               <div className="flex items-center">
-                {nearestBranch.hasStock ? (
+                {nearestBranch.hasStock &&
+                !hasAlternativeBranch &&
+                !alternativeBranch ? (
                   <>
                     <svg
                       className="w-5 h-5 mr-1 text-green-400"
@@ -913,62 +972,62 @@ const OrderPage = () => {
           </div>
 
           {/* 대체 매장 정보 - 재고가 없을 때만 표시 */}
-          {!nearestBranch.hasStock &&
-            hasAlternativeBranch &&
-            alternativeBranch && (
-              <div className="bg-gray-100 p-5 rounded-lg border border-gray-200">
-                <div className="flex justify-between items-center mb-3">
-                  <h4 className="font-medium text-lg">재고 매장</h4>
-                  <div className="flex items-center ml-8">
-                    {" "}
-                    {/* 여기에 ml-8 (margin-left) 추가 */}
-                    <input
-                      type="checkbox"
-                      id="useAlternativeBranch"
-                      checked={useAlternativeBranch}
-                      onChange={toggleAlternativeBranch}
-                      className="mr-2 h-4 w-4 cursor-pointer"
-                    />
-                    <label
-                      htmlFor="useAlternativeBranch"
-                      className="text-sm cursor-pointer"
-                    >
-                      이 지점에서 배송 받기
-                    </label>
-                  </div>
-                </div>
-                <div
-                  className={`p-4 rounded-lg ${
-                    useAlternativeBranch
-                      ? "bg-green-50 border border-green-200"
-                      : "bg-white"
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium flex items-center">
-                        {alternativeBranch.branchName}
-                        <span className="ml-2 text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full">
-                          재고 있음
-                        </span>
-                      </p>
-                      <p className="text-xs text-gray-600 mt-1">
-                        {alternativeBranch.branchAddress}
-                      </p>
-                    </div>
-                    <div className="text-xs bg-black text-white px-3 py-1 rounded-full">
-                      {alternativeBranch.distance.toFixed(1)}km
-                    </div>
-                  </div>
-
-                  {useAlternativeBranch && (
-                    <p className="text-xs text-green-600 mt-3 font-medium border-t border-green-100 pt-2">
-                      ✅ 해당 지점에서 주문 상품을 배송합니다
-                    </p>
-                  )}
+          {/* !nearestBranch.hasStock && */}
+          {hasAlternativeBranch && alternativeBranch && (
+            <div className="bg-gray-100 p-5 rounded-lg border border-gray-200">
+              <div className="flex justify-between items-center mb-3">
+                <h4 className="font-medium text-lg">재고 매장</h4>
+                <div className="flex items-center ml-8">
+                  {" "}
+                  {/* 여기에 ml-8 (margin-left) 추가 */}
+                  <input
+                    type="checkbox"
+                    id="useAlternativeBranch"
+                    checked={true}
+                    readOnly
+                    // onChange={toggleAlternativeBranch}
+                    className="mr-2 h-4 w-4 cursor-pointer"
+                  />
+                  <label
+                    htmlFor="useAlternativeBranch"
+                    className="text-sm cursor-pointer"
+                  >
+                    이 지점에서 배송 받기
+                  </label>
                 </div>
               </div>
-            )}
+              <div
+                className={`p-4 rounded-lg ${
+                  useAlternativeBranch
+                    ? "bg-green-50 border border-green-200"
+                    : "bg-white"
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium flex items-center">
+                      {alternativeBranch.branchName}
+                      <span className="ml-2 text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full">
+                        재고 있음
+                      </span>
+                    </p>
+                    <p className="text-xs text-gray-600 mt-1">
+                      {alternativeBranch.branchAddress}
+                    </p>
+                  </div>
+                  <div className="text-xs bg-black text-white px-3 py-1 rounded-full">
+                    {alternativeBranch.distance.toFixed(1)}km
+                  </div>
+                </div>
+
+                {useAlternativeBranch && (
+                  <p className="text-xs text-green-600 mt-3 font-medium border-t border-green-100 pt-2">
+                    ✅ 해당 지점에서 주문 상품을 배송합니다
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -994,11 +1053,11 @@ const OrderPage = () => {
       </div>
 
       {/* 결제 버튼 */}
-      {(nearestBranch?.hasStock ||
+      {((nearestBranch?.hasStock && hasSufficientStock) ||
         (!nearestBranch?.hasStock &&
           hasAlternativeBranch &&
           alternativeBranch &&
-          useAlternativeBranch)) && (
+          !useAlternativeBranch)) && (
         <div className="mt-8 grid grid-cols-2 gap-6">
           <button
             onClick={() => handlePayment("kakaopay.TC0ONETIME")}
