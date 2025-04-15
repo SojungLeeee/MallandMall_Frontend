@@ -9,11 +9,10 @@ import {
   FaClock,
 } from "react-icons/fa";
 import axios from "axios";
-import { motion, AnimatePresence } from "framer-motion"; // 애니메이션 라이브러리 추가
 
 // API 호출용 axios 인스턴스 생성
 const instance = axios.create({
-  baseURL: "http://localhost:8090/emart",
+  baseURL: "http://localhost:8090/emart", // baseURL 설정 (프로젝트에 맞게 수정 필요)
   timeout: 50000,
   headers: { "Content-Type": "application/json" },
 });
@@ -27,28 +26,22 @@ const RealTimeKeywords = ({ limit = 10, onKeywordClick = null }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [lastUpdated, setLastUpdated] = useState(null);
-  const [refreshTrigger, setRefreshTrigger] = useState(false); // 새로고침 애니메이션 트리거
   const navigate = useNavigate();
 
   // 인기 검색어 데이터 가져오기
   const fetchTrendingKeywords = async () => {
     setIsLoading(true);
     setError(null);
-    setRefreshTrigger(true); // 새로고침 애니메이션 시작
 
     try {
+      // emart context path 포함된 URL로 API 호출
       const response = await instance.get(`/api/search/trending-keywords`, {
         params: { limit },
       });
 
       if (response.status === 200 && response.data) {
-        // 데이터를 받아오면 애니메이션 적용을 위해 약간의 지연 후 설정
-        setTimeout(() => {
-          setKeywords(response.data);
-          setLastUpdated(new Date());
-          setRefreshTrigger(false); // 새로고침 애니메이션 종료
-          setIsLoading(false);
-        }, 300);
+        setKeywords(response.data);
+        setLastUpdated(new Date());
       } else {
         throw new Error("검색어 데이터를 불러오는데 실패했습니다.");
       }
@@ -57,11 +50,9 @@ const RealTimeKeywords = ({ limit = 10, onKeywordClick = null }) => {
       setError("데이터를 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요.");
 
       // API가 구현되지 않은 경우 샘플 데이터 사용 (개발 환경용)
-      setTimeout(() => {
-        setKeywords(generateSampleKeywords(limit));
-        setRefreshTrigger(false); // 새로고침 애니메이션 종료
-        setIsLoading(false);
-      }, 300);
+      setKeywords(generateSampleKeywords(limit));
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -78,13 +69,38 @@ const RealTimeKeywords = ({ limit = 10, onKeywordClick = null }) => {
     return () => clearInterval(intervalId);
   }, [limit]);
 
-  // 검색어 클릭 핸들러
+  // RealTimeKeywords.jsx의 handleKeywordClick 함수 수정
   const handleKeywordClick = (keyword) => {
     if (onKeywordClick) {
       // 부모 컴포넌트에서 제공한 콜백 함수 사용
       onKeywordClick(keyword);
     } else {
-      // 기본 동작: 검색 페이지로 이동
+      // 관련 상품이 있는지 확인 후 이동
+      fetchRelatedProducts(keyword);
+    }
+  };
+
+  // 관련 상품 조회 함수 추가
+  const fetchRelatedProducts = async (keyword) => {
+    try {
+      const response = await instance.get(`/api/search/related-products`, {
+        params: { keyword, limit: 5 },
+      });
+
+      if (
+        response.status === 200 &&
+        response.data &&
+        response.data.length > 0
+      ) {
+        // 관련 상품이 있으면 상품 목록 페이지로 이동
+        navigate(`/products/search?keyword=${encodeURIComponent(keyword)}`);
+      } else {
+        // 관련 상품이 없으면 일반 검색 결과로 이동
+        navigate(`/search/${encodeURIComponent(keyword)}`);
+      }
+    } catch (err) {
+      console.error("관련 상품 조회 오류:", err);
+      // 오류 발생 시 일반 검색으로 이동
       navigate(`/search/${encodeURIComponent(keyword)}`);
     }
   };
@@ -124,27 +140,17 @@ const RealTimeKeywords = ({ limit = 10, onKeywordClick = null }) => {
   const renderRankChange = (change) => {
     if (change > 0) {
       return (
-        <motion.span
-          className="flex items-center text-green-500 text-xs"
-          initial={{ y: 10, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.3 }}
-        >
+        <span className="flex items-center text-green-500 text-xs">
           <FaArrowUp size={10} className="mr-1" />
           <span>{Math.abs(change)}</span>
-        </motion.span>
+        </span>
       );
     } else if (change < 0) {
       return (
-        <motion.span
-          className="flex items-center text-red-500 text-xs"
-          initial={{ y: -10, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.3 }}
-        >
+        <span className="flex items-center text-red-500 text-xs">
           <FaArrowDown size={10} className="mr-1" />
           <span>{Math.abs(change)}</span>
-        </motion.span>
+        </span>
       );
     } else {
       return (
@@ -182,11 +188,7 @@ const RealTimeKeywords = ({ limit = 10, onKeywordClick = null }) => {
           </div>
         </div>
         <div className="py-4 flex justify-center">
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-            className="h-5 w-5 border-2 border-blue-500 border-t-transparent rounded-full"
-          ></motion.div>
+          <div className="animate-spin h-5 w-5 border-2 border-blue-500 border-t-transparent rounded-full"></div>
         </div>
       </div>
     );
@@ -204,14 +206,12 @@ const RealTimeKeywords = ({ limit = 10, onKeywordClick = null }) => {
         </div>
         <div className="py-2 text-center text-red-500 text-sm">
           {error}
-          <motion.button
+          <button
             onClick={fetchTrendingKeywords}
             className="ml-2 text-blue-500 hover:underline flex items-center"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
           >
             <FaRedo size={10} className="mr-1" /> 다시 시도
-          </motion.button>
+          </button>
         </div>
       </div>
     );
@@ -221,71 +221,45 @@ const RealTimeKeywords = ({ limit = 10, onKeywordClick = null }) => {
     <div className="bg-white rounded-lg shadow-sm p-3 border border-gray-200">
       <div className="flex items-center justify-between mb-2 pb-2 border-b">
         <div className="flex items-center text-sm font-medium text-gray-700">
-          <motion.div
-            animate={{
-              scale: refreshTrigger ? [1, 1.2, 1] : 1,
-              color: refreshTrigger
-                ? ["#f97316", "#ef4444", "#f97316"]
-                : "#f97316",
-            }}
-            transition={{ duration: 0.5 }}
-          >
-            <FaFire className="text-orange-500 mr-1" />
-          </motion.div>
+          <FaFire className="text-orange-500 mr-1" />
           <span>실시간 인기 검색어</span>
         </div>
         <div className="flex items-center text-xs text-gray-500">
           <FaClock className="mr-1" size={10} />
           <span>{formatLastUpdated()}</span>
-          <motion.button
+          <button
             onClick={fetchTrendingKeywords}
             className="ml-2 text-blue-500 hover:text-blue-700"
             title="새로고침"
-            whileHover={{ scale: 1.2, rotate: 180 }}
-            whileTap={{ scale: 0.9 }}
-            disabled={isLoading}
           >
             <FaRedo size={10} />
-          </motion.button>
+          </button>
         </div>
       </div>
 
       <ul className="grid grid-cols-2 gap-x-2 gap-y-1">
-        <AnimatePresence>
-          {keywords.map((item) => (
-            <motion.li
-              key={item.rank}
-              className="flex items-center py-1"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3, delay: item.rank * 0.05 }}
-              layout
+        {keywords.map((item) => (
+          <li key={item.rank} className="flex items-center py-1">
+            <span
+              className={`flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center mr-1.5 text-xs font-medium ${
+                item.rank <= 3
+                  ? "bg-orange-100 text-orange-800"
+                  : "bg-gray-100 text-gray-700"
+              }`}
             >
-              <motion.span
-                className={`flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center mr-1.5 text-xs font-medium ${
-                  item.rank <= 3
-                    ? "bg-orange-100 text-orange-800"
-                    : "bg-gray-100 text-gray-700"
-                }`}
-                whileHover={{ scale: 1.1 }}
-              >
-                {item.rank}
-              </motion.span>
-              <motion.button
-                onClick={() => handleKeywordClick(item.keyword)}
-                className="flex-1 text-left text-sm truncate hover:text-blue-600"
-                whileHover={{ x: 3, color: "#2563eb" }}
-                transition={{ type: "spring", stiffness: 300 }}
-              >
-                {item.keyword}
-              </motion.button>
-              <div className="flex-shrink-0 ml-1">
-                {renderRankChange(item.rankChange)}
-              </div>
-            </motion.li>
-          ))}
-        </AnimatePresence>
+              {item.rank}
+            </span>
+            <button
+              onClick={() => handleKeywordClick(item.keyword)}
+              className="flex-1 text-left text-sm truncate hover:text-blue-600"
+            >
+              {item.keyword}
+            </button>
+            <div className="flex-shrink-0 ml-1">
+              {renderRankChange(item.rankChange)}
+            </div>
+          </li>
+        ))}
       </ul>
     </div>
   );

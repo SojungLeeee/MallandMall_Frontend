@@ -111,26 +111,6 @@ const Search = () => {
         setVectorSuggestions([]);
       });
 
-    // 검색어-상품 연동 기록 함수
-    const recordKeywordProductRelation = (keyword, productCode) => {
-      if (!keyword || !productCode) return;
-
-      // 검색어-상품 연동 API 호출
-      try {
-        axios
-          .post(
-            "http://localhost:8090/emart/api/search/record-keyword-product",
-            {
-              keyword: keyword,
-              productCode: productCode,
-            }
-          )
-          .catch((err) => console.error("검색어-상품 기록 오류:", err));
-      } catch (err) {
-        console.error("검색어-상품 기록 오류:", err);
-      }
-    };
-
     // 일반 검색 처리
     fetchSearchProducts(searchTerm)
       .then((searchData) => {
@@ -630,80 +610,147 @@ const Search = () => {
 
       {/* 고정된 컨텐츠 영역 - 모바일 최적화 (세로 배치) */}
       <div className="flex flex-col gap-3 px-2">
-        {/* 기본 검색 결과 섹션 */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-          <div className="p-2 bg-gray-50 border-b text-sm font-medium text-gray-700 flex items-center">
-            <FaList className="mr-1 h-4 w-4" />
-            검색 결과
+        {/* 기본 검색 결과 섹션 - 향상된 디자인 */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-md">
+          <div className="p-3 bg-gradient-to-r from-gray-50 to-gray-100 border-b text-sm font-medium text-gray-800 flex items-center justify-between">
+            <div className="flex items-center">
+              <FaList className="mr-2 h-4 w-4 text-blue-600" />
+              <span>검색 결과</span>
+            </div>
+            <div className="text-xs text-gray-500">
+              {searchResults.length > 0 && `${searchResults.length}개 항목`}
+            </div>
           </div>
-          <ul className="max-h-52 overflow-y-auto">
+
+          <div className="max-h-52 overflow-y-auto">
             {searchResults.length > 0 ? (
-              searchResults.map((product, index) => (
-                <li key={index} className="list-none">
-                  <SearchResultItem product={product} />
-                </li>
-              ))
+              <ul className="divide-y divide-gray-100">
+                {searchResults.map((product, index) => (
+                  <li key={index} className="list-none group">
+                    <div className="transition-colors duration-150 group-hover:bg-blue-50/40">
+                      <SearchResultItem product={product} />
+                    </div>
+                  </li>
+                ))}
+              </ul>
             ) : search.trim().length > 1 ? (
               isSearchResultLoading ? (
-                <li className="p-3 text-center text-gray-500 text-sm">
-                  검색 중...
-                </li>
+                <div className="p-8 flex flex-col items-center justify-center">
+                  <div className="w-8 h-8 mb-3 rounded-full border-2 border-blue-500 border-t-transparent animate-spin"></div>
+                  <p className="text-sm text-gray-500 animate-pulse">
+                    검색 중...
+                  </p>
+                </div>
               ) : (
-                <li className="p-3 text-center text-gray-500 text-sm">
-                  검색 결과가 없습니다
-                </li>
+                <div className="p-8 flex flex-col items-center justify-center">
+                  <div className="w-12 h-12 mb-3 rounded-full bg-gray-100 flex items-center justify-center">
+                    <FaSearch className="text-gray-400" />
+                  </div>
+                  <p className="text-sm text-gray-500">검색 결과가 없습니다</p>
+                  <p className="text-xs text-gray-400 mt-1">
+                    다른 검색어를 시도해 보세요
+                  </p>
+                </div>
               )
             ) : (
-              <li className="p-3 text-center text-gray-500 text-sm">
-                검색어를 입력하세요
-              </li>
+              <div className="p-8 flex flex-col items-center justify-center">
+                <div className="w-12 h-12 mb-3 rounded-full bg-blue-50 flex items-center justify-center">
+                  <FaSearch className="text-blue-400" />
+                </div>
+                <p className="text-sm text-gray-600">검색어를 입력하세요</p>
+                <p className="text-xs text-gray-400 mt-1">
+                  원하는 상품을 찾아드립니다
+                </p>
+              </div>
             )}
-          </ul>
-        </div>
-
-        {/* AI 추천 제품 섹션 - 리뷰 분석 기반으로 차별화 */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-          <div className="p-2 bg-gradient-to-r from-blue-50 to-indigo-50 border-b text-sm font-medium text-gray-700 flex items-center">
-            <FaRegLightbulb className="mr-1 h-4 w-4 text-blue-600" />
-            <span className="text-blue-700">AI 맞춤 추천</span>
           </div>
 
-          {/* AI 추천 목록 - 리뷰 기반의 추천으로 특화 */}
-          <ul className="max-h-72 overflow-y-auto">
+          {searchResults.length > 0 && (
+            <div className="p-2 border-t border-gray-100 bg-gray-50 flex justify-between items-center text-xs text-gray-500">
+              <span>{lastSearchTerm && `"${lastSearchTerm}" 검색 결과`}</span>
+              {searchResults.length > 5 && (
+                <button className="text-blue-600 hover:text-blue-800 font-medium flex items-center">
+                  더 보기 <FaArrowDown className="ml-1 h-3 w-3" />
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* AI 추천 제품 섹션 - 향상된 디자인 */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-md">
+          <div className="p-3 bg-gradient-to-r from-blue-50 to-indigo-50 border-b text-sm font-medium text-gray-800 flex items-center justify-between">
+            <div className="flex items-center">
+              <FaRegLightbulb className="mr-2 h-4 w-4 text-blue-600" />
+              <span className="text-blue-700">AI 맞춤 추천</span>
+            </div>
+            <div className="text-xs text-blue-600/70">
+              {vectorSuggestions.length > 0 &&
+                `${vectorSuggestions.length}개 추천`}
+            </div>
+          </div>
+
+          <div className="max-h-72 overflow-y-auto">
             {vectorSuggestions.length > 0 ? (
-              vectorSuggestions.map((item, index) => (
-                <li key={index} className="list-none">
-                  <AIRecommendationItem item={item} />
-                </li>
-              ))
+              <ul className="divide-y divide-gray-100">
+                {vectorSuggestions.map((item, index) => (
+                  <li key={index} className="list-none group">
+                    <div className="transition-colors duration-150 group-hover:bg-blue-50/40">
+                      <AIRecommendationItem item={item} />
+                    </div>
+                  </li>
+                ))}
+              </ul>
             ) : search.trim().length > 1 ? (
               isLoading ? (
-                <li className="p-3 text-center text-gray-500 text-sm">
-                  <div className="flex justify-center items-center">
-                    <div className="animate-spin h-4 w-4 mr-2 border-2 border-blue-500 border-t-transparent rounded-full"></div>
+                <div className="p-8 flex flex-col items-center justify-center">
+                  <div className="w-8 h-8 mb-3 rounded-full border-2 border-blue-500 border-t-transparent animate-spin"></div>
+                  <p className="text-sm text-gray-500 animate-pulse">
                     AI가 맞춤형 제품을 찾는 중...
-                  </div>
-                </li>
+                  </p>
+                </div>
               ) : (
-                <li className="p-3 text-center text-gray-500 text-sm">
-                  AI 추천 제품을 찾는 중 ...
-                </li>
+                <div className="p-8 flex flex-col items-center justify-center">
+                  <div className="w-12 h-12 mb-3 rounded-full bg-blue-100 flex items-center justify-center">
+                    <FaRegLightbulb className="text-blue-500" />
+                  </div>
+                  <p className="text-sm text-gray-600">
+                    AI 추천 제품을 찾는 중...
+                  </p>
+                  <p className="text-xs text-gray-400 mt-1">
+                    잠시만 기다려 주세요
+                  </p>
+                </div>
               )
             ) : (
-              <li className="p-4 text-center text-gray-600">
-                <div className="flex flex-col items-center">
-                  <FaRegLightbulb className="text-blue-400 mb-2" size={24} />
-                  <p className="text-sm">
-                    검색어를 입력하면 AI가 리뷰 분석 기반으로
-                  </p>
-                  <p className="text-sm">맞춤형 제품을 추천해 드립니다</p>
+              <div className="p-8 flex flex-col items-center justify-center">
+                <div className="w-14 h-14 mb-3 rounded-full bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center">
+                  <FaRegLightbulb className="text-blue-500" size={24} />
                 </div>
-              </li>
+                <p className="text-sm text-gray-600 font-medium">
+                  검색어를 입력하면
+                </p>
+                <p className="text-sm text-gray-600">AI가 리뷰 분석 기반으로</p>
+                <p className="text-sm text-gray-600">
+                  맞춤형 제품을 추천해 드립니다
+                </p>
+              </div>
             )}
-          </ul>
+          </div>
+
+          {vectorSuggestions.length > 0 && (
+            <div className="p-2 border-t border-blue-50 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 flex justify-between items-center text-xs">
+              <span className="text-blue-700">리뷰 분석 기반 추천</span>
+              {vectorSuggestions.length > 5 && (
+                <button className="text-blue-600 hover:text-blue-800 font-medium flex items-center">
+                  더 많은 추천 <FaArrowDown className="ml-1 h-3 w-3" />
+                </button>
+              )}
+            </div>
+          )}
         </div>
-        {/* 실시간 인기 검색어 섹션 추가 */}
-        <div className="px-2 mb-3">
+        {/* 실시간 인기 검색어 섹션 추가 - 향상된 래퍼 */}
+        <div className="transition-all duration-300 hover:shadow-md">
           <RealTimeKeywords limit={10} onKeywordClick={handleKeywordClick} />
         </div>
       </div>
