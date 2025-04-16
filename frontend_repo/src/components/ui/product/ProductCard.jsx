@@ -51,7 +51,7 @@ const ProductCard = ({
         </p>
         {product.averageRating !== undefined && (
           <p className="text-sm text-yellow-500 text-left">
-            ⭐ {product.averageRating}
+            ⭐ {Number(product.averageRating).toFixed(1)}
           </p>
         )}
       </div>

@@ -8,21 +8,12 @@ const NaverMap = () => {
   const [branches, setBranches] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState(null);
   const [markers, setMarkers] = useState([]);
-  const [branchInventory, setBranchInventory] = useState({});
 
   // GPS 관련 상태 추가
   const [currentLocation, setCurrentLocation] = useState(null);
   const [currentLocationMarker, setCurrentLocationMarker] = useState(null);
   const [gpsEnabled, setGpsEnabled] = useState(false);
   const watchIdRef = useRef(null);
-
-  // 상품 검색 관련 상태 변수들
-  const [searchTerm, setSearchTerm] = useState("");
-  const [searchType, setSearchType] = useState("productName"); // 'productName' 또는 'category'
-  const [products, setProducts] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [productLoading, setProductLoading] = useState(false);
-  const [productError, setProductError] = useState(null);
 
   // 브랜치 데이터 가져오기 - BranchController의 엔드포인트 사용
   useEffect(() => {
@@ -40,82 +31,6 @@ const NaverMap = () => {
 
     fetchBranches();
   }, []);
-
-  // 브랜치와 인벤토리 데이터를 결합
-  const branchesWithInventory = branches.map((branch) => ({
-    ...branch,
-    goodsCount: branchInventory[branch.branchName] || 0,
-  }));
-
-  // 상품명 또는 카테고리로 상품 검색
-  const searchProducts = async () => {
-    if (!searchTerm.trim()) {
-      setProducts([]);
-      return;
-    }
-
-    try {
-      setProductLoading(true);
-      setProductError(null);
-
-      // 상품 검색 API 호출
-      const response = await axios.get("emart/product/search", {
-        params: {
-          searchType: searchType,
-          keyword: searchTerm.trim(),
-        },
-      });
-
-      console.log("검색 결과:", response.data);
-      setProducts(response.data);
-    } catch (err) {
-      console.error("상품 검색 실패:", err);
-      setProductError("상품 검색에 실패했습니다.");
-    } finally {
-      setProductLoading(false);
-    }
-  };
-
-  // 검색어 입력 핸들러
-  const handleSearchTermChange = (e) => {
-    setSearchTerm(e.target.value);
-  };
-
-  // 검색 타입 변경 핸들러 (상품명/카테고리)
-  const handleSearchTypeChange = (e) => {
-    setSearchType(e.target.value);
-  };
-
-  // 상품 선택 핸들러
-  const handleProductSelect = (product) => {
-    setSelectedProduct(product);
-    fetchInventoryByProductCode(product.productCode);
-
-    // 화면을 지도 영역으로 스크롤
-    const mapElement = document.getElementById("map");
-    if (mapElement) {
-      mapElement.scrollIntoView({ behavior: "smooth", block: "center" });
-    }
-  };
-
-  // 선택한 상품에 대한 인벤토리 정보 가져오기
-  const fetchInventoryByProductCode = async (productCode) => {
-    if (!productCode) {
-      setBranchInventory({});
-      return;
-    }
-
-    try {
-      // 지점별 특정 상품 수량 조회
-      const response = await axios.get(
-        `emart/inventory/product/${productCode}/branches`
-      );
-      setBranchInventory(response.data);
-    } catch (err) {
-      console.error("상품별 인벤토리 데이터 로드 실패:", err);
-      setError("상품 인벤토리 정보를 불러오는데 실패했습니다.");
-    }
-  };
 
   // 네이버 맵 초기화
   useEffect(() => {
@@ -217,32 +132,83 @@ const NaverMap = () => {
           if (currentLocationMarker) {
             currentLocationMarker.setPosition(latLng);
           } else {
+            // 개선된 현재 위치 마커 디자인
             const markerContent = document.createElement("div");
             markerContent.innerHTML = `
               <div style="
-                width: 18px;
-                height: 18px;
-                border-radius: 50%;
-                background-color: #4285F4;
-                border: 3px solid #ffffff;
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-                animation: pulse 1.5s infinite;
-              "></div>
+                position: relative;
+                width: 24px;
+                height: 24px;
+              ">
+                <!-- 외부 링 애니메이션 -->
+                <div style="
+                  position: absolute;
+                  width: 40px;
+                  height: 40px;
+                  border-radius: 50%;
+                  background: rgba(28, 100, 242, 0.1);
+                  transform: translate(-50%, -50%);
+                  left: 50%;
+                  top: 50%;
+                  animation: pulse-outer 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+                "></div>
+                
+                <!-- 중간 링 애니메이션 -->
+                <div style="
+                  position: absolute;
+                  width: 30px;
+                  height: 30px;
+                  border-radius: 50%;
+                  background: rgba(28, 100, 242, 0.2);
+                  transform: translate(-50%, -50%);
+                  left: 50%;
+                  top: 50%;
+                  animation: pulse-middle 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+                "></div>
+                
+                <!-- 중심 마커 -->
+                <div style="
+                  position: absolute;
+                  width: 14px;
+                  height: 14px;
+                  background: #1C64F2;
+                  border-radius: 50%;
+                  transform: translate(-50%, -50%);
+                  left: 50%;
+                  top: 50%;
+                  border: 2px solid white;
+                  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+                "></div>
+              </div>
+              
               <style>
-                @keyframes pulse {
+                @keyframes pulse-outer {
                   0% {
-                    transform: scale(1);
-                    box-shadow: 0 0 0 0 rgba(66, 133, 244, 0.7);
+                    transform: translate(-50%, -50%) scale(0.8);
+                    opacity: 0.8;
                   }
-                  
                   70% {
-                    transform: scale(1.1);
-                    box-shadow: 0 0 0 10px rgba(66, 133, 244, 0);
+                    transform: translate(-50%, -50%) scale(1.2);
+                    opacity: 0;
                   }
-                  
                   100% {
-                    transform: scale(1);
-                    box-shadow: 0 0 0 0 rgba(66, 133, 244, 0);
+                    transform: translate(-50%, -50%) scale(0.8);
+                    opacity: 0;
+                  }
+                }
+                
+                @keyframes pulse-middle {
+                  0% {
+                    transform: translate(-50%, -50%) scale(0.8);
+                    opacity: 0.6;
+                  }
+                  50% {
+                    transform: translate(-50%, -50%) scale(1.1);
+                    opacity: 0.2;
+                  }
+                  100% {
+                    transform: translate(-50%, -50%) scale(0.8);
+                    opacity: 0.6;
                   }
                 }
               </style>
@@ -287,6 +253,33 @@ const NaverMap = () => {
     );
   };
 
+  // 정확한 위도/경도로 지도 이동 및 확대하는 함수
+  const moveAndZoomToLocation = (exactLat, exactLng) => {
+    if (!map) return;
+
+    console.log("정확한 위치로 이동:", exactLat, exactLng);
+
+    // 정확한 좌표로 지도 위치 이동
+    const targetPoint = new window.naver.maps.LatLng(exactLat, exactLng);
+
+    // 현재 줌 레벨 확인
+    const currentZoom = map.getZoom();
+    const targetZoom = 16; // 목표 줌 레벨 - 15에서 16으로 더 세밀하게 조정
+
+    // 정확한 좌표로 중심 이동 (애니메이션 효과 적용)
+    // setCenter로 정확히 중심 이동
+    map.setCenter(targetPoint);
+
+    // 필요한 경우 줌 레벨 조정
+    if (currentZoom < targetZoom) {
+      setTimeout(() => {
+        map.setZoom(targetZoom, {
+          animation: window.naver.maps.Animation.EASING,
+        });
+      }, 100);
+    }
+  };
+
   // 브랜치 데이터를 사용하여 마커 생성
   useEffect(() => {
     if (map && branches.length > 0) {
@@ -297,123 +290,191 @@ const NaverMap = () => {
 
       const newMarkers = [];
 
+      // 마커 겹침 방지를 위한 변수
+      const markerGridSize = 0.0005; // 격자 크기 (위도/경도 단위)
+      const occupiedPositions = {}; // 이미 사용된 위치 추적
+
       branches.forEach((branch) => {
         if (branch.latitude && branch.longitude) {
-          const position = new window.naver.maps.LatLng(
-            branch.latitude,
-            branch.longitude
-          );
+          // 원래 위치 (정확한 좌표)
+          const exactLat = parseFloat(branch.latitude);
+          const exactLng = parseFloat(branch.longitude);
 
-          const quantity = branchInventory[branch.branchName] || 0;
-          const markerColor = quantity > 0 ? "#3B82F6" : "#9CA3AF"; // 파란색 또는 회색
-          const shadowColor =
-            quantity > 0
-              ? "rgba(59, 130, 246, 0.25)"
-              : "rgba(156, 163, 175, 0.25)";
+          // 위치 키 생성 (격자화된 위치) - 마커 표시용
+          let gridLat = Math.round(exactLat / markerGridSize) * markerGridSize;
+          let gridLng = Math.round(exactLng / markerGridSize) * markerGridSize;
+          let posKey = `${gridLat},${gridLng}`;
 
-          const markerContent = document.createElement("div");
-          markerContent.className = "branch-marker";
-          markerContent.innerHTML = `
-          <div style="position: relative; width: 70px; text-align: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
-            <div style="
-              background-color: ${markerColor}; 
-              color: white; 
-              padding: 4px 8px;
-              height: 30px;
-              display: flex;
-              align-items: center;
-              justify-content: space-between;
-              border-radius: 30px; 
-              box-shadow: 0 4px 12px ${shadowColor};
-              transition: all 0.2s ease;
-              border: 2px solid white;
-            ">
-              <!-- 왼쪽 아이콘 -->
-              <div style="
-                width: 18px;
-                height: 18px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: white;
-              ">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                  <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1zm3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4h-3.5z"/>
-                </svg>
-              </div>
-              
-              <!-- 개수 표시 -->
-              ${
-                quantity > 0
-                  ? `
-                    <div style="
-                      display: inline-block;
-                      font-size: 3px; 
-                      font-weight: 600;
-                      letter-spacing: 0.5px;
-                      text-align: right;
-                    ">${quantity}개</div>
-                  `
-                  : `
-                    <div style="
-                      display: inline-block;
-                      font-size: 13px; 
-                      font-weight: 400;
-                      letter-spacing: 0.5px;
-                      text-align: right;
-                    ">매장</div>
-                  `
+          // 이미 사용된 위치라면 근처에서 빈 공간 찾기
+          if (occupiedPositions[posKey]) {
+            // 나선형 탐색을 위한 방향 배열
+            const directions = [
+              [0, 1],
+              [1, 0],
+              [0, -1],
+              [-1, 0], // 동, 남, 서, 북
+              [1, 1],
+              [1, -1],
+              [-1, -1],
+              [-1, 1], // 대각선 방향
+            ];
+
+            // 가장 가까운 빈 위치 찾기
+            let found = false;
+            for (let distance = 1; distance <= 3 && !found; distance++) {
+              for (
+                let dirIndex = 0;
+                dirIndex < directions.length && !found;
+                dirIndex++
+              ) {
+                const [dy, dx] = directions[dirIndex];
+                const newGridLat = gridLat + dy * markerGridSize * distance;
+                const newGridLng = gridLng + dx * markerGridSize * distance;
+                const newPosKey = `${newGridLat},${newGridLng}`;
+
+                if (!occupiedPositions[newPosKey]) {
+                  gridLat = newGridLat;
+                  gridLng = newGridLng;
+                  posKey = newPosKey;
+                  found = true;
+                }
               }
-              
-            </div>
-            <div style="
-              position: absolute; 
-              left: 50%; 
-              margin-left: -6px; 
-              bottom: -6px; 
-              width: 12px; 
-              height: 12px; 
-              background: ${markerColor};
-              border-right: 2px solid white;
-              border-bottom: 2px solid white;
-              transform: rotate(45deg);
-              box-shadow: 4px 4px 8px ${shadowColor};
-            "></div>
-          </div>
-        `;
-
-          const marker = new window.naver.maps.Marker({
-            position: position,
-            map: map,
-            icon: {
-              content: markerContent,
-              anchor: new window.naver.maps.Point(35, 35),
-            },
-            zIndex: quantity > 0 ? 100 : 50,
-          });
-
-          // 마커에 깔끔한 호버 효과 추가
-          const markerElement = marker.getElement();
-          if (markerElement) {
-            const bubbleElement = markerElement.querySelector(
-              ".branch-marker > div > div:first-child"
-            );
-            if (bubbleElement) {
-              markerElement.addEventListener("mouseover", () => {
-                bubbleElement.style.transform = "translateY(-3px)";
-                bubbleElement.style.boxShadow = `0 6px 16px ${shadowColor}`;
-              });
-
-              markerElement.addEventListener("mouseout", () => {
-                bubbleElement.style.transform = "translateY(0)";
-                bubbleElement.style.boxShadow = `0 4px 12px ${shadowColor}`;
-              });
             }
           }
 
+          // 위치 점유 표시
+          occupiedPositions[posKey] = true;
+
+          // 격자화된 위치로 마커 위치 설정 (겹침 방지)
+          const markerPosition = new window.naver.maps.LatLng(gridLat, gridLng);
+
+          // 지점명 우측 4글자만 표시하도록 처리
+          const shortBranchName =
+            branch.branchName.length > 4
+              ? branch.branchName.slice(-4)
+              : branch.branchName;
+
+          // 마커 크기와 디자인 설정
+          const markerWidth = 120;
+
+          // 심플한 마커 디자인 (재고 관련 요소 제거)
+          const markerContent = document.createElement("div");
+          markerContent.className = "branch-marker";
+          markerContent.innerHTML = `
+          <div style="position: relative; width: ${markerWidth}px; text-align: center; transform: translateY(-10px);" data-branch="${branch.branchName}" data-exact-lat="${exactLat}" data-exact-lng="${exactLng}">
+            <div class="marker-bubble" style="
+              position: relative;
+              background-color: white;
+              border-radius: 8px;
+              box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
+              padding: 8px 10px;
+              display: flex;
+              align-items: center;
+              transition: all 0.3s ease;
+              border: 1px solid rgba(0, 0, 0, 0.05);
+            ">
+              <!-- 매장 아이콘 -->
+              <div style="
+                min-width: 28px;
+                height: 28px;
+                border-radius: 6px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-right: 8px;
+                background-color: #f0f9ff;
+                color: #0369a1;
+              ">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                  <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+              </div>
+              
+              <!-- 지점명 -->
+              <div style="
+                text-align: left;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+              ">
+                <div style="
+                  font-size: 16px;
+                  font-weight: 600;
+                  color: #374151;
+                  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+                ">
+                  ${shortBranchName}
+                </div>
+              </div>
+            </div>
+            
+            <!-- 삼각형 꼬리 -->
+            <div style="
+              position: absolute;
+              left: 50%;
+              bottom: -8px;
+              transform: translateX(-50%) rotate(45deg);
+              width: 12px;
+              height: 12px;
+              background-color: white;
+              border-right: 1px solid rgba(0, 0, 0, 0.05);
+              border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+              box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.02);
+            "></div>
+          </div>
+          
+          <style>
+            .branch-marker {
+              transform-origin: bottom center;
+              transition: transform 0.3s ease;
+            }
+            
+            .branch-marker:hover {
+              transform: scale(1.05);
+              z-index: 999 !important;
+            }
+            
+            .branch-marker:hover .marker-bubble {
+              box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+              transform: translateY(-3px);
+            }
+          </style>
+        `;
+
+          const marker = new window.naver.maps.Marker({
+            position: markerPosition,
+            map: map,
+            icon: {
+              content: markerContent,
+              anchor: new window.naver.maps.Point(markerWidth / 2, 10), // 마커 앵커 위치 동적 조정
+            },
+            zIndex: 50, // 기본 z-index 설정
+          });
+
           // 마커 클릭 이벤트
           window.naver.maps.Event.addListener(marker, "click", () => {
+            // 지점 상세 정보 가져오기
             fetchBranchDetail(branch.branchName);
+
+            // 정확한 원본 좌표로 지도 이동 및 확대
+            moveAndZoomToLocation(exactLat, exactLng);
+
+            // 선택된 마커를 맨 앞으로 가져오기
+            markers.forEach((m) => {
+              const element = m.getElement();
+              if (element) {
+                const markerDiv = element.querySelector(".branch-marker > div");
+                if (markerDiv) {
+                  const branchName = markerDiv.getAttribute("data-branch");
+                  if (branchName === branch.branchName) {
+                    m.setZIndex(1000); // 선택된 마커의 z-index를 높임
+                  } else {
+                    m.setZIndex(50); // 다른 마커는 기본 z-index로 복원
+                  }
+                }
+              }
+            });
           });
 
           newMarkers.push(marker);
@@ -422,54 +483,20 @@ const NaverMap = () => {
 
       setMarkers(newMarkers);
     }
-  }, [map, branches, branchInventory]);
+  }, [map, branches]);
 
   // 특정 지점 상세 정보 가져오기
   const fetchBranchDetail = async (branchName) => {
     try {
-      // 임시로 브랜치 목록에서 선택된 브랜치 정보 사용
+      // 지점 목록에서 선택된 지점 정보 찾기
       const selectedBranch = branches.find((b) => b.branchName === branchName);
       if (selectedBranch) {
-        setSelectedBranch({
-          ...selectedBranch,
-          goodsCount: branchInventory[branchName] || 0,
-        });
+        setSelectedBranch(selectedBranch);
       }
     } catch (err) {
       console.error("지점 상세 정보 로드 실패:", err);
       setError("지점 상세 정보를 불러오는데 실패했습니다.");
     }
-  };
-
-  // 간단한 상품 카드 컴포넌트
-  const SimpleProductCard = ({ product, onClick, isSelected }) => {
-    return (
-      <div
-        className={`bg-white border rounded-lg shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition-all ${
-          isSelected
-            ? "border-blue-500 ring-2 ring-blue-200"
-            : "hover:scale-105"
-        }`}
-        onClick={() => onClick(product)}
-      >
-        <div className="flex flex-col h-full">
-          {/* 상품 이미지 */}
-          <div className="relative pt-[100%] bg-gray-100">
-            {product.image ? (
-              <img
-                src={product.image}
-                alt={product.productName}
-                className="absolute inset-0 w-full h-full object-cover"
-              />
-            ) : (
-              <div className="absolute inset-0 flex items-center justify-center text-gray-400">
-                이미지 없음
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    );
   };
 
   return (
@@ -490,76 +517,130 @@ const NaverMap = () => {
 
         <div id="map" className="w-full h-full"></div>
 
-        {/* GPS 버튼 추가 */}
+        {/* 개선된 GPS 버튼 */}
         {map && !loading && (
           <div className="absolute bottom-4 right-4 z-20">
             <button
               onClick={toggleGPS}
-              className={`flex items-center justify-center w-8 h-8 rounded-full shadow-lg ${
-                gpsEnabled ? "bg-blue-500" : "bg-white"
-              } focus:outline-none transition-colors duration-300`}
+              className={`flex items-center justify-center w-10 h-10 rounded-full shadow-lg focus:outline-none transition-all duration-300 ${
+                gpsEnabled
+                  ? "bg-blue-500 text-white"
+                  : "bg-white text-gray-700 hover:bg-gray-50"
+              }`}
               title={gpsEnabled ? "GPS 끄기" : "내 위치 찾기"}
+              style={{
+                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
+              }}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className={`h-6 w-6 ${
-                  gpsEnabled ? "text-white" : "text-gray-600"
-                }`}
-                fill="none"
+                className="h-5 w-5"
                 viewBox="0 0 24 24"
+                fill="none"
                 stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                />
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.94 11A8 8 0 0 0 12.94 4"></path>
+                <path d="M4.06 11a8 8 0 0 1 7-7"></path>
+                <path d="M4.06 13a8 8 0 0 0 7 7"></path>
+                <path d="M19.94 13a8 8 0 0 1-7 7"></path>
               </svg>
             </button>
           </div>
         )}
       </div>
 
-      {/* 선택된 지점 정보 */}
+      {/* 선택된 지점 정보 - 아이콘 왼쪽, 텍스트 중앙 정렬 (재고 정보 제거) */}
       {selectedBranch && (
-        <div className="p-4 border border-gray-200 rounded-lg shadow-sm bg-white">
-          <h3 className="text-lg font-bold mb-2">
-            {selectedBranch.branchName}
-          </h3>
-          <p className="text-gray-600 mb-2">{selectedBranch.branchAddress}</p>
-          {selectedProduct && (
-            <div className="mt-2 p-3 bg-blue-50 rounded-md">
-              <div className="flex items-center">
-                {selectedProduct.image && (
-                  <img
-                    src={selectedProduct.image}
-                    alt={selectedProduct.productName}
-                    className="w-12 h-12 object-cover rounded mr-3"
-                  />
-                )}
-                <div>
-                  <p className="font-medium">
-                    <span className="text-blue-600">
-                      {selectedProduct.productName}
-                    </span>
-                  </p>
-                  <p className="text-sm mt-1">
-                    재고 수량:{" "}
-                    <span className="font-bold">
-                      {selectedBranch.goodsCount}개
-                    </span>
-                  </p>
-                </div>
+        <div className="p-5 border border-gray-100 rounded-lg shadow-md bg-white mt-4 overflow-hidden">
+          <div className="flex items-start mb-3">
+            <div className="bg-black text-white p-3 rounded-md mr-4 flex items-center justify-center flex-shrink-0">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+              </svg>
+            </div>
+            <div className="flex-1 text-center">
+              <h3 className="text-xl font-bold text-gray-900 mb-1">
+                {selectedBranch.branchName}
+              </h3>
+              <div className="flex items-center justify-center text-gray-500 text-sm">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="mr-1"
+                >
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                  <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+                <p>{selectedBranch.branchAddress}</p>
+
+                {/* 주소 저장 버튼 */}
+                <button
+                  onClick={() => {
+                    try {
+                      // 클립보드에 주소 복사
+                      navigator.clipboard.writeText(
+                        selectedBranch.branchAddress
+                      );
+
+                      // 알림 표시 (선택적)
+                      alert(
+                        `"${selectedBranch.branchName}" 주소가 클립보드에 복사되었습니다.`
+                      );
+                    } catch (err) {
+                      console.error("주소 복사 실패:", err);
+                      alert("주소 복사에 실패했습니다.");
+                    }
+                  }}
+                  className="ml-2 text-gray-400 hover:text-black transition-colors focus:outline-none"
+                  title="주소 복사"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <rect
+                      x="9"
+                      y="9"
+                      width="13"
+                      height="13"
+                      rx="2"
+                      ry="2"
+                    ></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                </button>
               </div>
             </div>
-          )}
+          </div>
         </div>
       )}
     </div>

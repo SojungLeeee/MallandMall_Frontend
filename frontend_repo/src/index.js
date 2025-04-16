@@ -39,8 +39,8 @@ import AllProducts from "./pages/product/AllProducts";
 import ProductDetail from "./components/ui/product/ProductDetail";
 import CategoryList from "./pages/category/CategoryList";
 import CategoryPage from "./pages/category/CategoryPage";
-import Search from "./pages/Search/Search";
-import SearchPage from "./pages/Search/SearchPage";
+import Search from "./pages/search/Search";
+import SearchPage from "./pages/search/SearchPage";
 
 // 리뷰 분석 페이지 import
 import ReviewAnalysis from "../src/components/ui/product/ReviewAnalysis";
@@ -102,12 +102,14 @@ import ChatbotComponent from "./components/ui/chatbot/ChatbotComponent";
 import NaverLoginCallback from "./components/ui/button/NaverCallback";
 
 const router = createBrowserRouter([
-  // AppTwo 기반 라우트
   {
     path: "/search",
     element: <AppTwo />,
-    children: [{ path: "/search", element: <Search /> }],
+    children: [
+      { path: "/search", element: <Search /> }, // Search 대신 EnhancedSearch 사용
+    ],
   },
+
   {
     path: "/categoryList",
     element: <AppTwo />,

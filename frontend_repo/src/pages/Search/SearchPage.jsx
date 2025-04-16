@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { fetchSearchProducts } from "../../api/httpSearchService"; // axios 요청을 가져옵니다.
 import ProductCard from "../../components/ui/product/ProductCard"; // ProductCard 컴포넌트 import
+import RealTimeKeywords from "./keyword/RealTimeKeywords"; // 실시간 검색어 컴포넌트 추가
 
 const SearchPage = () => {
   const { productName } = useParams(); // URL에서 productName을 가져옵니다.
@@ -34,6 +35,12 @@ const SearchPage = () => {
     fetchProducts(); // 컴포넌트 마운트 시 상품 목록을 가져옵니다.
   }, [productName]); // 카테고리가 변경될 때마다 API를 새로 호출
 
+  // 실시간 검색어 클릭 핸들러
+  const handleKeywordClick = (keyword) => {
+    // 현재 페이지에서 새로운 검색을 위해 URL 이동
+    window.location.href = `/search/${encodeURIComponent(keyword)}`;
+  };
+
   // 로딩 중일 때 보여줄 로딩 메시지
   if (loading) {
     return <div className="text-center text-xl font-semibold">Loading...</div>;
@@ -50,10 +57,15 @@ const SearchPage = () => {
 
   return (
     <div className="container mx-auto px-4 py-4">
-      <h1 className="text-xl font-bold text-center mb-6 text-black bg-white py-3 border-b-2  shadow-sm">
+      <h1 className="text-xl font-bold text-center mb-6 text-black bg-white py-3 border-b-2 shadow-sm">
         '<span className="text-indigo-600">{productName}</span>' 키워드를
         포함하는 상품 목록
       </h1>
+
+      {/* 실시간 인기 검색어 섹션 추가 */}
+      <div className="mb-6">
+        <RealTimeKeywords limit={10} onKeywordClick={handleKeywordClick} />
+      </div>
 
       {/* 상품이 없을 때 화면 전체를 차지하게 표시 */}
       {products.length === 0 ? (
