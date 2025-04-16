@@ -18,7 +18,7 @@ function MyCoupon({ coupon }) {
         <div className="flex justify-end mt-2">
           <span className="text-gray-600">
             {" "}
-            {minPrice} 원 이상 구매 시 사용 가능
+            {Number(minPrice).toLocaleString()} 원 이상 구매 시 사용 가능
           </span>
         </div>
 

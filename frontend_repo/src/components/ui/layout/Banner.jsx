@@ -6,6 +6,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 // Import required modules
 import welcome from "../../../assets/images/banner/welcome.png";
+import coupon from "../../../assets/images/banner/coupon.png";
 import sale from "../../../assets/images/banner/sale.png";
 import ship from "../../../assets/images/banner/ship.png";
 import ssg from "../../../assets/images/banner/ssg.png";
@@ -17,7 +18,7 @@ export default function Banner() {
     { id: 1, Image: welcome },
     { id: 2, Image: offsale },
     { id: 3, Image: ship },
-    { id: 4, Image: ssg },
+    { id: 4, Image: coupon },
   ];
 
   return (
