@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import Banner from "../components/ui/layout/Banner";
 import AllProducts from "../pages/product/AllProducts";
 import Favorites from "../pages/mypage/Favorites";
+import ChatbotButton from "../components/ui/chatbot/ChatbotButton";
 
 import ModalContainer from "../components/ui/modal/ModalContainer"; // ModalContainer 컴포넌트 임포트
 
@@ -32,6 +33,7 @@ export default function Home() {
 
       {/* '/favorites' 페이지가 아닐 때는 AllProducts 컴포넌트 렌더링 */}
       {location.pathname !== "/favorites" && <AllProducts />}
+      <ChatbotButton />
     </>
   );
 }
