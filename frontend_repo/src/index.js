@@ -96,8 +96,6 @@ import StockPage from "./pages/adminchart/StockPage";
 import StockChartDetailPage from "./pages/adminchart/StockChartDetailPage";
 import StockAlarmPage from "./pages/adminchart/StockAlarmPage";
 
-import TrendingDashboard from "./pages/search/TrendingDashboard";
-
 // 챗봇 관련 컴포넌트 import 추가
 import ChatbotComponent from "./components/ui/chatbot/ChatbotComponent";
 
@@ -111,11 +109,7 @@ const router = createBrowserRouter([
       { path: "/search", element: <Search /> }, // Search 대신 EnhancedSearch 사용
     ],
   },
-  {
-    path: "/trending-dashboard",
-    element: <AppTwo />,
-    children: [{ path: "/trending-dashboard", element: <TrendingDashboard /> }],
-  },
+
   {
     path: "/categoryList",
     element: <AppTwo />,
