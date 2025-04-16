@@ -585,7 +585,7 @@ const Search = () => {
                 value={search}
                 onChange={handleSearchChange}
                 placeholder="검색어 입력"
-                className="w-full p-2 pl-8 pr-8 mt-4 text-gray-800 placeholder-gray-400 border border-gray-300 rounded-sm focus:outline-none text-sm"
+                className="w-full p-2 pl-8 pr-8 mt-4 ml-1 text-gray-800 placeholder-gray-400 border border-gray-300 rounded-sm focus:outline-none text-sm"
               />
               <CiSearch className="absolute left-2 mt-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
 
