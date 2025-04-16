@@ -9,12 +9,13 @@ import welcome from "../../../assets/images/banner/welcome.png";
 import sale from "../../../assets/images/banner/sale.png";
 import ship from "../../../assets/images/banner/ship.png";
 import ssg from "../../../assets/images/banner/ssg.png";
+import offsale from "../../../assets/images/banner/offsale.png";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 
 export default function Banner() {
   const slides = [
-    { id: 1, Image: sale },
-    { id: 2, Image: welcome },
+    { id: 1, Image: welcome },
+    { id: 2, Image: offsale },
     { id: 3, Image: ship },
     { id: 4, Image: ssg },
   ];

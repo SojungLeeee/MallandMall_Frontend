@@ -73,69 +73,6 @@ const AllProducts = () => {
     navigate("/questions");
   };
 
-  // 메뉴 아이템 설정
-  const menuItems = [
-    {
-      title: "명품개런티",
-      icon: "package",
-      bgColor: "bg-indigo-400",
-      path: "/premium",
-      imageSrc: "/images/premium.jpg",
-    },
-    {
-      title: "HAZZYS",
-      icon: "shopping",
-      bgColor: "bg-gray-400",
-      path: "/brands/hazzys",
-      imageSrc: "/images/hazzys.jpg",
-    },
-    {
-      title: "+2,000P",
-      icon: "gift",
-      bgColor: "bg-pink-400",
-      path: "/points",
-      imageSrc: "/images/points.jpg",
-    },
-    {
-      title: "미니게임",
-      icon: "game",
-      bgColor: "bg-pink-200",
-      path: "/minigame",
-      imageSrc: "/images/minigame.jpg",
-    },
-    {
-      title: "11번가로또",
-      icon: "award",
-      bgColor: "bg-pink-500",
-      path: "/lotto",
-      imageSrc: "/images/lotto.jpg",
-    },
-    {
-      title: "쿠폰/출첵",
-      icon: "gift",
-      bgColor: "bg-blue-500",
-      path: "/coupons",
-      imageSrc: "/images/coupons.jpg",
-    },
-    {
-      title: "베스트랭킹",
-      icon: "award",
-      bgColor: "bg-indigo-400",
-      path: "/best-rankings",
-      imageSrc: "/images/ranking.jpg",
-    },
-    {
-      title: "숙박페스타",
-      icon: "package",
-      bgColor: "bg-gray-400",
-      path: "/accommodation-festa",
-      imageSrc: "/images/accommodation.jpg",
-    },
-  ];
-
-  // 각 줄에 표시할 메뉴 아이템 (첫 번째 줄은 재고찾기 + 메뉴 4개, 총 5개)
-  const firstRowMenuItems = menuItems.slice(0, 1);
-
   return (
     <div>
       {/* 스크롤 가능한 원형 메뉴 - 두 줄로 표시 */}
@@ -183,18 +120,14 @@ const AllProducts = () => {
               />
             </div>
 
-            {/* 나머지 메뉴 아이템 */}
-            {firstRowMenuItems.map((item, index) => (
-              <div key={index}>
-                <CircularMenuItem
-                  title={item.title}
-                  icon={item.icon}
-                  bgColor={item.bgColor}
-                  onClick={() => handleMenuClick(item.path)}
-                  // imageSrc={item.imageSrc}
-                />
-              </div>
-            ))}
+            <div>
+              <CircularMenuItem
+                title="화이팅"
+                bgColor="bg-blue-200"
+                onClick={handleQuestionClick}
+                imageSrc="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExcWNtb2EwaXJnbTNvbTY0N3lpeDl0eTJuemJ6bHY5MGptMjdpdWM4NSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/CjmvTCZf2U3p09Cn0h/giphy.gif"
+              />
+            </div>
           </div>
         </div>
       </div>

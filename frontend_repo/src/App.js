@@ -9,7 +9,6 @@ import { useEffect, useState } from "react";
 function App() {
   // ✅ 현재 저장된 JWT 확인 (디버깅용)
   const token = localStorage.getItem("jwtAuthToken");
-  console.log("📌 현재 저장된 JWT:", token);
   // 🔽 여기에 토큰 처리 useEffect만 추가
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
