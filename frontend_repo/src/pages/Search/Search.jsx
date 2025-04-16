@@ -1,26 +1,28 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
-  FaArrowUp,
   FaArrowDown,
-  FaMinus,
   FaList,
-  FaThumbsUp,
-  FaThumbsDown,
   FaStar,
   FaSearch,
-  FaFire,
   FaRegLightbulb,
 } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
 import {
   fetchVectorSuggestions,
   fetchSearchProducts,
+  recordSearchKeyword, // 기존 함수 유지
 } from "../../api/httpSearchService";
 import {
   fetchProductReviews,
   fetchReviewAnalysis,
 } from "../../api/httpMemberService"; // 리뷰 분석 API 추가
+
+import {
+  fetchElasticSearch,
+  fetchSmartSearch,
+  fetchSearchSuggestions, // 기존 함수 유지
+} from "../../api/elasticsearch";
 import RealTimeKeywords from "./keyword/RealTimeKeywords"; // 실시간 검색어 컴포넌트 추가
 import axios from "axios";
 
@@ -35,7 +37,43 @@ const Search = () => {
   const navigate = useNavigate();
   const [lastSearchTerm, setLastSearchTerm] = useState("");
 
-  // 검색어 타이핑 중단 후 일정 시간이 지나면 자동 검색
+  // Elasticsearch 관련 상태 추가
+  const [suggestions, setSuggestions] = useState([]); // 검색어 제안
+  const [useElastic, setUseElastic] = useState(true); // Elasticsearch 사용 여부 (기본값: 사용)
+  const [showSuggestions, setShowSuggestions] = useState(false); // 제안 표시 여부
+
+  // 검색어 입력 시 제안 처리 로직 추가
+  useEffect(() => {
+    // 검색어 제안 표시 로직
+    if (search.trim().length > 1) {
+      // 이전에 설정된 타이머 취소
+      clearTimeout(searchTimeoutRef.current);
+
+      // 타이핑 중단 후 300ms 후에 검색어 제안 가져오기
+      searchTimeoutRef.current = setTimeout(() => {
+        // Elasticsearch 활성화된 경우에만 제안 가져오기
+        if (useElastic) {
+          fetchSearchSuggestions(search.trim())
+            .then((suggestions) => {
+              setSuggestions(suggestions || []);
+              setShowSuggestions(suggestions && suggestions.length > 0);
+            })
+            .catch((error) => {
+              console.error("검색어 제안 가져오기 오류:", error);
+              setSuggestions([]);
+              setShowSuggestions(false);
+            });
+        }
+      }, 300);
+    } else {
+      setSuggestions([]);
+      setShowSuggestions(false);
+    }
+
+    return () => clearTimeout(searchTimeoutRef.current);
+  }, [search, useElastic]);
+
+  // 기존 자동 검색 로직 유지
   useEffect(() => {
     if (search.trim().length > 1 && search !== lastSearchTerm) {
       // 이미 실행 중인 타이머 취소
@@ -50,18 +88,66 @@ const Search = () => {
     return () => clearTimeout(autoSearchTimeoutRef.current);
   }, [search, lastSearchTerm]);
 
-  // 검색 실행 함수
+  // 검색 실행 함수 수정
   const performSearch = (searchTerm) => {
     if (!searchTerm || searchTerm.trim().length <= 1) return;
 
     setIsLoading(true);
     setIsSearchResultLoading(true);
     setLastSearchTerm(searchTerm);
+    setShowSuggestions(false); // 검색 실행 시 제안 숨기기
 
     // 검색어 기록 API 호출 (실시간 검색어 집계용)
     recordSearchKeyword(searchTerm);
 
-    // 벡터 검색 후 이미지 정보를 별도로 처리
+    // Elasticsearch를 사용하는 경우
+    if (useElastic) {
+      // 스마트 검색 API 호출 (자동완성 및 추천 포함)
+      fetchSmartSearch(searchTerm, 10)
+        .then((response) => {
+          if (response && response.data) {
+            // 검색 결과가 products 키에 있는 경우
+            if (response.data.products) {
+              setSearchResults(response.data.products);
+            }
+            // 검색 결과가 results 키에 있는 경우
+            else if (response.data.results) {
+              setSearchResults(response.data.results);
+            }
+            // 결과가 직접 배열로 있는 경우
+            else if (Array.isArray(response.data)) {
+              setSearchResults(response.data);
+            }
+            // 그 외의 경우는 빈 배열로 처리
+            else {
+              setSearchResults([]);
+            }
+
+            // 제안 처리
+            if (
+              response.data.suggestions &&
+              response.data.suggestions.length > 0
+            ) {
+              setSuggestions(response.data.suggestions);
+            }
+          } else {
+            setSearchResults([]);
+          }
+        })
+        .catch((error) => {
+          console.error("스마트 검색 API 오류:", error);
+          // 오류 발생 시 기존 검색으로 폴백
+          fallbackToRegularSearch(searchTerm);
+        })
+        .finally(() => {
+          setIsSearchResultLoading(false);
+        });
+    } else {
+      // 기존 검색 사용
+      fallbackToRegularSearch(searchTerm);
+    }
+
+    // 벡터 검색은 기존과 동일하게 유지
     fetchVectorSuggestions(searchTerm, 5)
       .then(async (vectorData) => {
         if (vectorData && vectorData.length > 0) {
@@ -109,9 +195,14 @@ const Search = () => {
       .catch((error) => {
         console.error("벡터 검색 API 오류:", error);
         setVectorSuggestions([]);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
+  };
 
-    // 일반 검색 처리
+  // 기존 검색으로 폴백하는 함수
+  const fallbackToRegularSearch = (searchTerm) => {
     fetchSearchProducts(searchTerm)
       .then((searchData) => {
         if (searchData.status === 204) {
@@ -126,24 +217,10 @@ const Search = () => {
       })
       .finally(() => {
         setIsSearchResultLoading(false);
-        setIsLoading(false);
       });
   };
 
-  // 검색어 기록 함수 (실시간 검색어 집계용)
-  const recordSearchKeyword = async (keyword) => {
-    try {
-      await axios.post(
-        "http://localhost:8090/emart/api/search/record-keyword",
-        { keyword }
-      );
-    } catch (error) {
-      console.warn("검색어 기록 API 오류:", error);
-      // 실패해도 검색 프로세스는 계속 진행
-    }
-  };
-
-  // 검색어 변경 핸들러
+  // 검색어 변경 핸들러 (기존 코드 유지)
   const handleSearchChange = (e) => {
     const newValue = e.target.value;
     setSearch(newValue);
@@ -153,16 +230,35 @@ const Search = () => {
       setVectorSuggestions([]);
       setSearchResults([]);
       setLastSearchTerm("");
+      setSuggestions([]);
+      setShowSuggestions(false);
     }
   };
 
-  // 실시간 검색어 클릭 핸들러
+  // 제안 검색어 클릭 핸들러 (추가)
+  const handleSuggestionClick = (suggestion) => {
+    setSearch(suggestion);
+    performSearch(suggestion);
+    setShowSuggestions(false);
+  };
+
+  // 실시간 검색어 클릭 핸들러 (기존 코드 유지)
   const handleKeywordClick = (keyword) => {
     setSearch(keyword);
     performSearch(keyword);
   };
 
-  // 별점 렌더링 함수
+  // 검색 모드 전환 토글 (추가)
+  const toggleSearchMode = () => {
+    setUseElastic(!useElastic);
+
+    // 검색어가 있으면 현재 검색어로 다시 검색
+    if (search.trim().length > 1) {
+      performSearch(search);
+    }
+  };
+
+  // 별점 렌더링 함수 (기존 코드 유지)
   const renderStars = (rating) => {
     const stars = [];
     const ratingNum = parseFloat(rating);
@@ -198,7 +294,32 @@ const Search = () => {
     );
   };
 
-  // AI 추천 제품 아이템 컴포넌트 - 리뷰 분석 데이터 활용 버전
+  // 검색어 제안 렌더링 (추가)
+  const renderSuggestions = () => {
+    if (!showSuggestions || !suggestions || suggestions.length === 0)
+      return null;
+
+    return (
+      <div className="absolute w-4/5 mt-1 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+        <ul className="py-1">
+          {suggestions.map((suggestion, index) => (
+            <li
+              key={index}
+              className="px-3 py-2 text-sm hover:bg-blue-50 cursor-pointer text-left"
+              onClick={() => handleSuggestionClick(suggestion)}
+            >
+              <div className="flex items-center">
+                <CiSearch className="mr-2 h-4 w-4 text-gray-500" />
+                {suggestion}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  };
+
+  // AI 추천 제품 아이템 컴포넌트 - 리뷰 분석 데이터 활용 버전 (기존 코드 유지)
   const AIRecommendationItem = ({ item }) => {
     const [reviewData, setReviewData] = useState(null);
     const [isReviewLoading, setIsReviewLoading] = useState(false);
@@ -533,7 +654,7 @@ const Search = () => {
       >
         <div className="flex items-center">
           {/* 제품 이미지 */}
-          <div className="w-12 h-12 text-left  rounded bg-gray-100 mr-3 flex-shrink-0 overflow-hidden">
+          <div className="w-12 h-12 text-left rounded bg-gray-100 mr-3 flex-shrink-0 overflow-hidden">
             {product.image ? (
               <img
                 src={product.image}
@@ -576,7 +697,7 @@ const Search = () => {
 
   return (
     <div className="w-full mx-auto pb-4">
-      <div className="flex justify-center px-2 mb-3">
+      <div className="flex justify-center px-2 mb-3 relative">
         <div className="flex justify-between items-center w-full">
           <div className="relative flex-grow flex">
             <div className="relative w-4/5">
@@ -595,6 +716,25 @@ const Search = () => {
                   <div className="animate-spin h-3 w-3 border-2 border-blue-500 border-t-transparent rounded-full"></div>
                 </div>
               )}
+
+              {/* 검색 모드 토글 (일반/Elasticsearch) */}
+              {!isLoading && (
+                <div
+                  className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer"
+                  onClick={toggleSearchMode}
+                  title={
+                    useElastic
+                      ? "Elasticsearch 검색 사용 중"
+                      : "일반 검색 사용 중"
+                  }
+                >
+                  <div
+                    className={`h-3 w-3 rounded-full ${
+                      useElastic ? "bg-blue-500" : "bg-gray-400"
+                    }`}
+                  ></div>
+                </div>
+              )}
             </div>
 
             {/* 취소 버튼 */}
@@ -606,7 +746,33 @@ const Search = () => {
             </Link>
           </div>
         </div>
+
+        {/* 검색어 제안 (Elasticsearch) */}
+        {renderSuggestions()}
       </div>
+
+      {/* 검색어 추천 섹션 (Elasticsearch 스마트 검색에서 제공하는 추천) */}
+      {suggestions.length > 0 && !showSuggestions && (
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 mt-1 mb-3 mx-2 overflow-hidden">
+          <div className="p-2 bg-gradient-to-r from-purple-50 to-indigo-50 border-b text-sm font-medium text-gray-800">
+            이런 검색어는 어떠세요?
+          </div>
+          <div className="p-2 flex flex-wrap gap-2">
+            {suggestions.map((suggestion, index) => (
+              <button
+                key={index}
+                onClick={() => {
+                  setSearch(suggestion);
+                  performSearch(suggestion);
+                }}
+                className="text-xs bg-blue-50 text-blue-700 px-3 py-1 rounded-full hover:bg-blue-100 transition"
+              >
+                {suggestion}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* 고정된 컨텐츠 영역 - 모바일 최적화 (세로 배치) */}
       <div className="flex flex-col gap-3 px-2">
@@ -615,7 +781,9 @@ const Search = () => {
           <div className="p-3 bg-gradient-to-r from-gray-50 to-gray-100 border-b text-sm font-medium text-gray-800 flex items-center justify-between">
             <div className="flex items-center">
               <FaList className="mr-2 h-4 w-4 text-blue-600" />
-              <span>검색 결과</span>
+              <span>
+                {useElastic ? "Elasticsearch 검색 결과" : "검색 결과"}
+              </span>
             </div>
             <div className="text-xs text-gray-500">
               {searchResults.length > 0 && `${searchResults.length}개 항목`}
