@@ -130,7 +130,7 @@ function EnhancePage() {
             result.benefits ||
             result.discount ||
             result.couponName?.match(/\d+%/)?.[0],
-          validDays: result.validDays || result.validity || "60일",
+          validDays: result.validDays || result.validity || "30일",
           // 추가 속성이 있으면 여기에 포함
         });
       } else {
@@ -203,12 +203,10 @@ function EnhancePage() {
 
   // 선택된 쿠폰이 있는지 확인
   const hasSelectedCoupons = selectedCoupons.length > 0;
+  const canEnhance = selectedCoupons.length === 2;
 
   return (
-    <div
-      className="p-6 bg-gradient-to-b from-blue-50 to-white min-h-screen relative overflow-hidden"
-      style={{ width: "390px", height: "840px", margin: "0 auto" }}
-    >
+    <div className="px-6 py-2 bg-white h-full relative overflow-hidden">
       {/* 병합 애니메이션 */}
       <AnimatePresence>
         {showMergeAnimation && (
@@ -230,27 +228,24 @@ function EnhancePage() {
 
       {/* 헤더 섹션 */}
       <div className="text-center mb-8 relative z-10">
-        <h2 className="text-3xl font-extrabold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
-          쿠폰 강화
-        </h2>
+        <h2 className="text-3xl font-extrabold mb-2 text-black">쿠폰 강화</h2>
         <p className="text-gray-600 text-sm">
           두 개의 쿠폰을 선택하여 더 좋은 쿠폰으로 강화하세요!
         </p>
 
-        {/* 선택된 쿠폰 카운터 */}
         {/* 선택된 쿠폰 카운터 - 좌측 정렬 */}
         <div className="mt-3 flex justify-start">
-          <div className="bg-white px-4 py-2 rounded-sm shadow-md inline-flex items-center gap-2">
+          <div className="bg-white px-4 py-2 rounded-sm shadow-md inline-flex items-center gap-2 border border-gray-200">
             <span className="text-gray-700 text-sm">선택된 쿠폰:</span>
             <div className="flex gap-1">
               <div
                 className={`w-3 h-3 rounded-full transition-colors duration-300 ${
-                  selectedCoupons.length > 0 ? "bg-blue-500" : "bg-gray-200"
+                  selectedCoupons.length > 0 ? "bg-black" : "bg-gray-200"
                 }`}
               ></div>
               <div
                 className={`w-3 h-3 rounded-full transition-colors duration-300 ${
-                  selectedCoupons.length > 1 ? "bg-blue-500" : "bg-gray-200"
+                  selectedCoupons.length > 1 ? "bg-black" : "bg-gray-200"
                 }`}
               ></div>
             </div>
@@ -267,8 +262,8 @@ function EnhancePage() {
             exit={{ opacity: 0, y: -20 }}
             className={`mb-4 ${
               mergeSuccess
-                ? "bg-green-100 border-l-4 border-green-500 text-green-700"
-                : "bg-red-100 border-l-4 border-red-500 text-red-700"
+                ? "bg-gray-50 border-l-4 border-black text-gray-800"
+                : "bg-gray-50 border-l-4 border-gray-700 text-gray-800"
             } p-3 rounded shadow-lg relative z-10 text-sm`}
           >
             <div className="flex items-start">
@@ -328,14 +323,14 @@ function EnhancePage() {
             <div
               className={`p-4 rounded-xl shadow-lg ${
                 mergedCoupon.isFailure
-                  ? "bg-gradient-to-r from-red-50 to-red-100 border border-red-200"
-                  : "bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200"
+                  ? "bg-white border border-gray-300"
+                  : "bg-white border border-gray-300"
               } `}
             >
               <div className="text-center mb-2">
                 <h3
                   className={`text-lg font-bold ${
-                    mergedCoupon.isFailure ? "text-red-700" : "text-blue-700"
+                    mergedCoupon.isFailure ? "text-gray-800" : "text-black"
                   }`}
                 >
                   {mergedCoupon.couponName}
@@ -350,7 +345,7 @@ function EnhancePage() {
                   <p className="text-xs text-gray-500">혜택</p>
                   <p
                     className={`font-medium ${
-                      mergedCoupon.isFailure ? "text-red-600" : "text-blue-600"
+                      mergedCoupon.isFailure ? "text-gray-700" : "text-black"
                     }`}
                   >
                     {mergedCoupon.benefits}
@@ -361,7 +356,7 @@ function EnhancePage() {
                   <p className="text-xs text-gray-500">유효기간</p>
                   <p
                     className={`font-medium ${
-                      mergedCoupon.isFailure ? "text-red-600" : "text-blue-600"
+                      mergedCoupon.isFailure ? "text-gray-700" : "text-black"
                     }`}
                   >
                     {mergedCoupon.validDays}
@@ -371,7 +366,7 @@ function EnhancePage() {
 
               {mergedCoupon.isFailure && (
                 <div className="mt-3 flex justify-center">
-                  <span className="px-3 py-1 bg-red-100 text-red-800 text-xs rounded-full border border-red-200">
+                  <span className="px-3 py-1 bg-gray-100 text-gray-800 text-xs rounded-full border border-gray-300">
                     강화 실패
                   </span>
                 </div>
@@ -385,7 +380,7 @@ function EnhancePage() {
       {isLoading ? (
         <div className="flex justify-center items-center h-48 relative z-10">
           <motion.div
-            className="h-12 w-12 border-3 border-blue-200 border-t-blue-500 rounded-full"
+            className="h-12 w-12 border-3 border-gray-200 border-t-black rounded-full"
             animate={{ rotate: 360 }}
             transition={{
               duration: 1,
@@ -396,64 +391,64 @@ function EnhancePage() {
         </div>
       ) : (
         <div className="relative">
-          {/* 강화 버튼을 쿠폰 리스트 오른쪽에 고정 (선택된 쿠폰이 있을 때만 표시) */}
-          {hasSelectedCoupons && (
-            <motion.div
-              className="absolute right-1 top-2 z-20"
-              initial={{ opacity: 0, scale: 0.8, x: 20 }}
-              animate={{ opacity: 1, scale: 1, x: 0 }}
-              exit={{ opacity: 0, scale: 0.8, x: 20 }}
-            >
-              <motion.button
-                onClick={handleEnhance}
-                whileHover={{
-                  scale: 1.05,
-                  boxShadow: "0 10px 25px -5px rgba(59, 130, 246, 0.4)",
-                }}
-                whileTap={{ scale: 0.95 }}
-                disabled={selectedCoupons.length !== 2 || isMerging}
-                className={`px-4 py-2 text-white text-sm font-bold rounded-xl shadow-lg transition-all duration-200 ${
-                  selectedCoupons.length === 2 && !isMerging
-                    ? "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
-                    : "bg-gray-400"
-                }`}
+          {/* 상단에 강화 버튼을 배치 (2개 쿠폰 선택 시 활성화) */}
+          <AnimatePresence>
+            {canEnhance && (
+              <motion.div
+                className="mb-4 flex justify-center"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
               >
-                <span className="flex items-center gap-1">
-                  {isMerging ? (
-                    <>
-                      <motion.div
-                        className="w-3 h-3 border-2 border-white border-t-transparent rounded-sm"
-                        animate={{ rotate: 360 }}
-                        transition={{
-                          duration: 1,
-                          repeat: Number.POSITIVE_INFINITY,
-                          ease: "linear",
-                        }}
-                      ></motion.div>
-                      <span>강화 중...</span>
-                    </>
-                  ) : (
-                    <>
-                      <svg
-                        className="w-3 h-3"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M13 10V3L4 14h7v7l9-11h-7z"
-                        ></path>
-                      </svg>
-                      <span>강화하기</span>
-                    </>
-                  )}
-                </span>
-              </motion.button>
-            </motion.div>
-          )}
+                <motion.button
+                  onClick={handleEnhance}
+                  whileHover={{
+                    scale: 1.05,
+                    boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.2)",
+                  }}
+                  whileTap={{ scale: 0.95 }}
+                  disabled={isMerging}
+                  className={`px-6 py-3 text-white text-sm font-bold rounded-lg shadow-md transition-all duration-200 ${
+                    !isMerging ? "bg-black hover:bg-gray-800" : "bg-gray-400"
+                  }`}
+                >
+                  <span className="flex items-center gap-2">
+                    {isMerging ? (
+                      <>
+                        <motion.div
+                          className="w-3 h-3 border-2 border-white border-t-transparent rounded-full"
+                          animate={{ rotate: 360 }}
+                          transition={{
+                            duration: 1,
+                            repeat: Number.POSITIVE_INFINITY,
+                            ease: "linear",
+                          }}
+                        ></motion.div>
+                        <span>쿠폰 강화 중...</span>
+                      </>
+                    ) : (
+                      <>
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M13 10V3L4 14h7v7l9-11h-7z"
+                          ></path>
+                        </svg>
+                        <span>선택한 쿠폰 강화하기</span>
+                      </>
+                    )}
+                  </span>
+                </motion.button>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* 쿠폰 목록 */}
           {coupons.length === 0 ? (
@@ -481,55 +476,76 @@ function EnhancePage() {
               {coupons.map((coupon) => {
                 const isSelected = selectedCoupons.includes(coupon.couponId);
                 return (
-                  <motion.div
-                    key={coupon.couponId}
-                    whileHover={{ scale: 1.02, x: 5 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => handleSelect(coupon.couponId)}
-                    className={`transition-all duration-200 ${
-                      isSelected
-                        ? "ring-2 ring-blue-500 shadow-lg transform translate-x-2"
-                        : "hover:shadow-md"
-                    }`}
-                  >
-                    {/* 선택 표시기 */}
-                    {isSelected && (
-                      <motion.div
-                        className="absolute top-1/2 -left-3 transform -translate-y-1/2 bg-blue-500 text-white p-1 rounded-full z-10 shadow-lg"
-                        initial={{ scale: 0, x: 10 }}
-                        animate={{ scale: 1, x: 0 }}
-                        transition={{
-                          type: "spring",
-                          stiffness: 400,
-                          damping: 15,
-                        }}
-                      >
-                        <svg
-                          className="w-4 h-4"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
+                  <div key={coupon.couponId} className="relative">
+                    <motion.div
+                      whileHover={{ scale: 1.02, x: 5 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => handleSelect(coupon.couponId)}
+                      className={`transition-all duration-200 ${
+                        isSelected
+                          ? "ring-2 ring-black shadow-lg transform translate-x-2"
+                          : "hover:shadow-md border border-gray-200"
+                      } bg-white rounded-md`}
+                    >
+                      {/* 선택 표시기 */}
+                      {isSelected && (
+                        <motion.div
+                          className="absolute top-1/2 -left-3 transform -translate-y-1/2 bg-black text-white p-1 rounded-full z-10 shadow-lg"
+                          initial={{ scale: 0, x: 10 }}
+                          animate={{ scale: 1, x: 0 }}
+                          transition={{
+                            type: "spring",
+                            stiffness: 400,
+                            damping: 15,
+                          }}
                         >
-                          <path
-                            fillRule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clipRule="evenodd"
-                          ></path>
-                        </svg>
-                      </motion.div>
-                    )}
-                    <Coupon coupon={coupon} />
-                  </motion.div>
+                          <svg
+                            className="w-4 h-4"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clipRule="evenodd"
+                            ></path>
+                          </svg>
+                        </motion.div>
+                      )}
+
+                      <Coupon coupon={coupon} />
+                    </motion.div>
+                  </div>
                 );
               })}
             </div>
           )}
 
-          {/* 기존 하단 강화 버튼은 제거하고 대신 하단에 안내문구 추가 */}
+          {/* 안내 문구 */}
           {!hasSelectedCoupons && (
             <div className="text-center mt-4 text-gray-500 text-sm">
               <p>강화할 쿠폰을 선택해주세요 (최대 2개)</p>
             </div>
           )}
+
+          {/* 두 개의 쿠폰이 선택되면 강화 가능 안내 */}
+          {selectedCoupons.length === 1 && (
+            <div className="text-center mt-4 text-gray-700 text-sm">
+              <p>하나 더 선택하면 강화할 수 있어요!</p>
+            </div>
+          )}
+
+          {/* 하단에 강화 버튼을 고정으로 배치 (위치 변경) */}
+          <AnimatePresence>
+            {canEnhance && (
+              <motion.div
+                className="fixed bottom-6 left-0 right-0 flex justify-center z-30"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+              ></motion.div>
+            )}
+          </AnimatePresence>
         </div>
       )}
 
