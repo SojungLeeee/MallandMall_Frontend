@@ -1,20 +1,21 @@
 // src/pages/SelectCategory.jsx
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { fetchAddLikeCategory } from "../../api/httpCategoryService"; // API 함수 import
-import CategoryButton from "../../components/ui/layout/CategoryButton"; // CategoryButton 컴포넌트 import
+import { fetchAddLikeCategory } from "../../api/httpCategoryService";
+import CategoryButton from "../../components/ui/layout/CategoryButton";
 
 function SelectCategory() {
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const navigate = useNavigate(); // useNavigate 훅을 사용해 navigate 함수 가져오기
-  const location = useLocation(); // useLocation 훅을 사용하여 현재 위치 정보 가져오기
-  const userId = new URLSearchParams(location.search).get("userId"); // 쿼리 파라미터에서 userId 추출
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const userId = new URLSearchParams(location.search).get("userId");
 
   useEffect(() => {
     if (userId) {
-      console.log("Received userId:", userId); // userId를 콘솔에 출력
+      console.log("Received userId:", userId);
     }
-  }, [userId]); // userId가 변경될 때마다 실행
+  }, [userId]);
 
   // 카테고리 목록과 매핑
   const categories = [
@@ -32,11 +33,10 @@ function SelectCategory() {
 
   // 카테고리 선택/해제 처리 함수
   const toggleCategory = (category) => {
-    setSelectedCategories(
-      (prevCategories) =>
-        prevCategories.includes(category.value)
-          ? prevCategories.filter((item) => item !== category.value) // 선택 해제
-          : [...prevCategories, category.value] // 선택
+    setSelectedCategories((prevCategories) =>
+      prevCategories.includes(category.value)
+        ? prevCategories.filter((item) => item !== category.value)
+        : [...prevCategories, category.value]
     );
   };
 
@@ -47,15 +47,15 @@ function SelectCategory() {
       return;
     }
 
-    // 선택된 카테고리들 각각에 대해 API 호출을 반복
+    setIsSubmitting(true);
+
     try {
       for (const categoryValue of selectedCategories) {
         const likeCategoryData = {
-          userId, // userId를 포함
-          category: categoryValue, // category value (meat, fish, dairy 등)
+          userId,
+          category: categoryValue,
         };
 
-        // 서버에 데이터를 저장하는 함수 호출
         const response = await fetchAddLikeCategory(likeCategoryData);
 
         if (response.status === 201) {
@@ -66,53 +66,112 @@ function SelectCategory() {
       }
 
       alert("선호 카테고리가 성공적으로 저장되었습니다!");
-      navigate("/"); // 홈 화면으로 이동
+      navigate("/");
     } catch (error) {
       console.error("선호 카테고리 저장 중 오류 발생:", error);
       alert("선호 카테고리 저장에 실패했습니다. 다시 시도해 주세요.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center p-5">
-      <h1 className="text-xl font-bold mb-6">
-        {userId}님의 선호 카테고리를 선택하세요!
-      </h1>
-      <div className="grid grid-cols-2 gap-4">
-        {categories.map((category) => (
-          <CategoryButton
-            key={category.value}
-            category={category}
-            isSelected={selectedCategories.includes(category.value)}
-            toggleCategory={toggleCategory}
-          />
-        ))}
-      </div>
-      <div className="mt-6">
-        <h2 className="font-semibold">선택된 선호 카테고리:</h2>
-        <ul className="list-disc pl-6">
-          {selectedCategories.length > 0 ? (
-            selectedCategories.map((categoryValue) => (
-              <li key={categoryValue} className="text-lg">
-                {categories.find((cat) => cat.value === categoryValue).name}
-              </li>
-            ))
-          ) : (
-            <li className="text-lg text-gray-500">
-              선택된 카테고리가 없습니다.
-            </li>
-          )}
-        </ul>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-white to-gray-50 px-6 py-0">
+      <div className="w-full max-w-md bg-white shadow-xl rounded-sm overflow-hidden border border-gray-100">
+        <div className="px-8 pt-8 pb-6 border-b border-gray-100">
+          <div className="flex items-center justify-center mb-2">
+            <div className="flex items-center">
+              <div className="h-px w-10 bg-gradient-to-r from-transparent to-black"></div>
+              <div className="w-1 h-1 rounded-full bg-black ml-1"></div>
+            </div>
+            <h1 className="text-xl font-bold text-center mx-4">
+              <span>
+                {userId}님의 <br></br>선호 카테고리
+              </span>
+            </h1>
+            <div className="flex items-center">
+              <div className="w-1 h-1 rounded-full bg-black mr-1"></div>
+              <div className="h-px w-10 bg-gradient-to-l from-transparent to-black"></div>
+            </div>
+          </div>
+          <p className="text-gray-500 text-sm text-center mt-3">
+            관심 있는 카테고리를 선택해 주세요
+          </p>
+        </div>
+        {/* 카테고리 버튼 섹션 */}
+        <div className="p-8">
+          <div className="grid grid-cols-2 gap-4 mb-8">
+            {categories.map((category) => (
+              <CategoryButton
+                key={category.value}
+                category={category}
+                isSelected={selectedCategories.includes(category.value)}
+                toggleCategory={toggleCategory}
+              />
+            ))}
+          </div>
+
+          {/* 선택된 카테고리 표시 섹션 */}
+          <div className="bg-gray-50 p-5 rounded-xl border border-gray-100 mb-8">
+            <div className="flex items-center justify-between mb-3 border-b border-gray-200 pb-2">
+              <h2 className="font-medium text-black">선택된 카테고리</h2>
+              <span className="text-xs text-gray-500">
+                {selectedCategories.length}개 선택됨
+              </span>
+            </div>
+
+            {selectedCategories.length > 0 ? (
+              <div className="grid grid-cols-2 gap-2">
+                {selectedCategories.map((categoryValue) => (
+                  <span
+                    key={categoryValue}
+                    className="px-4 py-1.5 bg-black text-white text-sm rounded-full shadow-sm flex items-center justify-between"
+                  >
+                    <span className="truncate mr-1">
+                      {
+                        categories.find((cat) => cat.value === categoryValue)
+                          .name
+                      }
+                    </span>
+                    <button
+                      onClick={() => toggleCategory({ value: categoryValue })}
+                      className="ml-1 text-white hover:text-gray-300 focus:outline-none flex-shrink-0"
+                    >
+                      ✕
+                    </button>
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-500 text-sm italic p-2">
+                선택된 카테고리가 없습니다
+              </p>
+            )}
+          </div>
+
+          {/* 제출 버튼 */}
+          <div className="flex justify-center">
+            <button
+              onClick={handleSubmit}
+              disabled={isSubmitting || selectedCategories.length === 0}
+              className={`
+                px-12 py-3.5 rounded-sm text-lg font-medium transition-all duration-300 
+                shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2
+                ${
+                  selectedCategories.length === 0
+                    ? "bg-gray-400 text-white cursor-not-allowed"
+                    : "bg-black text-white hover:bg-gray-900 focus:ring-gray-800"
+                }
+              `}
+            >
+              {isSubmitting ? "처리 중..." : "선택 완료"}
+            </button>
+          </div>
+        </div>
       </div>
 
-      {/* 제출하기 버튼 */}
-      <div className="mt-6">
-        <button
-          onClick={handleSubmit}
-          className="px-6 py-3 bg-yellow-500 text-white rounded-xl text-xl font-semibold transition-all duration-300 hover:bg-blue-400 focus:outline-none"
-        >
-          제출하기
-        </button>
+      <div className="mt-8 text-xs text-gray-400 flex items-center">
+        <span className="mr-1">©</span> 2025 프리미엄 카테고리 선택 서비스
       </div>
     </div>
   );

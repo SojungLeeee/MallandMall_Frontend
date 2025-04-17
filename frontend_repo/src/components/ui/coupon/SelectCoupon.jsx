@@ -7,14 +7,7 @@ function SelectCoupon({ coupon, isSelected, onSelect, disabled }) {
   }
 
   // 쿠폰 데이터 구조에 맞게 값들을 받아옵니다.
-  const {
-    couponName,
-    minPrice,
-    expirationDate,
-    benefits,
-    couponType,
-    couponId,
-  } = coupon;
+  const { couponName, minPrice, expirationDate, benefits, couponId } = coupon;
 
   // "오프라인" 쿠폰 비활성화 처리
   const isOfflineCoupon = couponName.includes("오프라인");
