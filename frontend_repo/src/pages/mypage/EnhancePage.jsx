@@ -29,6 +29,7 @@ function EnhancePage() {
   const [mergedCoupon, setMergedCoupon] = useState(null); // 병합된 쿠폰 정보를 저장할 상태 추가
   const { token } = getAuthToken();
   const navigate = useNavigate();
+
   // 쿠폰 목록 불러오기
   const fetchCoupons = async () => {
     setIsLoading(true);
@@ -83,7 +84,7 @@ function EnhancePage() {
     // 즉시 오류 메시지 제거
     setError(null);
 
-    // 선택된 쿠폰 초기화 - 이 부분이 추가됨
+    // 선택된 쿠폰 초기화
     setSelectedCoupons([]);
 
     // 실패 시에도 쿠폰 목록 새로고침
@@ -92,16 +93,19 @@ function EnhancePage() {
     // 실패 시 끔찍한 효과 표시
     setShowFailureEffect(true);
 
-    // 실패 효과 타이머
+    // 실패 효과 타이머 - 이 부분을 수정해 실패 카드를 더 오래 표시
     setTimeout(() => {
       setShowFailureEffect(false);
-      // 마지막으로 merge 결과 상태 초기화
-      setMergeSuccess(null);
-      setMergeResult(null);
+      // 3초 후에 merge 결과 상태 초기화
+      setTimeout(() => {
+        setMergeSuccess(null);
+        setMergeResult(null);
+        setMergedCoupon(null); // 병합된 쿠폰 정보도 초기화
+      }, 3000);
     }, 3000);
   };
 
-  // API 호출 및 결과 처리 함수 (개선)
+  // API 호출 및 결과 처리 함수
   const processMergeRequest = async () => {
     try {
       // 쿠폰 강화 API 호출
@@ -152,13 +156,24 @@ function EnhancePage() {
     } catch (err) {
       console.error("쿠폰 강화 에러:", err);
 
+      // 실패 카드를 위한 데이터 설정
+      setMergedCoupon({
+        couponName: "강화 실패",
+        description: "두 개의 쿠폰 강화에 실패했습니다",
+        benefits: "실패",
+        validDays: "0일",
+        isFailure: true, // 실패 플래그 추가
+      });
+
       // 실패 상태 설정
       setMergeSuccess(false);
+
+      // 실패해도 결과 정보는 표시할 수 있도록 설정
+      setMergeResult({ status: "failure" });
 
       return false;
     }
   };
-  //
 
   // 쿠폰 강화 처리
   const handleEnhance = async () => {
@@ -182,9 +197,12 @@ function EnhancePage() {
       console.error("예상치 못한 오류:", error);
       setIsMerging(false); // 예상치 못한 오류 발생 시에도 로딩 상태 해제
       setShowMergeAnimation(false);
-      setError(null); // 오류 메시지 제거 (추가)
+      setError(null); // 오류 메시지 제거
     }
   };
+
+  // 선택된 쿠폰이 있는지 확인
+  const hasSelectedCoupons = selectedCoupons.length > 0;
 
   return (
     <div
@@ -216,12 +234,13 @@ function EnhancePage() {
           쿠폰 강화
         </h2>
         <p className="text-gray-600 text-sm">
-          두 개의 쿠폰을 선택하여 더 좋은 쿠폰으로 강화해보세요!
+          두 개의 쿠폰을 선택하여 더 좋은 쿠폰으로 강화하세요!
         </p>
 
         {/* 선택된 쿠폰 카운터 */}
-        <div className="mt-3 flex justify-center">
-          <div className="bg-white px-4 py-2 rounded-full shadow-md inline-flex items-center gap-2">
+        {/* 선택된 쿠폰 카운터 - 좌측 정렬 */}
+        <div className="mt-3 flex justify-start">
+          <div className="bg-white px-4 py-2 rounded-sm shadow-md inline-flex items-center gap-2">
             <span className="text-gray-700 text-sm">선택된 쿠폰:</span>
             <div className="flex gap-1">
               <div
@@ -246,7 +265,11 @@ function EnhancePage() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="mb-4 bg-green-100 border-l-4 border-green-500 text-green-700 p-3 rounded shadow-lg relative z-10 text-sm"
+            className={`mb-4 ${
+              mergeSuccess
+                ? "bg-green-100 border-l-4 border-green-500 text-green-700"
+                : "bg-red-100 border-l-4 border-red-500 text-red-700"
+            } p-3 rounded shadow-lg relative z-10 text-sm`}
           >
             <div className="flex items-start">
               <div className="py-1">
@@ -258,18 +281,34 @@ function EnhancePage() {
                   transition={{ duration: 0.5 }}
                   fill="currentColor"
                 >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  ></path>
+                  {mergeSuccess ? (
+                    <path
+                      fillRule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                      clipRule="evenodd"
+                    ></path>
+                  ) : (
+                    <path
+                      fillRule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                      clipRule="evenodd"
+                    ></path>
+                  )}
                 </motion.svg>
               </div>
               <div>
-                <p className="font-bold">쿠폰 강화 성공!</p>
-                <p>선택한 두 개의 쿠폰이 성공적으로 강화되었습니다.</p>
+                <p className="font-bold">
+                  {mergeSuccess ? "쿠폰 강화 성공!" : "쿠폰 강화 실패!"}
+                </p>
+                <p>
+                  {mergeSuccess
+                    ? "선택한 두 개의 쿠폰이 성공적으로 강화되었습니다."
+                    : "선택한 두 개의 쿠폰 강화에 실패했습니다."}
+                </p>
                 <p className="text-xs mt-1">
-                  새로운 쿠폰이 목록에 추가되었습니다.
+                  {mergeSuccess
+                    ? "새로운 쿠폰이 목록에 추가되었습니다."
+                    : "다른 쿠폰으로 다시 시도해보세요."}
                 </p>
               </div>
             </div>
@@ -277,41 +316,70 @@ function EnhancePage() {
         )}
       </AnimatePresence>
 
-      {/* 에러 메시지 - 완전히 제거 */}
-      {/* <AnimatePresence>
-        {error && (
+      {/* 강화된 쿠폰 카드 표시 */}
+      <AnimatePresence>
+        {mergedCoupon && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            transition={{ duration: 0.3 }}
-            className="bg-red-100 border-l-4 border-red-500 text-red-700 p-3 mb-4 rounded shadow-lg relative z-10 text-sm"
+            exit={{ opacity: 0, scale: 0.8 }}
+            className="mb-6 relative z-20"
           >
-            <div className="flex">
-              <div className="py-1">
-                <motion.svg
-                  className="w-5 h-5 mr-3"
-                  viewBox="0 0 20 20"
-                  initial={{ scale: 1 }}
-                  animate={{ scale: [1, 1.2, 1], rotate: [0, 5, -5, 0] }}
-                  transition={{ duration: 0.5, repeat: 1 }}
-                  fill="currentColor"
+            <div
+              className={`p-4 rounded-xl shadow-lg ${
+                mergedCoupon.isFailure
+                  ? "bg-gradient-to-r from-red-50 to-red-100 border border-red-200"
+                  : "bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200"
+              } `}
+            >
+              <div className="text-center mb-2">
+                <h3
+                  className={`text-lg font-bold ${
+                    mergedCoupon.isFailure ? "text-red-700" : "text-blue-700"
+                  }`}
                 >
-                  <path
-                    fillRule="evenodd"
-                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                    clipRule="evenodd"
-                  ></path>
-                </motion.svg>
+                  {mergedCoupon.couponName}
+                </h3>
+                <p className="text-sm text-gray-600">
+                  {mergedCoupon.description}
+                </p>
               </div>
-              <div>
-                <p className="font-bold">오류 발생</p>
-                <p>{error}</p>
+
+              <div className="flex justify-between items-center mt-3">
+                <div className="text-center flex-1">
+                  <p className="text-xs text-gray-500">혜택</p>
+                  <p
+                    className={`font-medium ${
+                      mergedCoupon.isFailure ? "text-red-600" : "text-blue-600"
+                    }`}
+                  >
+                    {mergedCoupon.benefits}
+                  </p>
+                </div>
+
+                <div className="text-center flex-1">
+                  <p className="text-xs text-gray-500">유효기간</p>
+                  <p
+                    className={`font-medium ${
+                      mergedCoupon.isFailure ? "text-red-600" : "text-blue-600"
+                    }`}
+                  >
+                    {mergedCoupon.validDays}
+                  </p>
+                </div>
               </div>
+
+              {mergedCoupon.isFailure && (
+                <div className="mt-3 flex justify-center">
+                  <span className="px-3 py-1 bg-red-100 text-red-800 text-xs rounded-full border border-red-200">
+                    강화 실패
+                  </span>
+                </div>
+              )}
             </div>
           </motion.div>
         )}
-      </AnimatePresence> */}
+      </AnimatePresence>
 
       {/* 로딩 상태 */}
       {isLoading ? (
@@ -327,7 +395,66 @@ function EnhancePage() {
           ></motion.div>
         </div>
       ) : (
-        <>
+        <div className="relative">
+          {/* 강화 버튼을 쿠폰 리스트 오른쪽에 고정 (선택된 쿠폰이 있을 때만 표시) */}
+          {hasSelectedCoupons && (
+            <motion.div
+              className="absolute right-1 top-2 z-20"
+              initial={{ opacity: 0, scale: 0.8, x: 20 }}
+              animate={{ opacity: 1, scale: 1, x: 0 }}
+              exit={{ opacity: 0, scale: 0.8, x: 20 }}
+            >
+              <motion.button
+                onClick={handleEnhance}
+                whileHover={{
+                  scale: 1.05,
+                  boxShadow: "0 10px 25px -5px rgba(59, 130, 246, 0.4)",
+                }}
+                whileTap={{ scale: 0.95 }}
+                disabled={selectedCoupons.length !== 2 || isMerging}
+                className={`px-4 py-2 text-white text-sm font-bold rounded-xl shadow-lg transition-all duration-200 ${
+                  selectedCoupons.length === 2 && !isMerging
+                    ? "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+                    : "bg-gray-400"
+                }`}
+              >
+                <span className="flex items-center gap-1">
+                  {isMerging ? (
+                    <>
+                      <motion.div
+                        className="w-3 h-3 border-2 border-white border-t-transparent rounded-sm"
+                        animate={{ rotate: 360 }}
+                        transition={{
+                          duration: 1,
+                          repeat: Number.POSITIVE_INFINITY,
+                          ease: "linear",
+                        }}
+                      ></motion.div>
+                      <span>강화 중...</span>
+                    </>
+                  ) : (
+                    <>
+                      <svg
+                        className="w-3 h-3"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M13 10V3L4 14h7v7l9-11h-7z"
+                        ></path>
+                      </svg>
+                      <span>강화하기</span>
+                    </>
+                  )}
+                </span>
+              </motion.button>
+            </motion.div>
+          )}
+
           {/* 쿠폰 목록 */}
           {coupons.length === 0 ? (
             <div className="text-center py-12 text-gray-500 relative z-10">
@@ -350,7 +477,7 @@ function EnhancePage() {
               </p>
             </div>
           ) : (
-            <div className="space-y-3 relative z-10 max-h-[500px] overflow-y-auto pr-1">
+            <div className="space-y-3 relative z-10 max-h-[500px] overflow-y-auto pr-1 scrollbar-hide">
               {coupons.map((coupon) => {
                 const isSelected = selectedCoupons.includes(coupon.couponId);
                 return (
@@ -397,59 +524,28 @@ function EnhancePage() {
             </div>
           )}
 
-          {/* 강화 버튼 */}
-          <div className="flex justify-center mt-8 relative z-10">
-            <motion.button
-              onClick={handleEnhance}
-              whileHover={{
-                scale: 1.05,
-                boxShadow: "0 10px 25px -5px rgba(59, 130, 246, 0.4)",
-              }}
-              whileTap={{ scale: 0.95 }}
-              disabled={selectedCoupons.length !== 2 || isMerging}
-              className={`px-8 py-3 text-white text-base font-bold rounded-xl shadow-lg transition-all duration-200 ${
-                selectedCoupons.length === 2 && !isMerging
-                  ? "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
-                  : "bg-gray-400"
-              }`}
-            >
-              <span className="flex items-center gap-2">
-                {isMerging ? (
-                  <>
-                    <motion.div
-                      className="w-4 h-4 border-2 border-white border-t-transparent rounded-full"
-                      animate={{ rotate: 360 }}
-                      transition={{
-                        duration: 1,
-                        repeat: Number.POSITIVE_INFINITY,
-                        ease: "linear",
-                      }}
-                    ></motion.div>
-                    <span>강화 중...</span>
-                  </>
-                ) : (
-                  <>
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M13 10V3L4 14h7v7l9-11h-7z"
-                      ></path>
-                    </svg>
-                    <span>쿠폰 강화하기</span>
-                  </>
-                )}
-              </span>
-            </motion.button>
-          </div>
-        </>
+          {/* 기존 하단 강화 버튼은 제거하고 대신 하단에 안내문구 추가 */}
+          {!hasSelectedCoupons && (
+            <div className="text-center mt-4 text-gray-500 text-sm">
+              <p>강화할 쿠폰을 선택해주세요 (최대 2개)</p>
+            </div>
+          )}
+        </div>
       )}
+
+      {/* 스타일 태그 추가 - 스크롤바 숨김 처리 */}
+      <style jsx global>{`
+        /* Chrome, Safari, Edge에서 스크롤바 숨기기 */
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+
+        /* Firefox에서 스크롤바 숨기기 */
+        .scrollbar-hide {
+          scrollbar-width: none;
+          -ms-overflow-style: none; /* IE and Edge */
+        }
+      `}</style>
     </div>
   );
 }
