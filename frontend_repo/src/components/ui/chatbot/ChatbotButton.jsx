@@ -111,10 +111,13 @@ const ChatbotButton = ({ productCode = null }) => {
     <>
       {/* 플로팅 버튼 - 챗봇이 열려있을 때는 숨김 */}
       {!isOpen && isButtonVisible && (
-        <div className="fixed bottom-6 right-6 z-50 flex items-center">
+        <div
+          className="fixed bottom-6 right-6 z-50 flex items-center"
+          style={{ transform: "translateY(-3rem)" }} // 상단으로 이동 (16=4rem)
+        >
           {/* 메시지 툴팁 - 버튼에서 나오는 애니메이션 */}
           <div
-            className={`mr-3 mb-14 bg-white rounded-xl p-4 shadow-lg transition-all duration-500 origin-right w-50 ${
+            className={`mr-3  bg-white rounded-sm p-4 shadow-lg transition-all duration-500 origin-right w-50 ${
               !showTooltip
                 ? "opacity-0 scale-0 translate-x-10"
                 : isTooltipAnimating
@@ -123,6 +126,7 @@ const ChatbotButton = ({ productCode = null }) => {
             }`}
             style={{
               boxShadow: "0 10px 25px rgba(0, 0, 0, 0.15)",
+              transform: "translateY(0rem)",
             }}
           >
             <div className="relative">
@@ -133,7 +137,7 @@ const ChatbotButton = ({ productCode = null }) => {
                 <svg
                   className="h-4 w-4 text-white"
                   fill="currentColor"
-                  viewBox="0 0 24 24"
+                  viewBox="0 0 0 0"
                 >
                   <path d="M0 0L12 12L0 24Z"></path>
                 </svg>
@@ -149,7 +153,7 @@ const ChatbotButton = ({ productCode = null }) => {
               showTooltip === false &&
               animateTooltipFromButton()
             }
-            className={`group bg-gradient-to-br mb-14 from-gray-900 to-black text-white rounded-full p-4 shadow-xl transition-all duration-300 hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 
+            className={`group bg-gradient-to-br  from-gray-900 to-black text-white rounded-full p-4 shadow-xl transition-all duration-300 hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 
             ${isButtonAnimated ? "animate-button-pulse" : ""}`}
             aria-label="AI 쇼핑 도우미 열기"
             style={{

@@ -1,7 +1,13 @@
 "use client";
 
 import { useRef } from "react";
-import { RiMenuLine, RiStarLine, RiHome2Line, RiUser3Line, RiShoppingCartLine } from "react-icons/ri";
+import {
+  RiMenuLine,
+  RiStarLine,
+  RiHome2Line,
+  RiUser3Line,
+  RiShoppingCartLine,
+} from "react-icons/ri";
 import { Link, useNavigate } from "react-router-dom";
 
 const styles = `
@@ -64,24 +70,28 @@ const FooterNav = () => {
     <footer
       className="bg-white text-gray-700 px-1.5 ml-1 h rounded-sm"
       style={{
-        boxShadow: "0 -4px 6px -1px rgba(0, 0, 0, 0.05), 0 4px 6px -1px rgba(0, 0, 0, 0.05)",
+        boxShadow:
+          "0 -4px 6px -1px rgba(0, 0, 0, 0.05), 0 4px 6px -1px rgba(0, 0, 0, 0.05)",
         borderTop: "1px solid rgba(229, 231, 235, 0.8)",
       }}
     >
       <style>{styles}</style> {/* CSS 애니메이션을 컴포넌트에 추가 */}
       <nav className="container mx-auto">
-        <ul className="flex flex-wrap items-center justify-between space-y-4 sm:space-y-0 sm:flex-nowrap">
+        <ul className="flex flex-wrap items-center justify-between space-y-4  sm:flex-nowrap">
           <li className="flex flex-col items-center w-/5 sm:w-auto">
             <Link
               to="/categoryList"
-              className="flex flex-col items-center text-gray-700 hover:text-black transition duration-300"
+              className="flex flex-col mt-5 items-center text-gray-700 hover:text-black transition duration-300"
             >
-              <RiMenuLine className="text-2xl mb-1" />
+              <RiMenuLine className="text-2xl mb-2" />
               <span className="text-xs font-medium">카테고리</span>
             </Link>
           </li>
           <li className="flex flex-col items-center w-1/5 sm:w-auto">
-            <Link to="/" className="flex flex-col items-center text-gray-700 hover:text-black transition duration-300">
+            <Link
+              to="/"
+              className="flex flex-col items-center text-gray-700 hover:text-black transition duration-300"
+            >
               <RiHome2Line className="text-2xl mb-1" />
               <span className="text-xs font-medium">홈</span>
             </Link>

@@ -5,12 +5,14 @@ import {
   removeCartItem,
   updateCartQuantity,
 } from "../../api/httpMemberService";
+import { motion, AnimatePresence } from "framer-motion"; // 필요시 설치
 
 const MyCart = () => {
   const [items, setItems] = useState([]);
   const [isUpdating, setIsUpdating] = useState(false);
   const [selectedItems, setSelectedItems] = useState({});
   const [isAllSelected, setIsAllSelected] = useState(false);
+  const [isHovering, setIsHovering] = useState(null);
   const navigate = useNavigate();
   const token = localStorage.getItem("jwtAuthToken");
 
@@ -148,142 +150,357 @@ const MyCart = () => {
     0
   );
 
+  // 애니메이션 변수
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 24,
+      },
+    },
+    exit: {
+      opacity: 0,
+      x: -20,
+      transition: { duration: 0.3 },
+    },
+  };
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-2 bg-white">
       <h1 className="text-xl font-bold text-black mb-4 text-center">
         장바구니
       </h1>
 
-      <div className="flex items-center mb-4">
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            id="select-all"
-            checked={isAllSelected}
-            onChange={handleSelectAll}
-            className="mr-2 w-5 h-5 text-black focus:ring-black border-gray-300 rounded"
-          />
-          <label htmlFor="select-all" className="text-sm">
-            전체 선택
-          </label>
+      <div className="relative">
+        {/* 헤더 */}
+        <div className="mb-10 text-center">
+          <div className="flex items-center justify-center mb-1">
+            <div className="h-px w-12 bg-gradient-to-r from-transparent to-black opacity-20"></div>
+            <h1 className="text-2xl font-bold text-black mx-4 tracking-wide">
+              장바구니
+            </h1>
+            <div className="h-px w-12 bg-gradient-to-l from-transparent to-black opacity-20"></div>
+          </div>
+          <p className="text-xs text-gray-500 tracking-wider uppercase">
+            Your Shopping Bag
+          </p>
         </div>
-      </div>
 
-      {items.length === 0 ? (
-        <p className="text-center text-gray-500 py-12">
-          장바구니가 비었습니다.
-        </p>
-      ) : (
-        <div className="space-y-4">
-          {items.map((item) => (
-            <div
-              key={item.productCode}
-              className="flex items-center justify-between border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow"
-            >
-              <div className="flex items-center space-x-4 w-full">
-                {/* 개별 상품 선택 체크박스 */}
-                <input
-                  type="checkbox"
-                  checked={!!selectedItems[item.productCode]}
-                  onChange={() => handleItemSelect(item.productCode)}
-                  className="mr-2 w-5 h-5 text-black focus:ring-black border-gray-300 rounded"
-                />
-
-                {item.image && (
-                  <img
-                    src={item.image}
-                    alt={item.productName}
-                    className="w-20 h-20 object-cover rounded-md"
-                  />
-                )}
-                <div className="flex-1">
-                  <h2 className="font-semibold text-black">
-                    {item.productName}
-                  </h2>
-                  <p className="text-gray-600 mb-2">
-                    {item.price.toLocaleString()}원
-                  </p>
-
-                  {/* 수량 조절 박스를 여기로 이동 */}
-                  <div className="flex items-center">
-                    <div className="flex items-center border border-gray-300 rounded-sm">
-                      <button
-                        onClick={() =>
-                          handleQuantityChange(
-                            item.productCode,
-                            item.quantity - 1
-                          )
-                        }
-                        className="px-3 py-1 border-r border-gray-300 text-gray-600 hover:bg-gray-100 disabled:opacity-50"
-                        disabled={isUpdating || item.quantity <= 1}
-                      >
-                        -
-                      </button>
-                      <span className="px-4 py-1 text-black">
-                        {item.quantity}
-                      </span>
-                      <button
-                        onClick={() =>
-                          handleQuantityChange(
-                            item.productCode,
-                            item.quantity + 1
-                          )
-                        }
-                        className="px-3 py-1 border-l border-gray-300 text-gray-600 hover:bg-gray-100 disabled:opacity-50"
-                        disabled={isUpdating}
-                      >
-                        +
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* 삭제 버튼 */}
-                <button
-                  onClick={() => handleRemoveItem(item.productCode)}
-                  className="text-gray-500 hover:text-black transition-colors"
-                >
+        {/* 전체 선택 옵션 */}
+        <div className="flex items-center justify-between mb-6 border-b border-gray-100 pb-4">
+          <div className="flex items-center">
+            <div className="relative w-5 h-5 mr-3 flex items-center justify-center">
+              <input
+                type="checkbox"
+                id="select-all"
+                checked={isAllSelected}
+                onChange={handleSelectAll}
+                className="opacity-0 absolute w-5 h-5 cursor-pointer"
+              />
+              <div
+                className={`w-5 h-5 border transition-colors duration-200 ${
+                  isAllSelected ? "bg-black border-black" : "border-gray-300"
+                }`}
+              >
+                {isAllSelected && (
                   <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
-                    fill="none"
+                    className="w-5 h-5 text-white"
                     viewBox="0 0 24 24"
-                    stroke="currentColor"
+                    fill="none"
                   >
                     <path
+                      d="M9 12l2 2 4-4"
+                      stroke="currentColor"
+                      strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
                     />
                   </svg>
-                </button>
+                )}
               </div>
             </div>
-          ))}
+            <label
+              htmlFor="select-all"
+              className="text-sm font-medium cursor-pointer select-none"
+            >
+              전체 선택
+            </label>
+          </div>
 
-          {/* 총 금액 */}
-          <div className="border-t border-gray-200 pt-4 text-right">
-            <p className="text-xl font-bold text-black">
-              총 합계: {totalPrice.toLocaleString()}원
-            </p>
+          <div>
+            <span className="text-sm font-medium text-gray-600">
+              총{" "}
+              {items.filter((item) => selectedItems[item.productCode]).length}개
+              선택
+            </span>
           </div>
         </div>
-      )}
 
-      {/* 구매하기 버튼 */}
-      {items.length > 0 && (
-        <div className="mt-8">
-          <button
-            onClick={handleCheckout}
-            className="w-full py-4 text-lg font-semibold text-white bg-black 
-                       hover:bg-gray-800 transition-colors duration-300 
-                       focus:outline-none focus:ring-2 focus:ring-black focus:ring-opacity-50"
+        <AnimatePresence>
+          {items.length === 0 ? (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="flex flex-col items-center justify-center py-16 border border-dashed border-gray-200 rounded-sm"
+            >
+              <svg
+                className="w-12 h-12 text-gray-300 mb-3"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="1.5"
+                  d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                />
+              </svg>
+              <p className="text-gray-500 font-medium">
+                장바구니가 비었습니다.
+              </p>
+              <button
+                onClick={() => navigate("/")}
+                className="mt-4 px-4 py-2 text-sm text-black border border-black hover:bg-black hover:text-white transition-colors duration-300"
+              >
+                쇼핑 계속하기
+              </button>
+            </motion.div>
+          ) : (
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              className="space-y-4"
+            >
+              {items.map((item) => (
+                <motion.div
+                  key={item.productCode}
+                  variants={itemVariants}
+                  exit="exit"
+                  onMouseEnter={() => setIsHovering(item.productCode)}
+                  onMouseLeave={() => setIsHovering(null)}
+                  className={`border group ${
+                    isHovering === item.productCode
+                      ? "border-black"
+                      : "border-gray-200"
+                  } rounded-sm p-5 transition-all duration-300`}
+                >
+                  <div className="flex items-center space-x-4 w-full">
+                    {/* 개별 상품 선택 체크박스 */}
+                    <div className="relative w-5 h-5 flex items-center justify-center">
+                      <input
+                        type="checkbox"
+                        checked={!!selectedItems[item.productCode]}
+                        onChange={() => handleItemSelect(item.productCode)}
+                        className="opacity-0 absolute w-5 h-5 cursor-pointer"
+                      />
+                      <div
+                        className={`w-5 h-5 border transition-colors duration-200 ${
+                          selectedItems[item.productCode]
+                            ? "bg-black border-black"
+                            : "border-gray-300"
+                        }`}
+                      >
+                        {selectedItems[item.productCode] && (
+                          <svg
+                            className="w-5 h-5 text-white"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                          >
+                            <path
+                              d="M9 12l2 2 4-4"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* 상품 이미지 */}
+                    {item.image && (
+                      <div className="relative overflow-hidden rounded-sm w-24 h-24 bg-gray-50 flex items-center justify-center">
+                        <img
+                          src={item.image}
+                          alt={item.productName}
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        />
+                      </div>
+                    )}
+
+                    {/* 상품 정보 */}
+                    <div className="flex-1">
+                      <h2 className="font-medium text-black transition-colors duration-300 group-hover:text-black mb-1">
+                        {item.productName}
+                      </h2>
+                      <p className="text-black font-bold text-lg mb-3">
+                        {item.price.toLocaleString()}원
+                      </p>
+
+                      {/* 수량 조절 */}
+                      <div className="flex items-center">
+                        <div className="flex items-center border border-gray-200 rounded-sm">
+                          <button
+                            onClick={() =>
+                              handleQuantityChange(
+                                item.productCode,
+                                item.quantity - 1
+                              )
+                            }
+                            className="w-8 h-8 flex items-center justify-center border-r border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-50 transition-colors duration-200"
+                            disabled={isUpdating || item.quantity <= 1}
+                          >
+                            <svg
+                              className="w-3 h-3"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M20 12H4"
+                              />
+                            </svg>
+                          </button>
+                          <span className="w-10 h-8 flex items-center justify-center text-sm">
+                            {item.quantity}
+                          </span>
+                          <button
+                            onClick={() =>
+                              handleQuantityChange(
+                                item.productCode,
+                                item.quantity + 1
+                              )
+                            }
+                            className="w-8 h-8 flex items-center justify-center border-l border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-50 transition-colors duration-200"
+                            disabled={isUpdating}
+                          >
+                            <svg
+                              className="w-3 h-3"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M12 4v16m8-8H4"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+
+                        <span className="ml-3 text-sm text-gray-500">
+                          총액: {(item.price * item.quantity).toLocaleString()}
+                          원
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* 삭제 버튼 */}
+                    <button
+                      onClick={() => handleRemoveItem(item.productCode)}
+                      className="text-gray-400 hover:text-black transition-colors duration-200 p-1"
+                    >
+                      <svg
+                        className="w-5 h-5"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </motion.div>
+              ))}
+
+              {/* 총 금액 */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="border-t border-gray-200 mt-8 pt-6"
+              >
+                <div className="flex justify-between items-center mb-2 text-sm">
+                  <span className="text-gray-600">상품 금액</span>
+                  <span className="font-medium">
+                    {totalPrice.toLocaleString()}원
+                  </span>
+                </div>
+                <div className="flex justify-between items-center mb-2 text-sm">
+                  <span className="text-gray-600">배송비</span>
+                  <span className="font-medium">0원</span>
+                </div>
+                <div className="flex justify-between items-center mt-4 pt-4 border-t border-gray-100">
+                  <span className="text-black font-bold">결제 예정 금액</span>
+                  <span className="text-xl font-bold text-black">
+                    {totalPrice.toLocaleString()}원
+                  </span>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* 구매하기 버튼 */}
+        {items.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="mt-8 flex flex-col sm:flex-row gap-3"
           >
-            구매하기
-          </button>
-        </div>
-      )}
+            <button
+              onClick={() => navigate("/")}
+              className="py-4 px-6 text-black border border-black hover:bg-gray-50 transition-colors duration-300 text-sm font-medium flex-1 sm:flex-none sm:w-40"
+            >
+              계속 쇼핑하기
+            </button>
+
+            <button
+              onClick={handleCheckout}
+              disabled={!items.some((item) => selectedItems[item.productCode])}
+              className={`py-4 px-6 text-white transition-colors duration-300 text-sm font-medium flex-1 ${
+                items.some((item) => selectedItems[item.productCode])
+                  ? "bg-black hover:bg-gray-900"
+                  : "bg-gray-300 cursor-not-allowed"
+              }`}
+            >
+              {items.some((item) => selectedItems[item.productCode])
+                ? `${
+                    items.filter((item) => selectedItems[item.productCode])
+                      .length
+                  }개 상품 구매하기`
+                : "상품을 선택해주세요"}
+            </button>
+          </motion.div>
+        )}
+      </div>
     </div>
   );
 };
