@@ -145,13 +145,13 @@ function Signup() {
               value={postcode}
               placeholder="우편번호"
               readOnly
-              className="flex-grow w-1/5 p-3.5 text-base border border-gray-300 rounded-sm focus:outline-none focus:ring-0 focus:border-gray-300"
+              className="flex-grow w-1/5 p-3.5 text-base border border-gray-300 rounded-sm focus:outline-none focus:ring-0 focus:border-gray-300 ml-3"
               style={{ WebkitAppearance: "none", backgroundColor: "white" }}
             />
             <button
               type="button"
               onClick={handlePostcodeSearch}
-              className="w-20px p-3 bg-black text-white rounded-sm text-sm hover:bg-gray-800 transition-all"
+              className="h-[52px] w-20px p-3 bg-black text-white rounded-sm text-sm hover:bg-gray-800 transition-all"
             >
               찾기
             </button>

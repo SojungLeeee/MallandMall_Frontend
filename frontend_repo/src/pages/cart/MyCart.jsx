@@ -180,14 +180,14 @@ const MyCart = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-2 bg-white">
-      <h1 className="text-xl font-bold text-black mb-4 text-center">
-        장바구니
-      </h1>
+    <div className="max-w-4xl mx-auto px-6 py-1 bg-white relative">
+      {/* 배경 장식 */}
+      <div className="absolute top-0 right-0 w-32 h-32 bg-black opacity-[0.02] rounded-full -translate-y-1/2 translate-x-1/2"></div>
+      <div className="absolute bottom-0 left-0 w-40 h-40 bg-black opacity-[0.02] rounded-full translate-y-1/4 -translate-x-1/4"></div>
 
       <div className="relative">
         {/* 헤더 */}
-        <div className="mb-10 text-center">
+        <div className="mb-6 text-center">
           <div className="flex items-center justify-center mb-1">
             <div className="h-px w-12 bg-gradient-to-r from-transparent to-black opacity-20"></div>
             <h1 className="text-2xl font-bold text-black mx-4 tracking-wide">

@@ -76,7 +76,7 @@ function SelectCategory() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-white px-6 py-0">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-white px-6">
       <div className="w-full max-w-md bg-white shadow-lg rounded-lg overflow-hidden border border-gray-200">
         <div className="px-8 pt-8 pb-6 border-b border-gray-100">
           <div className="flex items-center justify-center mb-2">
@@ -99,7 +99,7 @@ function SelectCategory() {
           </p>
         </div>
         {/* 카테고리 버튼 섹션 */}
-        <div className="p-8">
+        <div className="p-4">
           <div className="grid grid-cols-2 gap-4 mb-8">
             {categories.map((category) => (
               <CategoryButton

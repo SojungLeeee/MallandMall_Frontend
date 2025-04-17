@@ -15,7 +15,9 @@ export default function Navbar() {
   const [hasNewAlert, setHasNewAlert] = useState(false);
 
   // localStorage에서도 토큰을 확인
-  const [localToken, setLocalToken] = useState(localStorage.getItem("jwtAuthToken"));
+  const [localToken, setLocalToken] = useState(
+    localStorage.getItem("jwtAuthToken")
+  );
 
   // 두 토큰 중 하나라도 있으면 인증된 것으로 간주
   const token = routerToken || localToken;
@@ -99,17 +101,20 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="flex justify-between p-2">
+      <header className="flex justify-between p-1">
         <Link to="/" className="flex items-center">
           <img src={Logo} alt="Emart Logo" className="h-13 w-20" />
         </Link>
-        <nav className="flex items-center gap-3">
+        <nav className="flex items-center gap-3  pr-3  mb-3">
           {/* 재고 조회 버튼 추가 */}
           {token && (
             <>
               {role === "ADMIN" && (
                 <>
-                  <Link to="/admin" className="flex items-center text-black font-bold font-size hover:text-yellow-600">
+                  <Link
+                    to="/admin"
+                    className="flex items-center text-black font-bold font-size hover:text-yellow-600"
+                  >
                     <MdAdminPanelSettings className="text-4xl animate-pop-up" />
                   </Link>
 
@@ -119,11 +124,17 @@ export default function Navbar() {
                     className="relative flex items-center text-black hover:text-red-500 transition"
                   >
                     <IoMdNotificationsOutline className="text-3xl" />
-                    {hasNewAlert && <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>}
+                    {hasNewAlert && (
+                      <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+                    )}
                   </Link>
                 </>
               )}
-              <LoginButton text={"Logout"} onClick={handleLogout} className="flex items-center" />
+              <LoginButton
+                text={"Logout"}
+                onClick={handleLogout}
+                className="flex items-center"
+              />
             </>
           )}
           {!token && (

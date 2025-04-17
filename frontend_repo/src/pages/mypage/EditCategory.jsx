@@ -126,7 +126,7 @@ function EditCategory() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-white to-gray-50 px-6 py-8">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-white to-gray-50 px-6 ">
       <div className="w-full max-w-md bg-white shadow-xl rounded-sm overflow-hidden border border-gray-100">
         <div className="px-8 pt-8 pb-6 border-b border-gray-100">
           <div className="flex items-center justify-center mb-2">
@@ -222,7 +222,7 @@ function EditCategory() {
       <div className="mt-8 text-xs text-gray-400 flex items-center">
         <button
           onClick={() => navigate("/mypage")}
-          className="text-gray-500 hover:text-black transition-colors duration-300"
+          className="text-gray-500 hover:text-black transition-colors duration-300 pb-3"
         >
           마이페이지로 돌아가기
         </button>
