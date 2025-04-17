@@ -57,20 +57,30 @@ const AllProducts = () => {
     fetchProducts();
   }, []);
 
-  // 오프라인 초특가
+  // 오프라인 초특가 클릭 시 로그인 여부 체크
   const handleSpecialDealsClick = async () => {
-    try {
-      const discountedProducts = await fetchDiscountedProducts(); // 할인된 상품 가져오기
-      setProducts(discountedProducts); // 할인 상품으로 상태 업데이트
-      navigate("/special-deals"); // SpecialDealsPage로 이동
-    } catch (err) {
-      setError("할인 상품을 불러오는 중 오류가 발생했습니다.");
+    const token = localStorage.getItem("jwtAuthToken"); // Check if token exists
+    if (token) {
+      try {
+        const discountedProducts = await fetchDiscountedProducts(); // 할인된 상품 가져오기
+        setProducts(discountedProducts); // 할인 상품으로 상태 업데이트
+        navigate("/special-deals"); // SpecialDealsPage로 이동
+      } catch (err) {
+        setError("할인 상품을 불러오는 중 오류가 발생했습니다.");
+      }
+    } else {
+      navigate("/login"); // 로그인되지 않았다면 로그인 페이지로 이동
     }
   };
 
-  // 고객문의로 이동
+  // 고객문의로 이동 - 로그인 여부 체크
   const handleQuestionClick = () => {
-    navigate("/questions");
+    const token = localStorage.getItem("jwtAuthToken");
+    if (token) {
+      navigate("/questions"); // 이미 로그인 되어 있으면 고객문의 페이지로 이동
+    } else {
+      navigate("/login"); // 로그인되지 않았다면 로그인 페이지로 이동
+    }
   };
 
   return (
@@ -106,7 +116,7 @@ const AllProducts = () => {
                 title="초특가"
                 icon="tag"
                 bgColor="bg-red-400"
-                onClick={handleSpecialDealsClick} // 버튼 클릭 시 할인 상품 불러오기
+                onClick={handleSpecialDealsClick} // 초특가 클릭 시 로그인 여부 체크
                 imageSrc={offline} // 아이콘 이미지
               />
             </div>
@@ -115,7 +125,7 @@ const AllProducts = () => {
               <CircularMenuItem
                 title="고객문의"
                 bgColor="bg-blue-200"
-                onClick={handleQuestionClick}
+                onClick={handleQuestionClick} // 고객문의 클릭 시 로그인 여부 체크 후 이동
                 imageSrc={question}
               />
             </div>
