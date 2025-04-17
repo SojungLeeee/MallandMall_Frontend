@@ -17,7 +17,7 @@ const SocialLoginButtons = () => {
   return (
     <div className="w-full flex flex-col items-center mt-4">
       <p className="text-[#6c6c6c] text-sm mb-3">소셜 계정 로그인</p>
-      <div className="flex justify-center items-center gap-4">
+      <div className="flex justify-center gap-2 items-center w-40">
         <KakaoLoginButton />
         <GoogleLoginButton />
         <NaverLoginButton />

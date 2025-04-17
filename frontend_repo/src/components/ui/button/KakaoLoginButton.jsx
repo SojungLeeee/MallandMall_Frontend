@@ -15,7 +15,7 @@ const KakaoLoginButton = () => {
   return (
     <button
       onClick={handleLogin}
-      className="w-12 h-12 rounded-full bg-yellow-300 flex items-center justify-center mr-3 cursor-pointer border-none focus:outline-none"
+      className="w-12 h-12 rounded-full bg-yellow-300 flex items-center justify-center  cursor-pointer border-none focus:outline-none"
     >
       <div className="text-black text-2xl">
         <svg
