@@ -81,9 +81,9 @@ const FooterNav = () => {
           <li className="flex flex-col items-center w-/5 sm:w-auto">
             <Link
               to="/categoryList"
-              className="flex flex-col mt-5 items-center text-gray-700 hover:text-black transition duration-300"
+              className="flex flex-col mt-4 items-center text-gray-700 hover:text-black transition duration-300"
             >
-              <RiMenuLine className="text-2xl mb-2" />
+              <RiMenuLine className="text-2xl mb-1" />
               <span className="text-xs font-medium">카테고리</span>
             </Link>
           </li>

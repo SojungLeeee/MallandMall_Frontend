@@ -44,8 +44,8 @@ const CategoryPage = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-4">
-      <h1 className="text-2xl font-bold text-center mb-6">
+    <div className="container mx-auto px-2 py-4">
+      <h1 className="text-2xl font-bold text-center mb-3">
         {categoryName} 상품 목록
       </h1>
       {/* ProductCard 컴포넌트 사용 */}
