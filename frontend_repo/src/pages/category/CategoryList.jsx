@@ -1,14 +1,14 @@
 import React from "react";
 import fish from "../../assets/images/fish.png"; // 이미지를 import
-import meat from "../../assets/images/ham.png"; // 이미지를 import
+import meat from "../../assets/images/meat.png"; // 이미지를 import
 import milk from "../../assets/images/milk.png";
 import drink from "../../assets/images/drink.png";
 import vegetable from "../../assets/images/vegetable.png";
-import fruit from "../../assets/images/fruit.png";
+import fruit from "../../assets/images/fruit.webp";
 import snack from "../../assets/images/snack.png";
 import sauce from "../../assets/images/sauce.png";
 import pill from "../../assets/images/pill.png";
-import etc from "../../assets/images/rice.png";
+import etc from "../../assets/images/etc.png";
 import { useNavigate } from "react-router-dom";
 
 const categories = [
@@ -69,7 +69,7 @@ export default function CategoryList() {
             <img
               src={category.image}
               alt={category.name}
-              className="w-24 h-24 object-cover rounded-md mb-4 cursor-pointer" // 이미지 클릭 시 카테고리 이름 전달
+              className="w-[140px] h-[120px] object-contain rounded-sm mb-2 cursor-pointer bg-white"
             />
             <button
               className="bg-[#f2f1d3] font-semibold py-2 px-4 rounded-lg text-base"
