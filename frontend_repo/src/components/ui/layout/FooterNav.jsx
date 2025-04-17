@@ -78,7 +78,7 @@ const FooterNav = () => {
       <style>{styles}</style> {/* CSS 애니메이션을 컴포넌트에 추가 */}
       <nav className="container mx-auto">
         <ul className="flex flex-wrap items-center justify-between space-y-4  sm:flex-nowrap">
-          <li className="flex flex-col items-center w-/5 sm:w-auto">
+          <li className="flex flex-col items-center w-1/5 sm:w-auto">
             <Link
               to="/categoryList"
               className="flex flex-col mt-4 items-center text-gray-700 hover:text-black transition duration-300"
