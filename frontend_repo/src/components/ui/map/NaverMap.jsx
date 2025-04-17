@@ -499,7 +499,7 @@ const NaverMap = () => {
   return (
     <div className="flex flex-col space-y-4 max-w-3xl mx-auto">
       {/* 상품 검색 섹션 */}
-      <div className="flex flex-col space-y-1">
+      <div className="flex flex-col space-y-1 px-2">
         <div className="flex space-x-1.5">
           <select
             value={searchType}
