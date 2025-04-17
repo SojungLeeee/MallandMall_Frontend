@@ -76,8 +76,8 @@ function SelectCategory() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-white to-gray-50 px-6 py-0">
-      <div className="w-full max-w-md bg-white shadow-xl rounded-sm overflow-hidden border border-gray-100">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-white px-6 py-0">
+      <div className="w-full max-w-md bg-white shadow-lg rounded-lg overflow-hidden border border-gray-200">
         <div className="px-8 pt-8 pb-6 border-b border-gray-100">
           <div className="flex items-center justify-center mb-2">
             <div className="flex items-center">
@@ -94,7 +94,7 @@ function SelectCategory() {
               <div className="h-px w-10 bg-gradient-to-l from-transparent to-black"></div>
             </div>
           </div>
-          <p className="text-gray-500 text-sm text-center mt-3">
+          <p className="text-gray-600 text-sm text-center mt-3">
             관심 있는 카테고리를 선택해 주세요
           </p>
         </div>
@@ -112,7 +112,7 @@ function SelectCategory() {
           </div>
 
           {/* 선택된 카테고리 표시 섹션 */}
-          <div className="bg-gray-50 p-5 rounded-xl border border-gray-100 mb-8">
+          <div className="bg-gray-50 p-5 rounded-lg border border-gray-200 mb-8">
             <div className="flex items-center justify-between mb-3 border-b border-gray-200 pb-2">
               <h2 className="font-medium text-black">선택된 카테고리</h2>
               <span className="text-xs text-gray-500">
@@ -155,16 +155,42 @@ function SelectCategory() {
               onClick={handleSubmit}
               disabled={isSubmitting || selectedCategories.length === 0}
               className={`
-                px-12 py-3.5 rounded-sm text-lg font-medium transition-all duration-300 
+                px-12 py-3.5 rounded-md text-lg font-medium transition-all duration-300 
                 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2
                 ${
                   selectedCategories.length === 0
-                    ? "bg-gray-400 text-white cursor-not-allowed"
-                    : "bg-black text-white hover:bg-gray-900 focus:ring-gray-800"
+                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    : "bg-black text-white hover:bg-gray-800 focus:ring-gray-800"
                 }
               `}
             >
-              {isSubmitting ? "처리 중..." : "선택 완료"}
+              {isSubmitting ? (
+                <div className="flex items-center justify-center">
+                  <svg
+                    className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  처리 중...
+                </div>
+              ) : (
+                "선택 완료"
+              )}
             </button>
           </div>
         </div>

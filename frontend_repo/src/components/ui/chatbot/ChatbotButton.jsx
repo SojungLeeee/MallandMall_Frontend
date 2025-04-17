@@ -117,7 +117,7 @@ const ChatbotButton = ({ productCode = null }) => {
         >
           {/* 메시지 툴팁 - 버튼에서 나오는 애니메이션 */}
           <div
-            className={`mr-3 mb-14 bg-white rounded-xl p-4 shadow-lg transition-all duration-500 origin-right w-50 ${
+            className={`mr-3  bg-white rounded-sm p-4 shadow-lg transition-all duration-500 origin-right w-50 ${
               !showTooltip
                 ? "opacity-0 scale-0 translate-x-10"
                 : isTooltipAnimating
@@ -126,6 +126,7 @@ const ChatbotButton = ({ productCode = null }) => {
             }`}
             style={{
               boxShadow: "0 10px 25px rgba(0, 0, 0, 0.15)",
+              transform: "translateY(0rem)",
             }}
           >
             <div className="relative">
