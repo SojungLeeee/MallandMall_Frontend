@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-
 import { ChevronLeft } from "lucide-react"; // X 아이콘 추가
 import {
   addAdminAnswer,
@@ -105,97 +104,95 @@ const AdminQuestionDetail = () => {
     );
 
   return (
-    <div className="container mx-auto p-6 bg-gray-50 h-full">
-      <div className="bg-white shadow-lg rounded-lg p-6">
-        <div className="flex items-center mb-3">
-          <ChevronLeft onClick={handleBack} className="cursor-pointer" />
-          <h1 className="text-xl font-bold text-gray-800 flex-grow text-center mr-8">
-            📌 질문 상세
-          </h1>
-        </div>
+    <div className="max-w-3xl mx-auto px-4 py-2 bg-white rounded-lg shadow-lg h-full">
+      <div className="flex items-center mb-4">
+        <ChevronLeft onClick={handleBack} className="cursor-pointer" />
+        <h1 className="text-gray-800 text-center text-xl font-bold  flex-grow mr-8">
+          📌 질문 상세
+        </h1>
+      </div>
 
-        <hr></hr>
-        <div className="border-b pb-4 pt-4">
-          <h2 className="text-lg font-semibold">{question.title}</h2>
-          <p className="text-xs text-gray-500 text-right">
-            작성자: {question.userId}
-          </p>
-          <p className="text-xs text-gray-500 text-right">
-            {question.createDate}
-          </p>
-          <p className="mt-3 text-sm text-gray-600">{question.content}</p>
-        </div>
+      <hr />
+      <div className="border-b pb-4 pt-4">
+        <h2 className="text-lg font-semibold">{question.title}</h2>
+        <p className="text-xs text-gray-500 text-right">
+          작성자: {question.userId}
+        </p>
+        <p className="text-xs text-gray-500 text-right">
+          {question.createDate}
+        </p>
+        <p className="mt-3 text-sm text-gray-600">{question.content}</p>
+      </div>
 
-        {/* 🔹 답변 입력 폼 */}
-        <div className="mt-6">
-          <h2 className="text-lg font-semibold mb-2">✏️ 관리자 답변</h2>
-          <textarea
-            className="w-full p-3 border rounded-sm text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-            rows="4"
-            value={answer}
-            onChange={(e) => setAnswer(e.target.value)}
-            placeholder="답변을 입력하세요..."
-          />
-          <button
-            onClick={isEditing ? handleUpdateAnswer : handleAddAnswer}
-            className="mt-3 px-5 py-2 bg-[#787669] text-white rounded-sm w-full"
-          >
-            {isEditing ? "답변 수정" : "답변 등록"}
-          </button>
-          {message && (
-            <p className="mt-3 text-sm font-semibold text-red-500">{message}</p>
-          )}
-        </div>
-
-        {/* 🔹 기존 답변 목록 */}
-        {responses.length > 0 ? (
-          <div className="mt-6">
-            <h3 className="text-lg font-semibold">💬 등록된 답변</h3>
-            <table className="min-w-full mt-3 bg-white border border-gray-200 rounded-lg shadow-sm">
-              <thead className="bg-gray-100">
-                <tr>
-                  <th className="py-2 px-2 border-b text-left">답변 내용</th>
-                  <th className="py-2 px-2 border-b text-center">수정</th>
-                  <th className="py-2 px-2 border-b text-center">삭제</th>
-                </tr>
-              </thead>
-              <tbody>
-                {responses.map((response) => (
-                  <tr key={response.answerId} className="hover:bg-gray-50">
-                    <td className="py-2 px-2 border-b text-xs">
-                      {response.content}
-                    </td>
-                    <td className="py-2 px-2 border-b text-center text-xs">
-                      <button
-                        onClick={() => {
-                          setIsEditing(true);
-                          setAnswer(response.content);
-                          setEditingAnswerId(response.answerId);
-                        }}
-                        className="text-blue-500 hover:underline"
-                      >
-                        수정
-                      </button>
-                    </td>
-                    <td className="py-2 px-2 border-b text-cente  text-xs">
-                      <button
-                        onClick={() => handleDeleteAnswer(response.answerId)}
-                        className="text-red-500 hover:underline"
-                      >
-                        삭제
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <div className="mt-6 text-sm text-gray-500 text-center">
-            📝 아직 등록된 답변이 없습니다.
-          </div>
+      {/* 🔹 답변 입력 폼 */}
+      <div className="mt-4">
+        <h2 className="text-lg font-semibold mb-2">✏️ 관리자 답변</h2>
+        <textarea
+          className="w-full p-3 border rounded-sm text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+          rows="4"
+          value={answer}
+          onChange={(e) => setAnswer(e.target.value)}
+          placeholder="답변을 입력하세요..."
+        />
+        <button
+          onClick={isEditing ? handleUpdateAnswer : handleAddAnswer}
+          className="mt-3 px-5 py-2 bg-[#787669] text-white rounded-sm w-full"
+        >
+          {isEditing ? "답변 수정" : "답변 등록"}
+        </button>
+        {message && (
+          <p className="mt-3 text-sm font-semibold text-red-500">{message}</p>
         )}
       </div>
+
+      {/* 🔹 기존 답변 목록 */}
+      {responses.length > 0 ? (
+        <div className="mt-6">
+          <h3 className="text-lg font-semibold">💬 등록된 답변</h3>
+          <table className="min-w-full mt-3 bg-white border border-gray-200 rounded-lg shadow-sm">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="py-2 px-2 border-b text-center">답변 내용</th>
+                <th className="py-2 px-2 border-b text-center">수정</th>
+                <th className="py-2 px-2 border-b text-center">삭제</th>
+              </tr>
+            </thead>
+            <tbody>
+              {responses.map((response) => (
+                <tr key={response.answerId} className="hover:bg-gray-50">
+                  <td className="py-2 px-2 border-b text-xs">
+                    {response.content}
+                  </td>
+                  <td className="py-2 px-2 border-b text-center text-xs">
+                    <button
+                      onClick={() => {
+                        setIsEditing(true);
+                        setAnswer(response.content);
+                        setEditingAnswerId(response.answerId);
+                      }}
+                      className="text-blue-500 hover:underline"
+                    >
+                      수정
+                    </button>
+                  </td>
+                  <td className="py-2 px-2 border-b text-center text-xs">
+                    <button
+                      onClick={() => handleDeleteAnswer(response.answerId)}
+                      className="text-red-500 hover:underline"
+                    >
+                      삭제
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div className="mt-6 text-sm text-gray-500 text-center">
+          📝 아직 등록된 답변이 없습니다.
+        </div>
+      )}
     </div>
   );
 };

@@ -901,7 +901,7 @@ const OrderPage = () => {
                 </svg>
               </div>
               <div>
-                <p className="font-bold text-xl">{nearestBranch.branchName}</p>
+                <p className="font-bold text-lg">{nearestBranch.branchName}</p>
                 <p className="text-gray-300 text-sm">
                   {nearestBranch.branchAddress}
                 </p>

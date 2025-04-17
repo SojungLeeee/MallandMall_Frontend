@@ -47,19 +47,22 @@ const InquiryEditForm = ({ inquiry, onBack }) => {
   return (
     <div className="max-w-md mx-auto h-full flex flex-col bg-white">
       {/* 헤더 */}
-      <div className="flex items-center p-4 border-b">
+      <div className="flex items-center px-4 py-2 border-b">
         <button onClick={onBack}>
           <ChevronLeft />
         </button>
-        <div className="flex-grow text-center font-bold mr-5">문의 수정</div>
+        <div className="flex-grow text-center text-xl font-bold mr-5">
+          문의 수정
+        </div>
       </div>
 
       {/* 폼 */}
       <form onSubmit={handleSubmit} className="flex-grow p-4 flex flex-col">
-        <div className="mb-4">
+        {/* 제목 (가로 정렬) */}
+        <div className="mb-4 flex items-center gap-4">
           <label
             htmlFor="title"
-            className="block text-sm font-medium text-gray-700 mb-2"
+            className="min-w-[80px] font-medium text-gray-700"
           >
             제목
           </label>
@@ -70,14 +73,15 @@ const InquiryEditForm = ({ inquiry, onBack }) => {
             onChange={(e) => setTitle(e.target.value)}
             placeholder="제목을 입력하세요"
             required
-            className="w-full px-3 py-2 border rounded-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="flex-grow px-3 py-2 border rounded-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
-        <div className="flex-grow mb-4">
+        {/* 내용 (가로 정렬) */}
+        <div className="mb-4 flex gap-4 items-start">
           <label
             htmlFor="content"
-            className="block text-sm font-medium text-gray-700 mb-2"
+            className="min-w-[80px] pt-2 font-medium text-gray-700"
           >
             내용
           </label>
@@ -87,7 +91,7 @@ const InquiryEditForm = ({ inquiry, onBack }) => {
             onChange={(e) => setContent(e.target.value)}
             placeholder="문의 내용을 입력하세요"
             required
-            className="w-full h-4/5 px-3 py-2 border rounded-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+            className="flex-grow min-h-[498px] px-3 py-2 border rounded-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
           />
         </div>
 

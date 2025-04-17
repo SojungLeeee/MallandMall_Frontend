@@ -20,13 +20,15 @@ const InquiryResponseView = ({ inquiry, onBack }) => {
   }, [inquiry.id, token]);
 
   return (
-    <div className="max-w-md mx-auto h-screen flex flex-col bg-white">
+    <div className="max-w-md mx-auto h-full flex flex-col bg-white">
       {/* Header */}
-      <div className="flex items-center p-4 border-b">
+      <div className="flex items-center px-4 py-2 border-b">
         <button onClick={onBack}>
           <ChevronLeft />
         </button>
-        <div className="flex-grow text-center font-bold mr-5">문의 상세</div>
+        <div className="flex-grow text-center text-xl font-bold mr-5">
+          문의 상세
+        </div>
       </div>
 
       {/* Inquiry Details */}
@@ -35,14 +37,12 @@ const InquiryResponseView = ({ inquiry, onBack }) => {
         <div className="text-xl font-bold text-gray-900">{inquiry.title}</div>
 
         {/* 문의 일자 */}
-        <div className="text-xs text-gray-500 mt-1 text-right">
+        <div className="text-xs text-gray-500 mt-3 text-right">
           문의일자: <span className="font-medium">{inquiry.createDate}</span>
         </div>
 
         {/* 내용 */}
-        <div className="mt-3 text-sm text-gray-900 bg-gray-30 p-3 rounded-sm shadow-sm">
-          {inquiry.content}
-        </div>
+        <div className="mt-1 text-sm p-3">{inquiry.content}</div>
       </div>
 
       {/* Response Section */}

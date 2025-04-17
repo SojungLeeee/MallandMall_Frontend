@@ -158,13 +158,15 @@ const CustomerServiceScreen = () => {
 
   return (
     <div className="max-w-md mx-auto h-full flex flex-col bg-white relative">
-      <div className="flex items-center p-4 border-b">
+      <div className="flex items-center px-4 py-2 border-b">
         {/* ChevronLeft 클릭 시 홈으로 이동 */}
         <ChevronLeft
           onClick={handleChevronLeftClick}
           className="cursor-pointer"
         />
-        <div className="flex-grow text-center font-bold mr-5">고객문의</div>
+        <div className="flex-grow text-center text-xl font-bold mr-5">
+          고객 문의
+        </div>
       </div>
 
       <div className="flex border-b">
