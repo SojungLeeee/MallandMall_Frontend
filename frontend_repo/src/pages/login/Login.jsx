@@ -134,6 +134,8 @@ export async function action({ request }) {
     password: data.get("password"),
   };
 
+  console.log(authData);
+
   try {
     const response = await fetchAuthenticate(authData);
 

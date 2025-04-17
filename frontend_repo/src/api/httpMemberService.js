@@ -12,6 +12,8 @@ const instance = axios.create({
 export async function fetchSignup(user) {
   console.log("fetchSignup 요청");
   const response = await instance.post(`/signup`, user);
+  console.log("리스펀스 : ", response);
+  console.log("회원가입 완료");
   return response;
 }
 
