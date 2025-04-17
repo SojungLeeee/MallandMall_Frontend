@@ -206,7 +206,10 @@ function EnhancePage() {
   const canEnhance = selectedCoupons.length === 2;
 
   return (
-    <div className="px-6 py-2 bg-white h-full relative overflow-hidden">
+    <div
+      className="p-6 bg-white min-h-screen relative overflow-hidden"
+      style={{ width: "390px", height: "840px", margin: "0 auto" }}
+    >
       {/* 병합 애니메이션 */}
       <AnimatePresence>
         {showMergeAnimation && (
