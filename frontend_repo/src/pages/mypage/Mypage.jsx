@@ -2,7 +2,7 @@
 import { useLoaderData, useNavigate } from "react-router-dom";
 import { fetchMypageHome } from "../../api/httpMemberService";
 import { getAuthToken } from "../../context/tokenProviderService";
-import mart from "../../assets/images/logo/Loginimage.png"; // 이미지 경로
+import mart from "../../assets/images/logo/mallandmall 3d.png"; // 이미지 경로
 // 아이콘 import
 import { User, ShoppingBag, MessageSquare, LogOut } from "lucide-react";
 

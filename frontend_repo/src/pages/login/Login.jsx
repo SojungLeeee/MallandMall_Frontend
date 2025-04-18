@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 import { fetchAuthenticate } from "../../api/httpMemberService"; // 상대 경로로 가져오기
 import { setAuthToken } from "../../auth/tokenProviderService";
-import Logo from "../../assets/images/logo/Loginimage.png";
+import Logo from "../../assets/images/logo/mallandmall 3d.png";
 import KakaoLoginButton from "../../components/ui/button/KakaoLoginButton";
 import GoogleLoginButton from "../../components/ui/button/GoogleLoginButton";
 import NaverLoginButton from "../../components/ui/button/NaverLoginButton";

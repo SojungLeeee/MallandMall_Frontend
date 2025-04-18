@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { MdAdminPanelSettings } from "react-icons/md";
 import { IoMdNotificationsOutline } from "react-icons/io"; // 🔔 알림 아이콘
-import Logo from "../../../assets/images/logo/Logo.png";
+import Logo from "../../../assets/images/logo/mallandmall 3d.png";
 import { fetchAllAlerts } from "../../../api/alertService"; // 알림 조회 함수 import
 
 export default function Navbar() {
@@ -105,7 +105,7 @@ export default function Navbar() {
         <Link to="/" className="flex items-center">
           <img src={Logo} alt="Emart Logo" className="h-13 w-20" />
         </Link>
-        <nav className="flex items-center gap-3  pr-3  mb-3">
+        <nav className="flex items-center gap-3  pr-3">
           {/* 재고 조회 버튼 추가 */}
           {token && (
             <>
