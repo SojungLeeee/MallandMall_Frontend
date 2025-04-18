@@ -354,93 +354,97 @@ const NaverMap = () => {
               ? branch.branchName.slice(-4)
               : branch.branchName;
 
-          // 마커 크기와 디자인 설정
-          const markerWidth = 120;
+          // 마커 크기와 디자인 설정 - 크기 축소
+          const markerWidth = 90; // 120에서 90으로 축소
 
           // 심플한 마커 디자인 (재고 관련 요소 제거)
           const markerContent = document.createElement("div");
           markerContent.className = "branch-marker";
           markerContent.innerHTML = `
-          <div style="position: relative; width: ${markerWidth}px; text-align: center; transform: translateY(-10px);" data-branch="${branch.branchName}" data-exact-lat="${exactLat}" data-exact-lng="${exactLng}">
-            <div class="marker-bubble" style="
-              position: relative;
-              background-color: white;
-              border-radius: 8px;
-              box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
-              padding: 8px 10px;
+        <div style="position: relative; width: ${markerWidth}px; text-align: center; transform: translateY(-10px);" data-branch="${branch.branchName}" data-exact-lat="${exactLat}" data-exact-lng="${exactLng}">
+          <div class="marker-bubble" style="
+            position: relative;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
+            padding: 6px 8px; /* 패딩 축소 */
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            opacity: 0.85; /* 투명도 추가 */
+          ">
+            <!-- 매장 아이콘 -->
+            <div style="
+              min-width: 24px; /* 아이콘 영역 축소 */
+              height: 22px; /* 아이콘 영역 축소 */
+              border-radius: 6px;
               display: flex;
               align-items: center;
-              transition: all 0.3s ease;
-              border: 1px solid rgba(0, 0, 0, 0.05);
+              justify-content: center;
+              margin-right: 0px; /* 여백 축소 */
+              background-color: #f0f9ff;
+              color: #0369a1;
             ">
-              <!-- 매장 아이콘 -->
-              <div style="
-                min-width: 28px;
-                height: 28px;
-                border-radius: 6px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                margin-right: 8px;
-                background-color: #f0f9ff;
-                color: #0369a1;
-              ">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                  <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                </svg>
-              </div>
-              
-              <!-- 지점명 -->
-              <div style="
-                text-align: left;
-                overflow: hidden;
-                white-space: nowrap;
-                text-overflow: ellipsis;
-              ">
-                <div style="
-                  font-size: 16px;
-                  font-weight: 600;
-                  color: #374151;
-                  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-                ">
-                  ${shortBranchName}
-                </div>
-              </div>
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+              </svg>
             </div>
             
-            <!-- 삼각형 꼬리 -->
+            <!-- 지점명 -->
             <div style="
-              position: absolute;
-              left: 50%;
-              bottom: -8px;
-              transform: translateX(-50%) rotate(45deg);
-              width: 12px;
-              height: 12px;
-              background-color: white;
-              border-right: 1px solid rgba(0, 0, 0, 0.05);
-              border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-              box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.02);
-            "></div>
+              text-align: left;
+              overflow: hidden;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+              min-width: 50px; /* 최소 너비 지정 - 4글자 보장 */
+            ">
+              <div style="
+                font-size: 12px; /* 글꼴 크기 축소 */
+                font-weight: 600;
+                color: #374151;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+              ">
+                ${shortBranchName}
+              </div>
+            </div>
           </div>
           
-          <style>
-            .branch-marker {
-              transform-origin: bottom center;
-              transition: transform 0.3s ease;
-            }
-            
-            .branch-marker:hover {
-              transform: scale(1.05);
-              z-index: 999 !important;
-            }
-            
-            .branch-marker:hover .marker-bubble {
-              box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-              transform: translateY(-3px);
-            }
-          </style>
-        `;
+          <!-- 삼각형 꼬리 -->
+          <div style="
+            position: absolute;
+            left: 50%;
+            bottom: -8px;
+            transform: translateX(-50%) rotate(45deg);
+            width: 10px; /* 크기 축소 */
+            height: 10px; /* 크기 축소 */
+            background-color: white;
+            border-right: 1px solid rgba(0, 0, 0, 0.05);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.02);
+            opacity: 0.85; /* 투명도 추가 */
+          "></div>
+        </div>
+        
+        <style>
+          .branch-marker {
+            transform-origin: bottom center;
+            transition: transform 0.3s ease;
+          }
+          
+          .branch-marker:hover {
+            transform: scale(1.15); /* 호버 시 더 크게 확대 */
+            z-index: 999 !important;
+          }
+          
+          .branch-marker:hover .marker-bubble {
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+            transform: translateY(-3px);
+            opacity: 1; /* 호버 시 투명도 제거 */
+          }
+        </style>
+      `;
 
           const marker = new window.naver.maps.Marker({
             position: markerPosition,
@@ -469,8 +473,28 @@ const NaverMap = () => {
                   const branchName = markerDiv.getAttribute("data-branch");
                   if (branchName === branch.branchName) {
                     m.setZIndex(1000); // 선택된 마커의 z-index를 높임
+                    // 선택된 마커는 완전히 불투명하게 만들기
+                    const bubbleElement =
+                      element.querySelector(".marker-bubble");
+                    const tailElement = element.querySelector(
+                      ".branch-marker > div > div:last-child"
+                    );
+                    if (bubbleElement && tailElement) {
+                      bubbleElement.style.opacity = "1";
+                      tailElement.style.opacity = "1";
+                    }
                   } else {
                     m.setZIndex(50); // 다른 마커는 기본 z-index로 복원
+                    // 다른 마커들은 다시 반투명하게
+                    const bubbleElement =
+                      element.querySelector(".marker-bubble");
+                    const tailElement = element.querySelector(
+                      ".branch-marker > div > div:last-child"
+                    );
+                    if (bubbleElement && tailElement) {
+                      bubbleElement.style.opacity = "0.85";
+                      tailElement.style.opacity = "0.85";
+                    }
                   }
                 }
               }

@@ -39,8 +39,8 @@ import AllProducts from "./pages/product/AllProducts";
 import ProductDetail from "./components/ui/product/ProductDetail";
 import CategoryList from "./pages/category/CategoryList";
 import CategoryPage from "./pages/category/CategoryPage";
-import Search from "./pages/search/Search";
-import SearchPage from "./pages/search/SearchPage";
+import Search from "./pages/Search/Search";
+import SearchPage from "./pages/Search/SearchPage";
 
 // 리뷰 분석 페이지 import
 import ReviewAnalysis from "../src/components/ui/product/ReviewAnalysis";
