@@ -450,43 +450,54 @@ const NaverMap = () => {
           });
 
           // 마커 클릭 이벤트
-          window.naver.maps.Event.addListener(marker, "click", () => {
-            // 지점 상세 정보 가져오기
-            fetchBranchDetail(branch.branchName);
+          window.naver.maps.Event.addListener(
+            marker,
+            "click",
+            () => {
+              // 기존 선택된 지점 정보 클리어 후 새로 설정 (강제 리렌더링)
+              setSelectedBranch(null);
 
-            // 정확한 원본 좌표로 지도 이동 및 확대
-            moveAndZoomToLocation(exactLat, exactLng);
+              // 약간의 지연 후 새 정보 설정
+              setTimeout(() => {
+                // 기존 선택된 지점 정보 클리어 후 새로 설정 (강제 리렌더링)
+                fetchBranchDetail(branch.branchName);
 
-            // 선택된 마커를 맨 앞으로 가져오기
-            markers.forEach((m) => {
-              const element = m.getElement();
-              if (element) {
-                const markerDiv = element.querySelector(".branch-marker > div");
-                if (markerDiv) {
-                  const branchName = markerDiv.getAttribute("data-branch");
-                  if (branchName === branch.branchName) {
-                    m.setZIndex(1000); // 선택된 마커의 z-index를 높임
-                    // 선택된 마커는 완전히 불투명하게 만들기
-                    const bubbleElement = element.querySelector(".marker-bubble");
-                    const tailElement = element.querySelector(".branch-marker > div > div:last-child");
-                    if (bubbleElement && tailElement) {
-                      bubbleElement.style.opacity = "1";
-                      tailElement.style.opacity = "1";
-                    }
-                  } else {
-                    m.setZIndex(50); // 다른 마커는 기본 z-index로 복원
-                    // 다른 마커들은 다시 반투명하게
-                    const bubbleElement = element.querySelector(".marker-bubble");
-                    const tailElement = element.querySelector(".branch-marker > div > div:last-child");
-                    if (bubbleElement && tailElement) {
-                      bubbleElement.style.opacity = "0.85";
-                      tailElement.style.opacity = "0.85";
+                // 정확한 원본 좌표로 지도 이동 및 확대
+                moveAndZoomToLocation(exactLat, exactLng);
+
+                // 선택된 마커를 맨 앞으로 가져오기
+                markers.forEach((m) => {
+                  const element = m.getElement();
+                  if (element) {
+                    const markerDiv = element.querySelector(".branch-marker > div");
+                    if (markerDiv) {
+                      const branchName = markerDiv.getAttribute("data-branch");
+                      if (branchName === branch.branchName) {
+                        m.setZIndex(1000); // 선택된 마커의 z-index를 높임
+                        // 선택된 마커는 완전히 불투명하게 만들기
+                        const bubbleElement = element.querySelector(".marker-bubble");
+                        const tailElement = element.querySelector(".branch-marker > div > div:last-child");
+                        if (bubbleElement && tailElement) {
+                          bubbleElement.style.opacity = "1";
+                          tailElement.style.opacity = "1";
+                        }
+                      } else {
+                        m.setZIndex(50); // 다른 마커는 기본 z-index로 복원
+                        // 다른 마커들은 다시 반투명하게
+                        const bubbleElement = element.querySelector(".marker-bubble");
+                        const tailElement = element.querySelector(".branch-marker > div > div:last-child");
+                        if (bubbleElement && tailElement) {
+                          bubbleElement.style.opacity = "0.85";
+                          tailElement.style.opacity = "0.85";
+                        }
+                      }
                     }
                   }
-                }
-              }
-            });
-          });
+                });
+              });
+            },
+            10
+          );
 
           newMarkers.push(marker);
         }
@@ -494,7 +505,7 @@ const NaverMap = () => {
 
       setMarkers(newMarkers);
     }
-  }, [map, branches]);
+  }, [map, branches, selectedBranch]);
 
   // 특정 지점 상세 정보 가져오기
   const fetchBranchDetail = async (branchName) => {
@@ -502,7 +513,8 @@ const NaverMap = () => {
       // 지점 목록에서 선택된 지점 정보 찾기
       const selectedBranch = branches.find((b) => b.branchName === branchName);
       if (selectedBranch) {
-        setSelectedBranch(selectedBranch);
+        // 새 객체를 생성하여 상태 업데이트 - 리액트가 변경을 감지하도록
+        setSelectedBranch({ ...selectedBranch });
       }
     } catch (err) {
       console.error("지점 상세 정보 로드 실패:", err);
@@ -513,7 +525,7 @@ const NaverMap = () => {
   return (
     <div className="h-full w-full">
       {/* 지도 컨테이너 */}
-      <div className="relative w-full h-full md:h-80 lg:h-96 rounded-lg overflow-hidden shadow-md">
+      <div className="relative w-full h-96 md:h-80 lg:h-96 rounded-lg overflow-hidden shadow-md">
         {loading && (
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30 bg-white bg-opacity-80 p-4 rounded-lg font-bold">
             로딩 중...
