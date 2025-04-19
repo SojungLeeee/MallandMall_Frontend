@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:8090/emart/auth/kakao";
+const BASE_URL = "https://morek9.click/auth/kakao";
 
 // 카카오 로그인 요청 함수
 export const kakaoLogin = async (code) => {

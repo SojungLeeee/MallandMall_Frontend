@@ -23,7 +23,7 @@ const InquiryEditForm = ({ inquiry, onBack }) => {
     try {
       // 실제 API 엔드포인트는 /update/{questionId}로 수정
       const response = await axios.put(
-        `http://localhost:8090/emart/questions/update/${inquiry.id}`, // questionId를 URL에 추가
+        `https://morek9.click/questions/update/${inquiry.id}`, // questionId를 URL에 추가
         {
           title: title,
           content: content,
@@ -51,19 +51,14 @@ const InquiryEditForm = ({ inquiry, onBack }) => {
         <button onClick={onBack}>
           <ChevronLeft />
         </button>
-        <div className="flex-grow text-center text-xl font-bold mr-5">
-          문의 수정
-        </div>
+        <div className="flex-grow text-center text-xl font-bold mr-5">문의 수정</div>
       </div>
 
       {/* 폼 */}
       <form onSubmit={handleSubmit} className="flex-grow p-4 flex flex-col">
         {/* 제목 (가로 정렬) */}
         <div className="mb-4 flex items-center gap-4">
-          <label
-            htmlFor="title"
-            className="min-w-[80px] font-medium text-gray-700"
-          >
+          <label htmlFor="title" className="min-w-[80px] font-medium text-gray-700">
             제목
           </label>
           <input
@@ -79,10 +74,7 @@ const InquiryEditForm = ({ inquiry, onBack }) => {
 
         {/* 내용 (가로 정렬) */}
         <div className="mb-4 flex gap-4 items-start">
-          <label
-            htmlFor="content"
-            className="min-w-[80px] pt-2 font-medium text-gray-700"
-          >
+          <label htmlFor="content" className="min-w-[80px] pt-2 font-medium text-gray-700">
             내용
           </label>
           <textarea
@@ -95,10 +87,7 @@ const InquiryEditForm = ({ inquiry, onBack }) => {
           />
         </div>
 
-        <button
-          type="submit"
-          className="w-full bg-[#787669] text-white py-3 rounded-sm"
-        >
+        <button type="submit" className="w-full bg-[#787669] text-white py-3 rounded-sm">
           수정 완료
         </button>
       </form>

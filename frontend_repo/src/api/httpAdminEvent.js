@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Axios 인스턴스 설정
 const instance = axios.create({
-  baseURL: "http://localhost:8090/emart", // 실제 URL이 맞는지 확인
+  baseURL: "https://morek9.click", // 실제 URL이 맞는지 확인
   timeout: 10000,
   headers: { "Content-Type": "application/json" },
 });

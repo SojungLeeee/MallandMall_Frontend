@@ -17,7 +17,7 @@ export default function FindId() {
     }
 
     try {
-      const response = await axios.post("http://localhost:8090/emart/findid", {
+      const response = await axios.post("https://morek9.click/findid", {
         userName,
         email,
       });
@@ -52,10 +52,7 @@ export default function FindId() {
       >
         {/* 이름 입력 (라벨 상단 좌측) */}
         <div className="mb-5">
-          <label
-            htmlFor="userName"
-            className="block text-sm font-medium text-gray-700 mb-2 text-left"
-          >
+          <label htmlFor="userName" className="block text-sm font-medium text-gray-700 mb-2 text-left">
             이름
           </label>
           <input
@@ -76,10 +73,7 @@ export default function FindId() {
 
         {/* 이메일 입력 (라벨 상단 좌측) */}
         <div className="mb-6">
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium text-gray-700 mb-2 text-left"
-          >
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2 text-left">
             이메일
           </label>
           <input
@@ -108,9 +102,7 @@ export default function FindId() {
         </button>
       </form>
 
-      {message && (
-        <p className="mt-4 text-sm text-center text-red-500">{message}</p>
-      )}
+      {message && <p className="mt-4 text-sm text-center text-red-500">{message}</p>}
 
       {/* 자동완성 배경색 제거를 위한 스타일 */}
       <style>

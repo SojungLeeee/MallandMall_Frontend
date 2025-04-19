@@ -28,14 +28,11 @@ export default function ResetPassword() {
     }
 
     try {
-      const response = await axios.post(
-        "http://localhost:8090/emart/reset-password",
-        {
-          userId: formData.userId,
-          phoneNumber: formData.phone,
-          newPassword: formData.newPassword,
-        }
-      );
+      const response = await axios.post("https://morek9.click/reset-password", {
+        userId: formData.userId,
+        phoneNumber: formData.phone,
+        newPassword: formData.newPassword,
+      });
 
       if (response.status === 200) {
         alert("비밀번호가 성공적으로 재설정되었습니다.");
@@ -52,9 +49,7 @@ export default function ResetPassword() {
   return (
     <div className="flex justify-center items-center h-full bg-white p-5">
       <div className="bg-white p-8 rounded-lg shadow-md border border-gray-200 w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center text-black">
-          비밀번호 재설정
-        </h2>
+        <h2 className="text-2xl font-bold mb-6 text-center text-black">비밀번호 재설정</h2>
 
         {/* 자동완성 배경색 제거를 위한 스타일 */}
         <style>
@@ -145,9 +140,7 @@ export default function ResetPassword() {
         </form>
 
         {/* 에러 메시지 */}
-        {errorMessage && (
-          <p className="text-red-600 text-center mt-4">{errorMessage}</p>
-        )}
+        {errorMessage && <p className="text-red-600 text-center mt-4">{errorMessage}</p>}
       </div>
     </div>
   );

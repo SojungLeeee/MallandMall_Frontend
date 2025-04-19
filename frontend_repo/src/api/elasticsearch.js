@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: "http://localhost:8090/emart", // 컨텍스트 경로 포함
+  baseURL: "https://morek9.click", // 컨텍스트 경로 포함
   timeout: 50000,
   headers: { "Content-Type": "application/json" },
 });

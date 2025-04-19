@@ -2,7 +2,7 @@ import axios from "axios";
 
 // 기본 API 설정
 const httpAdminquestion = axios.create({
-  baseURL: "http://localhost:8090/emart", // 공통 베이스 URL 설정
+  baseURL: "https://morek9.click", // 공통 베이스 URL 설정
   headers: {
     "Content-Type": "application/json",
   },

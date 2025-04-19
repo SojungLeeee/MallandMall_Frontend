@@ -1,18 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  FaArrowUp,
-  FaArrowDown,
-  FaMinus,
-  FaFire,
-  FaRedo,
-  FaClock,
-} from "react-icons/fa";
+import { FaArrowUp, FaArrowDown, FaMinus, FaFire, FaRedo, FaClock } from "react-icons/fa";
 import axios from "axios";
 
 // API 호출용 axios 인스턴스 생성
 const instance = axios.create({
-  baseURL: "http://localhost:8090/emart", // baseURL 설정 (프로젝트에 맞게 수정 필요)
+  baseURL: "https://morek9.click", // baseURL 설정 (프로젝트에 맞게 수정 필요)
   timeout: 50000,
   headers: { "Content-Type": "application/json" },
 });
@@ -87,11 +80,7 @@ const RealTimeKeywords = ({ limit = 10, onKeywordClick = null }) => {
         params: { keyword, limit: 5 },
       });
 
-      if (
-        response.status === 200 &&
-        response.data &&
-        response.data.length > 0
-      ) {
+      if (response.status === 200 && response.data && response.data.length > 0) {
         // 관련 상품이 있으면 상품 목록 페이지로 이동
         navigate(`/products/search?keyword=${encodeURIComponent(keyword)}`);
       } else {
@@ -125,15 +114,12 @@ const RealTimeKeywords = ({ limit = 10, onKeywordClick = null }) => {
       "보조배터리",
     ];
 
-    return Array.from(
-      { length: Math.min(count, sampleKeywords.length) },
-      (_, i) => ({
-        rank: i + 1,
-        keyword: sampleKeywords[i],
-        count: Math.floor(Math.random() * 100) + 10,
-        rankChange: Math.floor(Math.random() * 7) - 3, // -3 ~ +3
-      })
-    );
+    return Array.from({ length: Math.min(count, sampleKeywords.length) }, (_, i) => ({
+      rank: i + 1,
+      keyword: sampleKeywords[i],
+      count: Math.floor(Math.random() * 100) + 10,
+      rankChange: Math.floor(Math.random() * 7) - 3, // -3 ~ +3
+    }));
   };
 
   // 순위 변동 아이콘 렌더링
@@ -206,10 +192,7 @@ const RealTimeKeywords = ({ limit = 10, onKeywordClick = null }) => {
         </div>
         <div className="py-2 text-center text-red-500 text-sm">
           {error}
-          <button
-            onClick={fetchTrendingKeywords}
-            className="ml-2 text-blue-500 hover:underline flex items-center"
-          >
+          <button onClick={fetchTrendingKeywords} className="ml-2 text-blue-500 hover:underline flex items-center">
             <FaRedo size={10} className="mr-1" /> 다시 시도
           </button>
         </div>
@@ -227,11 +210,7 @@ const RealTimeKeywords = ({ limit = 10, onKeywordClick = null }) => {
         <div className="flex items-center text-xs text-gray-500">
           <FaClock className="mr-1" size={10} />
           <span>{formatLastUpdated()}</span>
-          <button
-            onClick={fetchTrendingKeywords}
-            className="ml-2 text-blue-500 hover:text-blue-700"
-            title="새로고침"
-          >
+          <button onClick={fetchTrendingKeywords} className="ml-2 text-blue-500 hover:text-blue-700" title="새로고침">
             <FaRedo size={10} />
           </button>
         </div>
@@ -242,9 +221,7 @@ const RealTimeKeywords = ({ limit = 10, onKeywordClick = null }) => {
           <li key={item.rank} className="flex items-center py-1">
             <span
               className={`flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center mr-1.5 text-xs font-medium ${
-                item.rank <= 3
-                  ? "bg-orange-100 text-orange-800"
-                  : "bg-gray-100 text-gray-700"
+                item.rank <= 3 ? "bg-orange-100 text-orange-800" : "bg-gray-100 text-gray-700"
               }`}
             >
               {item.rank}
@@ -255,9 +232,7 @@ const RealTimeKeywords = ({ limit = 10, onKeywordClick = null }) => {
             >
               {item.keyword}
             </button>
-            <div className="flex-shrink-0 ml-1">
-              {renderRankChange(item.rankChange)}
-            </div>
+            <div className="flex-shrink-0 ml-1">{renderRankChange(item.rankChange)}</div>
           </li>
         ))}
       </ul>

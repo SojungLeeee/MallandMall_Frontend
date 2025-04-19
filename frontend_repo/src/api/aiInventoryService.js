@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: "http://localhost:8090/emart/api/inventory-analysis",
+  baseURL: "https://morek9.click/api/inventory-analysis",
   timeout: 10000,
   headers: { "Content-Type": "application/json" },
 });

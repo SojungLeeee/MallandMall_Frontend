@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Axios 인스턴스 설정
 const instance = axios.create({
-  baseURL: "http://localhost:8090/emart/offprice",
+  baseURL: "https://morek9.click/offprice",
   timeout: 10000,
   headers: { "Content-Type": "application/json" },
 });

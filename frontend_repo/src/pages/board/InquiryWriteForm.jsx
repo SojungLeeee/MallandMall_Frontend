@@ -18,7 +18,7 @@ const InquiryWriteForm = ({ onBack }) => {
     try {
       // 실제 API 엔드포인트
       const response = await axios.post(
-        "http://localhost:8090/emart/questions/add", // API 엔드포인트
+        "https://morek9.click/questions/add", // API 엔드포인트
         {
           userId: userId, // 인증된 사용자 ID
           title: title,
@@ -47,19 +47,14 @@ const InquiryWriteForm = ({ onBack }) => {
         <button onClick={onBack}>
           <ChevronLeft />
         </button>
-        <div className="flex-grow text-center text-xl font-bold mr-5">
-          문의 작성
-        </div>
+        <div className="flex-grow text-center text-xl font-bold mr-5">문의 작성</div>
       </div>
 
       {/* 폼 */}
       <form onSubmit={handleSubmit} className="flex-grow p-4 flex flex-col">
         {/* 제목 (가로 정렬) */}
         <div className="mb-4 flex items-center gap-4">
-          <label
-            htmlFor="title"
-            className="min-w-[80px] font-medium text-gray-700"
-          >
+          <label htmlFor="title" className="min-w-[80px] font-medium text-gray-700">
             제목
           </label>
           <input
@@ -75,10 +70,7 @@ const InquiryWriteForm = ({ onBack }) => {
 
         {/* 내용 (가로 정렬) */}
         <div className="mb-4 flex gap-4 items-start">
-          <label
-            htmlFor="content"
-            className="min-w-[80px] pt-2 font-medium text-gray-700"
-          >
+          <label htmlFor="content" className="min-w-[80px] pt-2 font-medium text-gray-700">
             내용
           </label>
           <textarea
@@ -91,10 +83,7 @@ const InquiryWriteForm = ({ onBack }) => {
           />
         </div>
 
-        <button
-          type="submit"
-          className="w-full bg-[#787669] text-white py-3 rounded-sm"
-        >
+        <button type="submit" className="w-full bg-[#787669] text-white py-3 rounded-sm">
           문의 작성 완료
         </button>
       </form>

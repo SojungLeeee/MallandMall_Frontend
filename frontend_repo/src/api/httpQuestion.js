@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Axios 인스턴스 설정
 const instance = axios.create({
-  baseURL: "http://localhost:8090/emart", // 베이스 URL 설정
+  baseURL: "https://morek9.click", // 베이스 URL 설정
   timeout: 10000,
   headers: { "Content-Type": "application/json" },
 });
@@ -15,10 +15,7 @@ export async function getUserQuestions(userId, token) {
     console.log("Response from getUserQuestions: ", response.data); // 서버 응답 확인
     return response.data;
   } catch (error) {
-    console.error(
-      "❌ 문의 목록 불러오기 실패:",
-      error.response ? error.response.data : error
-    );
+    console.error("❌ 문의 목록 불러오기 실패:", error.response ? error.response.data : error);
     throw error;
   }
 }
@@ -32,10 +29,7 @@ export async function deleteQuestion(questionId, token) {
     return response.data; // 성공적으로 삭제된 경우 서버의 응답 반환
   } catch (error) {
     console.log("토큰 값:", token);
-    console.error(
-      "❌ 질문 삭제 실패:",
-      error.response ? error.response.data : error
-    );
+    console.error("❌ 질문 삭제 실패:", error.response ? error.response.data : error);
     throw error;
   }
 }
@@ -51,10 +45,7 @@ export async function updateAdminAnswer(answerId, content, token) {
     );
     return response.data; // 성공 메시지 반환
   } catch (error) {
-    console.error(
-      "❌ 답변 수정 실패:",
-      error.response ? error.response.data : error
-    );
+    console.error("❌ 답변 수정 실패:", error.response ? error.response.data : error);
     throw error;
   }
 }
@@ -89,10 +80,7 @@ export async function addAdminAnswer(questionId, content, token) {
     );
     return response.data; // 성공 메시지 반환
   } catch (error) {
-    console.error(
-      "❌ 답변 등록 실패:",
-      error.response ? error.response.data : error
-    );
+    console.error("❌ 답변 등록 실패:", error.response ? error.response.data : error);
     throw error;
   }
 }
@@ -107,10 +95,7 @@ export async function deleteAdminAnswer(answerId, token) {
     });
     return response.data; // 성공 메시지 반환
   } catch (error) {
-    console.error(
-      "❌ 답변 삭제 실패:",
-      error.response ? error.response.data : error
-    );
+    console.error("❌ 답변 삭제 실패:", error.response ? error.response.data : error);
     throw error;
   }
 }

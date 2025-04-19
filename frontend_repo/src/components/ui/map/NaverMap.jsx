@@ -29,7 +29,7 @@ const NaverMap = () => {
     const fetchBranches = async () => {
       try {
         console.log("지점 데이터 요청 시작");
-        const response = await axios.get("emart/admin/branch/all");
+        const response = await axios.get("https://morek9.click/admin/branch/all");
         console.log("지점 데이터 응답:", response.data);
         setBranches(response.data);
       } catch (err) {
@@ -59,7 +59,7 @@ const NaverMap = () => {
       setProductError(null);
 
       // 상품 검색 API 호출
-      const response = await axios.get("emart/product/search", {
+      const response = await axios.get("https://morek9.click/product/search", {
         params: {
           searchType: searchType,
           keyword: searchTerm.trim(),
@@ -107,9 +107,7 @@ const NaverMap = () => {
 
     try {
       // 지점별 특정 상품 수량 조회
-      const response = await axios.get(
-        `emart/inventory/product/${productCode}/branches`
-      );
+      const response = await axios.get(`https://morek9.click/inventory/product/${productCode}/branches`);
       setBranchInventory(response.data);
     } catch (err) {
       console.error("상품별 인벤토리 데이터 로드 실패:", err);
@@ -407,11 +405,7 @@ const NaverMap = () => {
             // 가장 가까운 빈 위치 찾기
             let found = false;
             for (let distance = 1; distance <= 3 && !found; distance++) {
-              for (
-                let dirIndex = 0;
-                dirIndex < directions.length && !found;
-                dirIndex++
-              ) {
+              for (let dirIndex = 0; dirIndex < directions.length && !found; dirIndex++) {
                 const [dy, dx] = directions[dirIndex];
                 const newGridLat = gridLat + dy * markerGridSize * distance;
                 const newGridLng = gridLng + dx * markerGridSize * distance;
@@ -434,10 +428,7 @@ const NaverMap = () => {
           const markerPosition = new window.naver.maps.LatLng(gridLat, gridLng);
 
           // 지점명 우측 4글자만 표시하도록 처리
-          const shortBranchName =
-            branch.branchName.length > 4
-              ? branch.branchName.slice(-4)
-              : branch.branchName;
+          const shortBranchName = branch.branchName.length > 4 ? branch.branchName.slice(-4) : branch.branchName;
 
           // 마커 크기 축소 (글자 4글자가 들어갈 수 있도록 충분한 너비 확보)
           const markerWidth = 90; // 글자가 잘리지 않도록 너비 조정
@@ -445,10 +436,7 @@ const NaverMap = () => {
           // 첫번째 코드에서 가져온 심플한 마커 디자인 (재고 관련 정보 유지)
           const quantity = branchInventory[branch.branchName] || 0;
           const markerColor = quantity > 0 ? "#3B82F6" : "#9CA3AF"; // 파란색 또는 회색
-          const shadowColor =
-            quantity > 0
-              ? "rgba(59, 130, 246, 0.25)"
-              : "rgba(156, 163, 175, 0.25)";
+          const shadowColor = quantity > 0 ? "rgba(59, 130, 246, 0.25)" : "rgba(156, 163, 175, 0.25)";
 
           const markerContent = document.createElement("div");
           markerContent.className = "branch-marker";
@@ -584,11 +572,8 @@ const NaverMap = () => {
                   if (branchName === branch.branchName) {
                     m.setZIndex(1000); // 선택된 마커의 z-index를 높임
                     // 선택된 마커는 완전히 불투명하게 만들기
-                    const bubbleElement =
-                      element.querySelector(".marker-bubble");
-                    const tailElement = element.querySelector(
-                      ".branch-marker > div > div:last-child"
-                    );
+                    const bubbleElement = element.querySelector(".marker-bubble");
+                    const tailElement = element.querySelector(".branch-marker > div > div:last-child");
                     if (bubbleElement && tailElement) {
                       bubbleElement.style.opacity = "1";
                       tailElement.style.opacity = "1";
@@ -596,11 +581,8 @@ const NaverMap = () => {
                   } else {
                     m.setZIndex(50); // 다른 마커는 기본 z-index로 복원
                     // 다른 마커들은 다시 반투명하게
-                    const bubbleElement =
-                      element.querySelector(".marker-bubble");
-                    const tailElement = element.querySelector(
-                      ".branch-marker > div > div:last-child"
-                    );
+                    const bubbleElement = element.querySelector(".marker-bubble");
+                    const tailElement = element.querySelector(".branch-marker > div > div:last-child");
                     if (bubbleElement && tailElement) {
                       bubbleElement.style.opacity = "0.85";
                       tailElement.style.opacity = "0.85";
@@ -641,9 +623,7 @@ const NaverMap = () => {
     return (
       <div
         className={`bg-white border rounded-lg shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition-all ${
-          isSelected
-            ? "border-blue-500 ring-2 ring-blue-200"
-            : "hover:scale-105"
+          isSelected ? "border-blue-500 ring-2 ring-blue-200" : "hover:scale-105"
         }`}
         onClick={() => onClick(product)}
       >
@@ -657,23 +637,15 @@ const NaverMap = () => {
                 className="absolute inset-0 w-full h-full object-cover"
               />
             ) : (
-              <div className="absolute inset-0 flex items-center justify-center text-gray-400">
-                이미지 없음
-              </div>
+              <div className="absolute inset-0 flex items-center justify-center text-gray-400">이미지 없음</div>
             )}
           </div>
 
           {/* 상품 정보 */}
           <div className="p-3">
-            <div className="text-xs font-semibold text-blue-600 mb-1">
-              {product.category}
-            </div>
-            <h3 className="font-medium text-gray-900 text-sm mb-1 truncate">
-              {product.productName}
-            </h3>
-            <div className="text-sm font-bold text-green-600">
-              {product.price?.toLocaleString() || 0}원
-            </div>
+            <div className="text-xs font-semibold text-blue-600 mb-1">{product.category}</div>
+            <h3 className="font-medium text-gray-900 text-sm mb-1 truncate">{product.productName}</h3>
+            <div className="text-sm font-bold text-green-600">{product.price?.toLocaleString() || 0}원</div>
 
             {/* 평점 표시 (있는 경우) */}
             {product.averageRating > 0 && (
@@ -684,9 +656,7 @@ const NaverMap = () => {
                       key={star}
                       xmlns="http://www.w3.org/2000/svg"
                       className={`h-3 w-3 ${
-                        star <= Math.round(product.averageRating)
-                          ? "text-yellow-400"
-                          : "text-gray-300"
+                        star <= Math.round(product.averageRating) ? "text-yellow-400" : "text-gray-300"
                       }`}
                       viewBox="0 0 20 20"
                       fill="currentColor"
@@ -695,9 +665,7 @@ const NaverMap = () => {
                     </svg>
                   ))}
                 </div>
-                <span className="text-xs text-gray-500">
-                  {product.averageRating.toFixed(1)}
-                </span>
+                <span className="text-xs text-gray-500">{product.averageRating.toFixed(1)}</span>
               </div>
             )}
           </div>
@@ -725,11 +693,7 @@ const NaverMap = () => {
               type="text"
               value={searchTerm}
               onChange={handleSearchTermChange}
-              placeholder={
-                searchType === "productName"
-                  ? "상품명을 입력하세요"
-                  : "카테고리를 입력하세요"
-              }
+              placeholder={searchType === "productName" ? "상품명을 입력하세요" : "카테고리를 입력하세요"}
               className="w-full px-2 py-2 pr-1 border border-gray-300 rounded-sm"
             />
           </div>
@@ -760,27 +724,13 @@ const NaverMap = () => {
                 />
               )}
               <div>
-                <h2 className="text-lg font-bold text-gray-900">
-                  {selectedProduct.productName}
-                </h2>
-                <div className="text-sm text-gray-600 mb-1">
-                  카테고리: {selectedProduct.category}
-                </div>
-                <div className="font-medium text-green-600">
-                  가격: {selectedProduct.price?.toLocaleString() || 0}원
-                </div>
+                <h2 className="text-lg font-bold text-gray-900">{selectedProduct.productName}</h2>
+                <div className="text-sm text-gray-600 mb-1">카테고리: {selectedProduct.category}</div>
+                <div className="font-medium text-green-600">가격: {selectedProduct.price?.toLocaleString() || 0}원</div>
               </div>
             </div>
-            <button
-              className="text-gray-500 hover:text-gray-700"
-              onClick={() => setSelectedProduct(null)}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
+            <button className="text-gray-500 hover:text-gray-700" onClick={() => setSelectedProduct(null)}>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path
                   fillRule="evenodd"
                   d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
@@ -814,9 +764,7 @@ const NaverMap = () => {
             <button
               onClick={toggleGPS}
               className={`flex items-center justify-center w-10 h-10 rounded-full shadow-lg focus:outline-none transition-all duration-300 ${
-                gpsEnabled
-                  ? "bg-blue-500 text-white"
-                  : "bg-white text-gray-700 hover:bg-gray-50"
+                gpsEnabled ? "bg-blue-500 text-white" : "bg-white text-gray-700 hover:bg-gray-50"
               }`}
               title={gpsEnabled ? "GPS 끄기" : "내 위치 찾기"}
               style={{
@@ -865,9 +813,7 @@ const NaverMap = () => {
               </svg>
             </div>
             <div className="flex-1 text-center">
-              <h3 className="text-xl font-bold text-gray-900 mb-1">
-                {selectedBranch.branchName}
-              </h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-1">{selectedBranch.branchName}</h3>
               <div className="flex items-center justify-center text-gray-500 text-sm">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -891,14 +837,10 @@ const NaverMap = () => {
                   onClick={() => {
                     try {
                       // 클립보드에 주소 복사
-                      navigator.clipboard.writeText(
-                        selectedBranch.branchAddress
-                      );
+                      navigator.clipboard.writeText(selectedBranch.branchAddress);
 
                       // 알림 표시 (선택적)
-                      alert(
-                        `"${selectedBranch.branchName}" 주소가 클립보드에 복사되었습니다.`
-                      );
+                      alert(`"${selectedBranch.branchName}" 주소가 클립보드에 복사되었습니다.`);
                     } catch (err) {
                       console.error("주소 복사 실패:", err);
                       alert("주소 복사에 실패했습니다.");
@@ -918,14 +860,7 @@ const NaverMap = () => {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                   >
-                    <rect
-                      x="9"
-                      y="9"
-                      width="13"
-                      height="13"
-                      rx="2"
-                      ry="2"
-                    ></rect>
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                   </svg>
                 </button>
@@ -946,15 +881,10 @@ const NaverMap = () => {
                 )}
                 <div>
                   <p className="font-medium">
-                    <span className="text-blue-600">
-                      {selectedProduct.productName}
-                    </span>
+                    <span className="text-blue-600">{selectedProduct.productName}</span>
                   </p>
                   <p className="text-sm mt-1">
-                    재고 수량:{" "}
-                    <span className="font-bold">
-                      {selectedBranch.goodsCount}개
-                    </span>
+                    재고 수량: <span className="font-bold">{selectedBranch.goodsCount}개</span>
                   </p>
                 </div>
               </div>
@@ -970,20 +900,13 @@ const NaverMap = () => {
           <p className="mt-2 text-gray-600">상품을 검색 중입니다...</p>
         </div>
       ) : productError ? (
-        <div className="p-4 bg-red-50 text-red-600 rounded-lg text-center">
-          {productError}
-        </div>
+        <div className="p-4 bg-red-50 text-red-600 rounded-lg text-center">{productError}</div>
       ) : products.length > 0 ? (
         <div className="mt-4">
           <div className="flex justify-between items-center mb-3 px-2">
-            <h2 className="text-lg font-semibold">
-              검색 결과 ({products.length}개)
-            </h2>
+            <h2 className="text-lg font-semibold">검색 결과 ({products.length}개)</h2>
             {selectedProduct && (
-              <button
-                className="text-sm text-gray-600 hover:text-gray-800"
-                onClick={() => setSelectedProduct(null)}
-              >
+              <button className="text-sm text-gray-600 hover:text-gray-800" onClick={() => setSelectedProduct(null)}>
                 선택 초기화
               </button>
             )}
@@ -996,9 +919,7 @@ const NaverMap = () => {
                 key={product.productCode}
                 product={product}
                 onClick={handleProductSelect}
-                isSelected={
-                  selectedProduct?.productCode === product.productCode
-                }
+                isSelected={selectedProduct?.productCode === product.productCode}
               />
             ))}
           </div>

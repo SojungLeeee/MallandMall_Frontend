@@ -15,10 +15,7 @@ export async function getUserQuestions(userId, token) {
     return response.data;
   } catch (error) {
     console.log("토큰 값:", token);
-    console.error(
-      "❌ 문의 목록 불러오기 실패:",
-      error.response ? error.response.data : error
-    );
+    console.error("❌ 문의 목록 불러오기 실패:", error.response ? error.response.data : error);
     throw error;
   }
 }
@@ -26,19 +23,13 @@ export async function getUserQuestions(userId, token) {
 // 질문 삭제하기 함수
 export async function deleteQuestion(questionId, token) {
   try {
-    const response = await axios.delete(
-      `http://localhost:8090/emart/questions/delete/${questionId}`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
+    const response = await axios.delete(`https://morek9.click/questions/delete/${questionId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
     return response.data; // 성공적으로 삭제된 경우 서버의 응답 반환
   } catch (error) {
     console.log("토큰 값:", token);
-    console.error(
-      "❌ 질문 삭제 실패:",
-      error.response ? error.response.data : error
-    );
+    console.error("❌ 질문 삭제 실패:", error.response ? error.response.data : error);
     throw error;
   }
 }
@@ -70,14 +61,11 @@ const CustomerServiceScreen = () => {
     if (!userId || !token) return;
 
     try {
-      const response = await axios.get(
-        `http://localhost:8090/emart/questions/${userId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axios.get(`https://morek9.click/questions/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       // API 응답 데이터 변환
       const formattedData = response.data.map((item) => ({
@@ -145,34 +133,23 @@ const CustomerServiceScreen = () => {
   }
 
   if (isEditing) {
-    return (
-      <InquiryEditForm inquiry={selectedConversation} onBack={handleBack} />
-    );
+    return <InquiryEditForm inquiry={selectedConversation} onBack={handleBack} />;
   }
 
   if (selectedConversation) {
-    return (
-      <ConversationView inquiry={selectedConversation} onBack={handleBack} />
-    );
+    return <ConversationView inquiry={selectedConversation} onBack={handleBack} />;
   }
 
   return (
     <div className="max-w-md mx-auto h-full flex flex-col bg-white relative">
       <div className="flex items-center px-4 py-2 border-b">
         {/* ChevronLeft 클릭 시 홈으로 이동 */}
-        <ChevronLeft
-          onClick={handleChevronLeftClick}
-          className="cursor-pointer"
-        />
-        <div className="flex-grow text-center text-xl font-bold mr-5">
-          고객 문의
-        </div>
+        <ChevronLeft onClick={handleChevronLeftClick} className="cursor-pointer" />
+        <div className="flex-grow text-center text-xl font-bold mr-5">고객 문의</div>
       </div>
 
       <div className="flex border-b">
-        <div className="flex-1 text-center p-3 font-bold border-b-2 border-[#787669] text-[#787669]">
-          문의내역
-        </div>
+        <div className="flex-1 text-center p-3 font-bold border-b-2 border-[#787669] text-[#787669]">문의내역</div>
       </div>
 
       <div
@@ -184,36 +161,19 @@ const CustomerServiceScreen = () => {
       >
         {inquiries.length > 0 ? (
           inquiries.map((inquiry) => (
-            <div
-              key={inquiry.id}
-              className="p-4 border-b hover:bg-gray-100 flex items-center justify-between"
-            >
-              <div
-                onClick={() => setSelectedConversation(inquiry)}
-                className="flex-grow"
-              >
+            <div key={inquiry.id} className="p-4 border-b hover:bg-gray-100 flex items-center justify-between">
+              <div onClick={() => setSelectedConversation(inquiry)} className="flex-grow">
                 <div className="text-sm">{inquiry.title}</div>
-                <div className="text-xs text-gray-400 mt-1">
-                  {inquiry.createDate}
-                </div>
+                <div className="text-xs text-gray-400 mt-1">{inquiry.createDate}</div>
                 <div className="text-xs text-gray-500 mt-1">
                   상태:{" "}
-                  <span
-                    className={`font-bold ${
-                      inquiry.status === "ANSWERED"
-                        ? "text-green-500"
-                        : "text-red-500"
-                    }`}
-                  >
+                  <span className={`font-bold ${inquiry.status === "ANSWERED" ? "text-green-500" : "text-red-500"}`}>
                     {inquiry.status}
                   </span>
                 </div>
               </div>
               <div className="flex items-center">
-                <button
-                  onClick={() => onEditClick(inquiry)}
-                  className="ml-2 p-2 hover:bg-gray-200 rounded-full"
-                >
+                <button onClick={() => onEditClick(inquiry)} className="ml-2 p-2 hover:bg-gray-200 rounded-full">
                   <Edit size={24} className="text-gray-500" />
                 </button>
                 <button
@@ -226,18 +186,13 @@ const CustomerServiceScreen = () => {
             </div>
           ))
         ) : (
-          <div className="text-center text-gray-500 p-4">
-            문의 내역이 없습니다.
-          </div>
+          <div className="text-center text-gray-500 p-4">문의 내역이 없습니다.</div>
         )}
       </div>
 
       {/* 문의 작성하기 버튼 */}
       <div className="p-4 border-t bg-white">
-        <button
-          onClick={onWriteClick}
-          className="px-4 py-3 bg-[#787669] text-white rounded-sm w-full"
-        >
+        <button onClick={onWriteClick} className="px-4 py-3 bg-[#787669] text-white rounded-sm w-full">
           문의 작성하기
         </button>
       </div>

@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Axios 인스턴스 설정
 const instance = axios.create({
-  baseURL: "http://localhost:8090/emart", // 실제 URL이 맞는지 확인
+  baseURL: "https://morek9.click", // 실제 URL이 맞는지 확인
   timeout: 10000,
   headers: { "Content-Type": "application/json" },
 });
@@ -11,9 +11,7 @@ const instance = axios.create({
 export async function fetchFindProductCode(productCode) {
   try {
     console.log("fetchFindProductCode 요청");
-    const response = await instance.get(
-      `/admin/findByProductCode/${productCode}`
-    );
+    const response = await instance.get(`/admin/findByProductCode/${productCode}`);
 
     console.log("상품 목록 응답:", response); // 응답 확인
 
@@ -45,9 +43,7 @@ export async function fetchFindAllProductCode() {
 export async function fetchDeleteProductCode(productCode) {
   try {
     // DELETE 요청 보내기
-    const response = await instance.delete(
-      `/admin/deleteProductCode/${productCode}`
-    );
+    const response = await instance.delete(`/admin/deleteProductCode/${productCode}`);
 
     console.log("fetchDeleteProductCode.response: ", response);
 
@@ -155,10 +151,7 @@ export async function fetchFindAllInventory() {
 export async function fetchUpdateProductCode(productCode, updatedProduct) {
   try {
     // PUT 요청 보내기 (상품 코드 수정)
-    const response = await instance.put(
-      `/admin/updateProductCode/${productCode}`,
-      updatedProduct
-    );
+    const response = await instance.put(`/admin/updateProductCode/${productCode}`, updatedProduct);
 
     console.log("fetchUpdateProductCode.response: ", response);
 

@@ -1,15 +1,13 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:8090";
+const API_BASE_URL = "https://morek9.click/";
 
 /**
  * 1️⃣ 네이버 로그인 URL 요청
  */
 export const getNaverLoginUrl = async () => {
   try {
-    const response = await fetch(
-      "http://localhost:8090/emart/login/naver/login"
-    );
+    const response = await fetch("https://morek9.click/login/naver/login");
     const result = await response.json();
     console.log("✅ 백엔드 응답 데이터:", result);
 
@@ -26,7 +24,7 @@ export const getNaverLoginUrl = async () => {
  */
 export const getNaverJwtToken = async (code, state) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/emart/login/naver`, {
+    const response = await axios.get(`${API_BASE_URL}/login/naver`, {
       params: { code, state },
     });
 

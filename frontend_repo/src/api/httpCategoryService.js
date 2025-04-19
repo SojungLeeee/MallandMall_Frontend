@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Axios 인스턴스 설정
 const instance = axios.create({
-  baseURL: "http://localhost:8090/emart",
+  baseURL: "https://morek9.click",
 
   timeout: 10000,
   headers: { "Content-Type": "application/json" },
@@ -11,10 +11,7 @@ const instance = axios.create({
 //선호 카테고리 저장
 export async function fetchAddLikeCategory(likecategory) {
   try {
-    const response = await instance.post(
-      `/likecategories/saveLikeCategories`,
-      likecategory
-    );
+    const response = await instance.post(`/likecategories/saveLikeCategories`, likecategory);
 
     console.log("fetchAddLikeCategories.response: ", response);
 
@@ -43,9 +40,7 @@ export async function fetchFindCategory(category) {
 export async function fetchLikeCategoriesByUserId(userId) {
   console.log("fetchFindCategory 요청");
 
-  const response = await instance.get(
-    `/likecategories/showLikeCategories/${userId}`
-  );
+  const response = await instance.get(`/likecategories/showLikeCategories/${userId}`);
 
   console.log("fetchLikeCategoriesByUserId.response:", response);
   return response;
@@ -55,9 +50,7 @@ export async function fetchLikeCategoriesByUserId(userId) {
 export async function fetchDeleteCategories(userId, category) {
   try {
     // DELETE 요청 보내기
-    const response = await instance.delete(
-      `/likecategories/deleteLikeCategories/${userId}/${category}`
-    );
+    const response = await instance.delete(`/likecategories/deleteLikeCategories/${userId}/${category}`);
 
     console.log("fetchDeleteCategories.response: ", response);
 

@@ -13,16 +13,12 @@ const AnswerForm = ({ questionId, onAnswerAdded }) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(
-        `http://localhost:8090/emart/answers/add/${questionId}`,
-        answer,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await axios.post(`https://morek9.click/answers/add/${questionId}`, answer, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
       alert(response.data); // 답변이 등록되었음을 알리는 메시지
       onAnswerAdded(); // 답변이 추가되었을 때 부모 컴포넌트에게 알리기
       setAnswer(""); // 입력란 초기화

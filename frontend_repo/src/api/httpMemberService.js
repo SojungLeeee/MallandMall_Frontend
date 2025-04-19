@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Axios 인스턴스 설정
 const instance = axios.create({
-  baseURL: "http://localhost:8090/emart",
+  baseURL: "https://morek9.click",
 
   timeout: 50000,
   headers: { "Content-Type": "application/json" },
@@ -138,8 +138,7 @@ export async function fetchCartItems(token) {
 export async function addToCart(cartData, token) {
   if (!token) throw new Error("🚨 인증 토큰이 없습니다.");
   if (!cartData.productCode) throw new Error("🚨 상품 코드는 필수입니다.");
-  if (typeof cartData.quantity !== "number" || cartData.quantity < 1)
-    throw new Error("🚨 수량은 1 이상이어야 합니다.");
+  if (typeof cartData.quantity !== "number" || cartData.quantity < 1) throw new Error("🚨 수량은 1 이상이어야 합니다.");
 
   return (
     await instance.post(`/cart/add`, cartData, {

@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Axios 인스턴스 설정
 const instance = axios.create({
-  baseURL: "http://localhost:8090/emart",
+  baseURL: "https://morek9.click",
 
   timeout: 10000,
   headers: { "Content-Type": "application/json" },
@@ -23,27 +23,20 @@ export async function fetchProductFavoriteHome(token) {
 export async function fetchtotalQuantityByProductCode(productCode) {
   console.log("fetchtotalQuantityByProductCode 요청");
 
-  const response = await instance.get(
-    `/inventory/findByProductCode/${productCode}`
-  );
+  const response = await instance.get(`/inventory/findByProductCode/${productCode}`);
 
   console.log("fetchtotalQuantityByProductCode.response:", response);
   return response;
 }
 
 // productCode, branchName 별 상품 quantity 찾기
-export async function fetchQuantityByProductCodeAndBranchName(
-  productCode,
-  branchName
-) {
+export async function fetchQuantityByProductCodeAndBranchName(productCode, branchName) {
   console.log("fetchQuantityByProductCodeAndBranchName 요청");
 
   // 브랜치명을 URL 인코딩 처리
   const encodedBranchName = encodeURIComponent(branchName);
 
-  const response = await instance.get(
-    `/inventory/findByProductCodeAndBranchName/${productCode}/${encodedBranchName}`
-  );
+  const response = await instance.get(`/inventory/findByProductCodeAndBranchName/${productCode}/${encodedBranchName}`);
 
   console.log("fetchQuantityByProductCodeAndBranchName.response:", response);
   return response;

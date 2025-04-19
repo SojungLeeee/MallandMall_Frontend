@@ -1,26 +1,19 @@
 // src/services/chatbotService.js
 // Axios 인스턴스 설정
 
-export const sendChatMessage = async (
-  message,
-  sessionId,
-  productCode = null
-) => {
+export const sendChatMessage = async (message, sessionId, productCode = null) => {
   try {
-    const response = await fetch(
-      "http://localhost:8090/emart/api/chatbot/message",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          message,
-          sessionId,
-          productCode,
-        }),
-      }
-    );
+    const response = await fetch("https://morek9.click/api/chatbot/message", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        message,
+        sessionId,
+        productCode,
+      }),
+    });
 
     if (!response.ok) {
       throw new Error(`서버 오류: ${response.status}`);
@@ -40,12 +33,9 @@ export const sendChatMessage = async (
  */
 export const clearChatSession = async (sessionId) => {
   try {
-    const response = await fetch(
-      `http://localhost:8090/emart/api/chatbot/session/${sessionId}`,
-      {
-        method: "DELETE",
-      }
-    );
+    const response = await fetch(`https://morek9.click/api/chatbot/session/${sessionId}`, {
+      method: "DELETE",
+    });
 
     if (!response.ok) {
       throw new Error(`세션 초기화 오류: ${response.status}`);

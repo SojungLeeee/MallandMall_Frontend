@@ -20,7 +20,7 @@ const NaverMap = () => {
     const fetchBranches = async () => {
       try {
         console.log("지점 데이터 요청 시작");
-        const response = await axios.get("emart/admin/branch/all");
+        const response = await axios.get("https://morek9.click/admin/branch/all");
         console.log("지점 데이터 응답:", response.data);
         setBranches(response.data);
       } catch (err) {
@@ -322,11 +322,7 @@ const NaverMap = () => {
             // 가장 가까운 빈 위치 찾기
             let found = false;
             for (let distance = 1; distance <= 3 && !found; distance++) {
-              for (
-                let dirIndex = 0;
-                dirIndex < directions.length && !found;
-                dirIndex++
-              ) {
+              for (let dirIndex = 0; dirIndex < directions.length && !found; dirIndex++) {
                 const [dy, dx] = directions[dirIndex];
                 const newGridLat = gridLat + dy * markerGridSize * distance;
                 const newGridLng = gridLng + dx * markerGridSize * distance;
@@ -349,10 +345,7 @@ const NaverMap = () => {
           const markerPosition = new window.naver.maps.LatLng(gridLat, gridLng);
 
           // 지점명 우측 4글자만 표시하도록 처리
-          const shortBranchName =
-            branch.branchName.length > 4
-              ? branch.branchName.slice(-4)
-              : branch.branchName;
+          const shortBranchName = branch.branchName.length > 4 ? branch.branchName.slice(-4) : branch.branchName;
 
           // 마커 크기와 디자인 설정 - 크기 축소
           const markerWidth = 90; // 120에서 90으로 축소
@@ -474,11 +467,8 @@ const NaverMap = () => {
                   if (branchName === branch.branchName) {
                     m.setZIndex(1000); // 선택된 마커의 z-index를 높임
                     // 선택된 마커는 완전히 불투명하게 만들기
-                    const bubbleElement =
-                      element.querySelector(".marker-bubble");
-                    const tailElement = element.querySelector(
-                      ".branch-marker > div > div:last-child"
-                    );
+                    const bubbleElement = element.querySelector(".marker-bubble");
+                    const tailElement = element.querySelector(".branch-marker > div > div:last-child");
                     if (bubbleElement && tailElement) {
                       bubbleElement.style.opacity = "1";
                       tailElement.style.opacity = "1";
@@ -486,11 +476,8 @@ const NaverMap = () => {
                   } else {
                     m.setZIndex(50); // 다른 마커는 기본 z-index로 복원
                     // 다른 마커들은 다시 반투명하게
-                    const bubbleElement =
-                      element.querySelector(".marker-bubble");
-                    const tailElement = element.querySelector(
-                      ".branch-marker > div > div:last-child"
-                    );
+                    const bubbleElement = element.querySelector(".marker-bubble");
+                    const tailElement = element.querySelector(".branch-marker > div > div:last-child");
                     if (bubbleElement && tailElement) {
                       bubbleElement.style.opacity = "0.85";
                       tailElement.style.opacity = "0.85";
@@ -547,9 +534,7 @@ const NaverMap = () => {
             <button
               onClick={toggleGPS}
               className={`flex items-center justify-center w-10 h-10 rounded-full shadow-lg focus:outline-none transition-all duration-300 ${
-                gpsEnabled
-                  ? "bg-blue-500 text-white"
-                  : "bg-white text-gray-700 hover:bg-gray-50"
+                gpsEnabled ? "bg-blue-500 text-white" : "bg-white text-gray-700 hover:bg-gray-50"
               }`}
               title={gpsEnabled ? "GPS 끄기" : "내 위치 찾기"}
               style={{
@@ -598,9 +583,7 @@ const NaverMap = () => {
               </svg>
             </div>
             <div className="flex-1 text-center">
-              <h3 className="text-xl font-bold text-gray-900 mb-1">
-                {selectedBranch.branchName}
-              </h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-1">{selectedBranch.branchName}</h3>
               <div className="flex items-center justify-center text-gray-500 text-sm">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -624,14 +607,10 @@ const NaverMap = () => {
                   onClick={() => {
                     try {
                       // 클립보드에 주소 복사
-                      navigator.clipboard.writeText(
-                        selectedBranch.branchAddress
-                      );
+                      navigator.clipboard.writeText(selectedBranch.branchAddress);
 
                       // 알림 표시 (선택적)
-                      alert(
-                        `"${selectedBranch.branchName}" 주소가 클립보드에 복사되었습니다.`
-                      );
+                      alert(`"${selectedBranch.branchName}" 주소가 클립보드에 복사되었습니다.`);
                     } catch (err) {
                       console.error("주소 복사 실패:", err);
                       alert("주소 복사에 실패했습니다.");
@@ -651,14 +630,7 @@ const NaverMap = () => {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                   >
-                    <rect
-                      x="9"
-                      y="9"
-                      width="13"
-                      height="13"
-                      rx="2"
-                      ry="2"
-                    ></rect>
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                   </svg>
                 </button>
