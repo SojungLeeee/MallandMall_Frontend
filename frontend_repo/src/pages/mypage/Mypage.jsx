@@ -62,9 +62,7 @@ export default function MyPage() {
           <div className="grid grid-cols-3 divide-x divide-gray-300">
             <button
               className="flex flex-col items-center justify-center py-4 hover:bg-gray-50"
-              onClick={() =>
-                navigate(`/mypage/editcategory?userId=${user.userId}`)
-              }
+              onClick={() => navigate(`/mypage/editcategory?userId=${user.userId}`)}
             >
               <div className="w-12 h-12 flex items-center justify-center mb-2">
                 <svg

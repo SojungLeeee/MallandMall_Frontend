@@ -1,10 +1,4 @@
-import {
-  Form,
-  redirect,
-  json,
-  useActionData,
-  useNavigate,
-} from "react-router-dom";
+import { Form, redirect, json, useActionData, useNavigate } from "react-router-dom";
 import { fetchAuthenticate } from "../../api/httpMemberService"; // 상대 경로로 가져오기
 import { setAuthToken } from "../../auth/tokenProviderService";
 import Logo from "../../assets/images/logo/mallandmall 3d.png";

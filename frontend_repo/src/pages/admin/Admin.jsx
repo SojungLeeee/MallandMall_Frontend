@@ -33,9 +33,7 @@ export default function Admin() {
   return (
     <div className="bg-white min-h-screen p-6">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6 pb-2 border-b-2 border-gray-200">
-          관리자 페이지
-        </h1>
+        <h1 className="text-2xl font-bold text-gray-900 mb-6 pb-2 border-b-2 border-gray-200">관리자 페이지</h1>
 
         <div className="flex flex-col gap-4">
           {/* 상품 버튼 그룹 */}
