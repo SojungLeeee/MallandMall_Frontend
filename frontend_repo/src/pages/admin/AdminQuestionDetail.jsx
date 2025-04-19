@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { ChevronLeft } from "lucide-react"; // X 아이콘 추가
+import { ChevronLeft } from "lucide-react";
 import {
   addAdminAnswer,
   updateAdminAnswer,
@@ -19,7 +19,7 @@ const AdminQuestionDetail = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editingAnswerId, setEditingAnswerId] = useState(null);
 
-  const navigate = useNavigate(); // useNavigate 훅 추가
+  const navigate = useNavigate();
 
   // 질문에 대한 답변 불러오기
   const fetchAnswersByQuestion = useCallback(async () => {
@@ -94,7 +94,7 @@ const AdminQuestionDetail = () => {
   };
 
   const handleBack = () => {
-    navigate(-1); // 이전 페이지로 돌아가기
+    navigate(-1);
   };
 
   if (loading) return <div className="text-center py-4">로딩 중...</div>;
@@ -104,31 +104,40 @@ const AdminQuestionDetail = () => {
     );
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-2 bg-white rounded-lg shadow-lg h-full">
+    <div className="max-w-3xl mx-auto px-4 py-6 bg-white rounded-lg shadow-md h-full">
       <div className="flex items-center mb-4">
-        <ChevronLeft onClick={handleBack} className="cursor-pointer" />
-        <h1 className="text-gray-800 text-center text-xl font-bold  flex-grow mr-8">
+        <ChevronLeft
+          onClick={handleBack}
+          className="cursor-pointer text-black hover:bg-gray-100 rounded-full p-1"
+          size={24}
+        />
+        <h1 className="text-gray-900 text-center text-xl font-bold flex-grow mr-8">
           📌 질문 상세
         </h1>
       </div>
 
-      <hr />
-      <div className="border-b pb-4 pt-4">
-        <h2 className="text-lg font-semibold">{question.title}</h2>
+      <hr className="border-gray-200" />
+
+      <div className="border-b border-gray-200 pb-4 pt-4">
+        <h2 className="text-lg font-semibold text-gray-900">
+          {question.title}
+        </h2>
         <p className="text-xs text-gray-500 text-right">
           작성자: {question.userId}
         </p>
         <p className="text-xs text-gray-500 text-right">
           {question.createDate}
         </p>
-        <p className="mt-3 text-sm text-gray-600">{question.content}</p>
+        <p className="mt-3 text-sm text-gray-700">{question.content}</p>
       </div>
 
       {/* 🔹 답변 입력 폼 */}
-      <div className="mt-4">
-        <h2 className="text-lg font-semibold mb-2">✏️ 관리자 답변</h2>
+      <div className="mt-6">
+        <h2 className="text-lg font-semibold mb-3 text-gray-900">
+          ✏️ 관리자 답변
+        </h2>
         <textarea
-          className="w-full p-3 border rounded-sm text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="w-full p-3 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-black"
           rows="4"
           value={answer}
           onChange={(e) => setAnswer(e.target.value)}
@@ -136,7 +145,7 @@ const AdminQuestionDetail = () => {
         />
         <button
           onClick={isEditing ? handleUpdateAnswer : handleAddAnswer}
-          className="mt-3 px-5 py-2 bg-[#787669] text-white rounded-sm w-full"
+          className="mt-3 px-5 py-2 bg-black text-white rounded-md w-full hover:bg-gray-900 transition-colors"
         >
           {isEditing ? "답변 수정" : "답변 등록"}
         </button>
@@ -147,49 +156,59 @@ const AdminQuestionDetail = () => {
 
       {/* 🔹 기존 답변 목록 */}
       {responses.length > 0 ? (
-        <div className="mt-6">
-          <h3 className="text-lg font-semibold">💬 등록된 답변</h3>
-          <table className="min-w-full mt-3 bg-white border border-gray-200 rounded-lg shadow-sm">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="py-2 px-2 border-b text-center">답변 내용</th>
-                <th className="py-2 px-2 border-b text-center">수정</th>
-                <th className="py-2 px-2 border-b text-center">삭제</th>
-              </tr>
-            </thead>
-            <tbody>
-              {responses.map((response) => (
-                <tr key={response.answerId} className="hover:bg-gray-50">
-                  <td className="py-2 px-2 border-b text-xs">
-                    {response.content}
-                  </td>
-                  <td className="py-2 px-2 border-b text-center text-xs">
-                    <button
-                      onClick={() => {
-                        setIsEditing(true);
-                        setAnswer(response.content);
-                        setEditingAnswerId(response.answerId);
-                      }}
-                      className="text-blue-500 hover:underline"
-                    >
-                      수정
-                    </button>
-                  </td>
-                  <td className="py-2 px-2 border-b text-center text-xs">
-                    <button
-                      onClick={() => handleDeleteAnswer(response.answerId)}
-                      className="text-red-500 hover:underline"
-                    >
-                      삭제
-                    </button>
-                  </td>
+        <div className="mt-8">
+          <h3 className="text-lg font-semibold text-gray-900 mb-3">
+            💬 등록된 답변
+          </h3>
+          <div className="overflow-hidden border border-gray-200 rounded-md shadow-sm">
+            <table className="min-w-full bg-white">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="py-3 px-4 border-b border-gray-200 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+                    답변 내용
+                  </th>
+                  <th className="py-3 px-4 border-b border-gray-200 text-center text-xs font-medium text-gray-700 uppercase tracking-wider w-20">
+                    수정
+                  </th>
+                  <th className="py-3 px-4 border-b border-gray-200 text-center text-xs font-medium text-gray-700 uppercase tracking-wider w-20">
+                    삭제
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {responses.map((response) => (
+                  <tr key={response.answerId} className="hover:bg-gray-50">
+                    <td className="py-3 px-4 text-sm text-gray-800">
+                      {response.content}
+                    </td>
+                    <td className="py-3 px-4 text-center">
+                      <button
+                        onClick={() => {
+                          setIsEditing(true);
+                          setAnswer(response.content);
+                          setEditingAnswerId(response.answerId);
+                        }}
+                        className="text-black hover:underline text-xs font-medium"
+                      >
+                        수정
+                      </button>
+                    </td>
+                    <td className="py-3 px-4 text-center">
+                      <button
+                        onClick={() => handleDeleteAnswer(response.answerId)}
+                        className="text-red-600 hover:underline text-xs font-medium"
+                      >
+                        삭제
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       ) : (
-        <div className="mt-6 text-sm text-gray-500 text-center">
+        <div className="mt-8 py-6 text-sm text-gray-500 text-center bg-gray-50 rounded-md">
           📝 아직 등록된 답변이 없습니다.
         </div>
       )}

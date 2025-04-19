@@ -4,7 +4,7 @@ import httpAdminquestion from "../../api/httpAdminquestions";
 
 const AdminQuestionManagement = () => {
   const [questions, setQuestions] = useState([]);
-  const navigate = useNavigate(); // useNavigate 훅 추가
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -53,38 +53,48 @@ const AdminQuestionManagement = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-2">
-      <h1 className="text-xl font-bold text-xl mb-4">[관리자] 질문 목록</h1>
+    <div className="container mx-auto px-4 py-6 bg-white">
+      <div className="flex items-center mb-6">
+        <h1 className="text-xl font-bold text-gray-900">[관리자] 질문 관리</h1>
+      </div>
+
       <div className="mb-6">
         {questions.length > 0 ? (
-          questions.map((question) => (
-            <div
-              key={question.questionId}
-              className="border p-4 mb-4 shadow-sm cursor-pointer"
-              onClick={() => handleQuestionClick(question)} // 클릭 시 이동
-            >
-              <div className="flex justify-between items-center">
-                <div>
-                  <h2 className="font-semibold text-left">{question.title}</h2>
-                  <p className="text-xs text-gray-500 text-left">
-                    작성자: {question.userId}
-                  </p>
-                  <p className="text-xs text-gray-500">{question.createDate}</p>
-                </div>
-                <div
-                  className={`text-sm font-bold ${
-                    question.answerStatus === "답변 완료"
-                      ? "text-green-600"
-                      : "text-red-500"
-                  }`}
-                >
-                  {question.answerStatus}
+          <div className="space-y-4">
+            {questions.map((question) => (
+              <div
+                key={question.questionId}
+                className="border border-gray-200 p-4 rounded-md shadow-sm hover:shadow-md cursor-pointer transition-shadow bg-white"
+                onClick={() => handleQuestionClick(question)}
+              >
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <h2 className="font-semibold text-left text-gray-900 mb-1">
+                      {question.title}
+                    </h2>
+                    <div className="flex text-xs text-gray-500 space-x-4">
+                      <p>작성자: {question.userId}</p>
+                      <p>{question.createDate}</p>
+                    </div>
+                  </div>
+                  <div
+                    className={`px-3 py-1 rounded-full text-xs font-bold ${
+                      question.answerStatus === "답변 완료"
+                        ? "bg-black text-white"
+                        : "bg-gray-200 text-gray-700"
+                    }`}
+                  >
+                    {question.answerStatus}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))
+            ))}
+          </div>
         ) : (
-          <div className="text-center text-gray-500">아직 질문이 없습니다.</div>
+          <div className="text-center py-16 bg-gray-50 rounded-md border border-gray-200">
+            <div className="text-5xl mb-4">📭</div>
+            <p className="text-gray-500">아직 등록된 질문이 없습니다.</p>
+          </div>
         )}
       </div>
     </div>

@@ -10,7 +10,7 @@ const categoryMap = {
   채소: "vegetable",
   과일: "frcuit",
   간식: "snack",
-  "조미료/소스": "sauce",
+  "조미/소스": "sauce",
   건강식품: "health",
   "기타(밥/면)": "etc",
 };
@@ -34,19 +34,26 @@ export default function StockChartPage() {
   };
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">재고 그래프 확인</h1>
+    <div className="p-4 max-w-6xl mx-auto">
+      <div className="flex items-center mb-6">
+        <div className="bg-black text-white p-2 rounded-sm shadow-sm mr-3">
+          <span className="text-lg">📊</span>
+        </div>
+        <h1 className="text-xl font-bold text-gray-900">재고 그래프 확인</h1>
+      </div>
 
       {/* 카테고리 버튼 */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-2 mb-6">
+      <div className="grid grid-cols-4 gap-2 mb-6">
         {categories.map((category) => (
           <button
             key={category}
-            className="bg-white text-gray-800 border border-gray-200 py-2.5 px-5 rounded-lg
-           hover:bg-gradient-to-r hover:from-blue-500 hover:to-indigo-600 hover:text-white hover:border-transparent
-           hover:-translate-y-[2px] shadow-[0_4px_10px_rgba(0,0,0,0.03)] hover:shadow-[0_6px_15px_rgba(67,100,255,0.2)]
-           transition-all duration-200 ease-in-out font-medium"
+            className={`text-sm py-2 px-3 rounded-sm transition-all duration-200 font-medium ${
+              selectedCategory === category
+                ? "bg-black text-white"
+                : "bg-white text-gray-800 border border-gray-200 hover:bg-gray-50"
+            }`}
             onClick={() => handleCategoryClick(category)}
+            style={{ whiteSpace: "nowrap", overflow: "visible" }}
           >
             {category}
           </button>
@@ -54,23 +61,49 @@ export default function StockChartPage() {
       </div>
 
       {/* 선택된 카테고리 */}
-      {selectedCategory && <h2 className="text-xl font-semibold mb-2">"{selectedCategory}" 상품 목록</h2>}
+      {selectedCategory && (
+        <div className="border-l-4 border-black pl-3 py-0.5 mb-4">
+          <h2 className="text-lg font-bold text-gray-900">
+            {selectedCategory}
+          </h2>
+          <p className="text-gray-500 text-xs">총 {products.length}개의 상품</p>
+        </div>
+      )}
 
       {/* 상품 리스트 */}
-      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {products.map((product) => (
           <div
             key={product.productCode}
-            className="border p-4 rounded shadow hover:shadow-md transition"
+            className="border border-gray-200 rounded-sm shadow-sm hover:shadow transition cursor-pointer"
             onClick={() => navigate(`/stock-chart/${product.productCode}`)}
           >
-            <img src={product.image} alt={product.productName} className="w-full h-40 object-cover mb-2" />
-            <h3 className="text-lg font-bold">{product.productName}</h3>
-            <p className="text-sm text-gray-600">{product.description}</p>
-            <p className="mt-1 text-red-600 font-semibold">₩ {product.price.toLocaleString()}</p>
+            <img
+              src={product.image || "https://via.placeholder.com/300x150"}
+              alt={product.productName}
+              className="w-full h-36 object-cover"
+            />
+            <div className="p-3">
+              <h3 className="text-base font-semibold text-gray-800 truncate">
+                {product.productName}
+              </h3>
+              <p className="text-xs text-gray-600 h-8 overflow-hidden">
+                {product.description}
+              </p>
+              <p className="mt-2 text-sm font-medium text-black">
+                ₩ {product.price.toLocaleString()}
+              </p>
+            </div>
           </div>
         ))}
       </div>
+
+      {/* 상품이 없을 때 */}
+      {selectedCategory && products.length === 0 && (
+        <div className="text-center py-10 text-gray-500">
+          해당 카테고리에 상품이 없습니다.
+        </div>
+      )}
     </div>
   );
 }
