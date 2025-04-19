@@ -1,7 +1,7 @@
 import React from "react";
 
 const KAKAO_CLIENT_ID = "d91f0aee90225deaa8dd9ce8585b6033";
-const REDIRECT_URI = "https://moreandmall.click//auth/kakao/callback";
+const REDIRECT_URI = "https://moreandmall.click/auth/kakao/callback";
 
 const KakaoLoginButton = () => {
   const handleLogin = () => {
