@@ -45,7 +45,6 @@
   max-width: 430px; /* 최대 너비 제한 (iPhone 14 Pro Max 등 대비) */
   max-height: 932px; /* 최대 높이 제한 (필요시) */
 
-  border: 1px solid black;
   margin: 0 auto;
   position: relative;
   overflow: hidden;
