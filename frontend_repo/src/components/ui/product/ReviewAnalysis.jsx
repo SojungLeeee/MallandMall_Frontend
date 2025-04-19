@@ -185,7 +185,7 @@ const ReviewAnalysis = () => {
   };
 
   const goBack = () => {
-    navigate(`/product/detail/${productCode}`);
+    navigate(-1);
   };
 
   if (loading) {
