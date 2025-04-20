@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Axios 인스턴스 설정
 const instance = axios.create({
-  baseURL: "https://morek9.click", // 베이스 URL 설정
+  baseURL: "https://morek99.click", // 베이스 URL 설정
   timeout: 10000,
   headers: { "Content-Type": "application/json" },
 });

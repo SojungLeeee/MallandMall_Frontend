@@ -17,7 +17,7 @@ export default function FindId() {
     }
 
     try {
-      const response = await axios.post("https://morek9.click/findid", {
+      const response = await axios.post("https://morek99.click/findid", {
         userName,
         email,
       });
