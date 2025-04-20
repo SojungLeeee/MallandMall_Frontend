@@ -101,13 +101,23 @@ export default function Banner() {
         navigation={true}
         pagination={{ clickable: true }}
         loop={true}
-        effect="fade" /* 페이드 효과 적용 */
+        slidesPerView={1}
+        slidesPerGroup={1}
+        loopedSlides={3} // 명시적으로 루프할 슬라이드 수 지정
+        effect="fade"
+        fadeEffect={{ crossFade: true }}
         autoplay={{
-          delay: 5000 /* 슬라이드 지속 시간을 5초로 늘림 */,
+          delay: 5000,
           disableOnInteraction: false,
         }}
-        speed={1000} /* 전환 속도를 1초로 설정 - 더 부드러운 전환 */
+        speed={1000}
         className="w-full h-full swiper-container"
+        onInit={(swiper) => {
+          // 초기화 후 슬라이드 수 확인 및 루프 재설정
+          setTimeout(() => {
+            swiper.update();
+          }, 100);
+        }}
       >
         {slides.map((slide) => (
           <SwiperSlide key={slide.id}>

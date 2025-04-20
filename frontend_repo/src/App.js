@@ -4,8 +4,7 @@ import Navbar from "./components/ui/layout/Navbar";
 import { Outlet, useLocation, matchPath, useNavigate } from "react-router-dom";
 import SearchBar from "./components/ui/layout/SearchBar";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { useEffect, useState, useRef } from "react";
-import startLogoLound from "./assets/images/logo/startLogoLound.png";
+import { useEffect, useState } from "react";
 
 /// 스플래시 화면 컴포넌트
 const SplashScreen = ({ imageSrc, onFinish }) => {
@@ -31,7 +30,11 @@ const SplashScreen = ({ imageSrc, onFinish }) => {
     >
       {/* 이미지 표시 - 아이폰 14 Pro 사이즈에 맞게 조정 */}
       <div className="w-full h-full max-w-[390px] mx-auto flex items-center justify-center">
-        <img src={imageSrc} alt="Mall&Mall Logo" className="max-w-full max-h-full object-contain" />
+        <img
+          src={imageSrc}
+          alt="Mall&Mall Logo"
+          className="max-w-full max-h-full object-contain"
+        />
       </div>
     </div>
   );
@@ -56,32 +59,44 @@ function App() {
 
       // URL에서 token 제거
       urlParams.delete("token");
-      const newUrl = window.location.pathname + (urlParams.toString() ? "?" + urlParams.toString() : "");
+      const newUrl =
+        window.location.pathname +
+        (urlParams.toString() ? "?" + urlParams.toString() : "");
       window.history.replaceState({}, "", newUrl);
     }
   }, []);
 
-  // 앱 첫 실행 시 스플래시 화면 표시 여부를 로컬 스토리지에서 확인
   useEffect(() => {
-    // 페이지 로드마다 항상 스플래시 화면을 표시하도록 설정
-    setShowSplash(true);
-    // 또는 로컬 스토리지 값을 리셋
-    localStorage.removeItem("hasSeenSplash");
+    // 로컬 스토리지에서 스플래시 화면 표시 여부 확인
+    const hasSeenSplash = localStorage.getItem("hasSeenSplash");
+
+    // 이전에 스플래시 화면을 본 적이 있으면 스플래시 화면 건너뛰기
+    if (hasSeenSplash === "true") {
+      setShowSplash(false);
+    } else {
+      setShowSplash(true);
+    }
   }, []);
 
   // 스플래시 화면 종료 처리
   const handleSplashFinish = () => {
     setShowSplash(false);
-    // 로컬 스토리지 저장 코드 제거
-    // localStorage.setItem("hasSeenSplash", "true");
+    // 스플래시 화면을 봤다는 정보를 로컬 스토리지에 저장
+    localStorage.setItem("hasSeenSplash", "true");
   };
 
   const location = useLocation();
 
   // SearchBar를 보여줄 경로 설정
   const isHomeRoute = location.pathname === "/";
-  const isProductCategoryRoute = matchPath("/products/:categoryName", location.pathname);
-  const isProductCodeRoute = matchPath("/product/:productCode", location.pathname);
+  const isProductCategoryRoute = matchPath(
+    "/products/:categoryName",
+    location.pathname
+  );
+  const isProductCodeRoute = matchPath(
+    "/product/:productCode",
+    location.pathname
+  );
   const isSearchRoute = matchPath("/search/:productName", location.pathname);
   const isProductHomeRoute = location.pathname === "/product/home";
   const isFavoriteProductHome = location.pathname === "/favorites";

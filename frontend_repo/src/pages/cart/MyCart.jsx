@@ -5,7 +5,7 @@ import {
   removeCartItem,
   updateCartQuantity,
 } from "../../api/httpMemberService";
-import { motion, AnimatePresence } from "framer-motion"; // 필요시 설치
+import { motion, AnimatePresence } from "framer-motion";
 
 const MyCart = () => {
   const [items, setItems] = useState([]);
@@ -300,61 +300,57 @@ const MyCart = () => {
                       : "border-gray-200"
                   } rounded-sm p-5 transition-all duration-300`}
                 >
-                  <div className="flex items-center space-x-4 w-full">
-                    {/* 개별 상품 선택 체크박스 */}
-                    <div className="relative w-5 h-5 flex items-center justify-center">
-                      <input
-                        type="checkbox"
-                        checked={!!selectedItems[item.productCode]}
-                        onChange={() => handleItemSelect(item.productCode)}
-                        className="opacity-0 absolute w-5 h-5 cursor-pointer"
-                      />
-                      <div
-                        className={`w-5 h-5 border transition-colors duration-200 ${
-                          selectedItems[item.productCode]
-                            ? "bg-black border-black"
-                            : "border-gray-300"
-                        }`}
-                      >
-                        {selectedItems[item.productCode] && (
-                          <svg
-                            className="w-5 h-5 text-white"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                          >
-                            <path
-                              d="M9 12l2 2 4-4"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        )}
+                  <div className="flex w-full">
+                    {/* 왼쪽 영역: 체크박스와 삭제 버튼 */}
+                    <div className="mr-3">
+                      {/* 개별 상품 선택 체크박스 */}
+                      <div className="relative w-5 h-5 flex items-center justify-center mt-1">
+                        <input
+                          type="checkbox"
+                          checked={!!selectedItems[item.productCode]}
+                          onChange={() => handleItemSelect(item.productCode)}
+                          className="opacity-0 absolute w-5 h-5 cursor-pointer"
+                        />
+                        <div
+                          className={`w-5 h-5 border transition-colors duration-200 ${
+                            selectedItems[item.productCode]
+                              ? "bg-black border-black"
+                              : "border-gray-300"
+                          }`}
+                        >
+                          {selectedItems[item.productCode] && (
+                            <svg
+                              className="w-5 h-5 text-white"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                            >
+                              <path
+                                d="M9 12l2 2 4-4"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                          )}
+                        </div>
                       </div>
                     </div>
 
-                    {/* 상품 이미지 */}
-                    {item.image && (
-                      <div className="relative overflow-hidden rounded-sm w-24 h-24 bg-gray-50 flex items-center justify-center">
-                        <img
-                          src={item.image}
-                          alt={item.productName}
-                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                        />
-                      </div>
-                    )}
+                    {/* 중앙 영역: 상품 이미지 및 수량 조절 버튼 */}
+                    <div className="flex flex-col items-center mr-4">
+                      {/* 상품 이미지 */}
+                      {item.image && (
+                        <div className="relative overflow-hidden rounded-sm w-20 h-20 sm:w-24 sm:h-24 bg-gray-50 flex items-center justify-center mb-3">
+                          <img
+                            src={item.image}
+                            alt={item.productName}
+                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                          />
+                        </div>
+                      )}
 
-                    {/* 상품 정보 */}
-                    <div className="flex-1">
-                      <h2 className="font-medium text-black transition-colors duration-300 group-hover:text-black mb-1">
-                        {item.productName}
-                      </h2>
-                      <p className="text-black font-bold text-lg mb-3">
-                        {item.price.toLocaleString()}원
-                      </p>
-
-                      {/* 수량 조절 */}
+                      {/* 수량 조절 - 이미지 아래에 배치 */}
                       <div className="flex items-center">
                         <div className="flex items-center border border-gray-200 rounded-sm">
                           <button
@@ -409,33 +405,48 @@ const MyCart = () => {
                             </svg>
                           </button>
                         </div>
-
-                        <span className="ml-3 text-sm text-gray-500">
-                          총액: {(item.price * item.quantity).toLocaleString()}
-                          원
-                        </span>
                       </div>
                     </div>
 
-                    {/* 삭제 버튼 */}
-                    <button
-                      onClick={() => handleRemoveItem(item.productCode)}
-                      className="text-gray-400 hover:text-black transition-colors duration-200 p-1"
-                    >
-                      <svg
-                        className="w-5 h-5"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M6 18L18 6M6 6l12 12"
-                        />
-                      </svg>
-                    </button>
+                    {/* 오른쪽 영역: 상품 정보 및 가격 */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h2 className="font-medium text-black transition-colors duration-300 group-hover:text-black mb-1">
+                            {item.productName}
+                          </h2>
+                          <p className="text-black font-bold text-lg mb-3">
+                            {item.price.toLocaleString()}원
+                          </p>
+
+                          {/* 총액 정보 */}
+                          <div className="text-sm text-gray-500 whitespace-nowrap">
+                            총액:{" "}
+                            {(item.price * item.quantity).toLocaleString()}원
+                          </div>
+                        </div>
+
+                        {/* 삭제 버튼 */}
+                        <button
+                          onClick={() => handleRemoveItem(item.productCode)}
+                          className="text-gray-400 hover:text-black transition-colors duration-200 p-1"
+                        >
+                          <svg
+                            className="w-5 h-5"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </motion.div>
               ))}
