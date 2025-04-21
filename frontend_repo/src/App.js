@@ -66,6 +66,7 @@ function App() {
     }
   }, []);
 
+  // 로컬 스토리지 대신 세션 스토리지 사용
   useEffect(() => {
     const hasSeenSplash = sessionStorage.getItem("hasSeenSplash");
     if (hasSeenSplash === "true") {
@@ -74,17 +75,11 @@ function App() {
       setShowSplash(true);
     }
   }, []);
-  
+
   const handleSplashFinish = () => {
     setShowSplash(false);
     // 로컬 스토리지 대신 세션 스토리지 사용
     sessionStorage.setItem("hasSeenSplash", "true");
-
-  // 스플래시 화면 종료 처리
-  const handleSplashFinish = () => {
-    setShowSplash(false);
-    // 스플래시 화면을 봤다는 정보를 로컬 스토리지에 저장
-    localStorage.setItem("hasSeenSplash", "true");
   };
 
   const location = useLocation();
