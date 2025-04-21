@@ -67,16 +67,18 @@ function App() {
   }, []);
 
   useEffect(() => {
-    // 로컬 스토리지에서 스플래시 화면 표시 여부 확인
-    const hasSeenSplash = localStorage.getItem("hasSeenSplash");
-
-    // 이전에 스플래시 화면을 본 적이 있으면 스플래시 화면 건너뛰기
+    const hasSeenSplash = sessionStorage.getItem("hasSeenSplash");
     if (hasSeenSplash === "true") {
       setShowSplash(false);
     } else {
       setShowSplash(true);
     }
   }, []);
+  
+  const handleSplashFinish = () => {
+    setShowSplash(false);
+    // 로컬 스토리지 대신 세션 스토리지 사용
+    sessionStorage.setItem("hasSeenSplash", "true");
 
   // 스플래시 화면 종료 처리
   const handleSplashFinish = () => {

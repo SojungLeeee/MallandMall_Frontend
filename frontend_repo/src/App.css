@@ -42,8 +42,8 @@
 .App {
   width: 100vw;
   height: 100vh;
-  max-width: 430px; /* 최대 너비 제한 (iPhone 14 Pro Max 등 대비) */
-  max-height: 932px; /* 최대 높이 제한 (필요시) */
+  max-width: 390px; /* 아이폰 13 프로 너비 */
+  max-height: 844px; /* 아이폰 13 프로 높이 */
 
   margin: 0 auto;
   position: relative;
