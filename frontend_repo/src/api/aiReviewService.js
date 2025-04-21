@@ -136,7 +136,8 @@ export async function fetchCartItems(token) {
 export async function addToCart(cartData, token) {
   if (!token) throw new Error("🚨 인증 토큰이 없습니다.");
   if (!cartData.productCode) throw new Error("🚨 상품 코드는 필수입니다.");
-  if (typeof cartData.quantity !== "number" || cartData.quantity < 1) throw new Error("🚨 수량은 1 이상이어야 합니다.");
+  if (typeof cartData.quantity !== "number" || cartData.quantity < 1)
+    throw new Error("🚨 수량은 1 이상이어야 합니다.");
 
   return (
     await instance.post(`/cart/add`, cartData, {
@@ -157,17 +158,29 @@ export async function removeCartItem(productCode, token) {
     })
   ).data;
 }
-// 리뷰 분석 API - 수정 후
+/* 리뷰 분석 API - 동기 엔드포인트 적용본 
+// export const fetchReviewAnalysis = async (productCode) => {
+//   try {
+//     const response = await instance.get(`/api/review-analysis/${productCode}`);
+//     return response.data;
+//   } catch (error) {
+//     console.error("리뷰 분석 데이터 불러오기 실패:", error);
+//     throw error;
+//   }
+}; */
+
+// 리뷰 분석 API - 비동기 엔드포인트 적용
 export const fetchReviewAnalysis = async (productCode) => {
   try {
-    const response = await instance.get(`/api/review-analysis/${productCode}`);
+    const response = await instance.get(
+      `/api/review-analysis/async/${productCode}`
+    );
     return response.data;
   } catch (error) {
     console.error("리뷰 분석 데이터 불러오기 실패:", error);
     throw error;
   }
 };
-
 export const updateCartQuantity = async (productCode, quantity, token) => {
   if (isNaN(quantity) || quantity < 1) {
     console.error("🚨 잘못된 수량 값:", quantity);
