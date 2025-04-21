@@ -74,7 +74,7 @@ export default function StockAlarmPage() {
                 <div className="font-medium text-lg flex items-center gap-3">
                   <div className="text-red-500 text-lg">🚨</div>
                   <span className="text-gray-800">{alert.branchName}</span>
-                  <span className="text-gray-800">{alert.productName}</span>
+                  <span className="text-gray-800">{alert.productCode}</span>
                 </div>
                 {!alert.alertRead && (
                   <span className="text-xs font-medium px-2.5 py-1 bg-gray-900 text-white rounded-md">
