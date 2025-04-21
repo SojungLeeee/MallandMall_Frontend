@@ -3,7 +3,7 @@
 
 export const sendChatMessage = async (message, sessionId, productCode = null) => {
   try {
-    const response = await fetch("https://morek99.click/api/chatbot/message", {
+    const response = await fetch("https://morek9.click/api/chatbot/message", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -33,7 +33,7 @@ export const sendChatMessage = async (message, sessionId, productCode = null) =>
  */
 export const clearChatSession = async (sessionId) => {
   try {
-    const response = await fetch(`https://morek99.click/api/chatbot/session/${sessionId}`, {
+    const response = await fetch(`https://morek9.click/api/chatbot/session/${sessionId}`, {
       method: "DELETE",
     });
 

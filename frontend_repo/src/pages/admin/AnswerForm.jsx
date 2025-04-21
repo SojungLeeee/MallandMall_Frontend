@@ -13,7 +13,7 @@ const AnswerForm = ({ questionId, onAnswerAdded }) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(`https://morek99.click/answers/add/${questionId}`, answer, {
+      const response = await axios.post(`https://morek9.click/answers/add/${questionId}`, answer, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",

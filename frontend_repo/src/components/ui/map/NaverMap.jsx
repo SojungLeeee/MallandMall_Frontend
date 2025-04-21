@@ -29,7 +29,7 @@ const NaverMap = () => {
     const fetchBranches = async () => {
       try {
         console.log("지점 데이터 요청 시작");
-        const response = await axios.get("https://morek99.click/admin/branch/all");
+        const response = await axios.get("https://morek9.click/admin/branch/all");
         console.log("지점 데이터 응답:", response.data);
         setBranches(response.data);
       } catch (err) {
@@ -59,7 +59,7 @@ const NaverMap = () => {
       setProductError(null);
 
       // 상품 검색 API 호출
-      const response = await axios.get("https://morek99.click/product/search", {
+      const response = await axios.get("https://morek9.click/product/search", {
         params: {
           searchType: searchType,
           keyword: searchTerm.trim(),
@@ -107,7 +107,7 @@ const NaverMap = () => {
 
     try {
       // 지점별 특정 상품 수량 조회
-      const response = await axios.get(`https://morek99.click/inventory/product/${productCode}/branches`);
+      const response = await axios.get(`https://morek9.click/inventory/product/${productCode}/branches`);
       setBranchInventory(response.data);
     } catch (err) {
       console.error("상품별 인벤토리 데이터 로드 실패:", err);

@@ -20,7 +20,7 @@ const NaverMap = () => {
     const fetchBranches = async () => {
       try {
         console.log("지점 데이터 요청 시작");
-        const response = await axios.get("https://morek99.click/admin/branch/all");
+        const response = await axios.get("https://morek9.click/admin/branch/all");
         console.log("지점 데이터 응답:", response.data);
         setBranches(response.data);
       } catch (err) {

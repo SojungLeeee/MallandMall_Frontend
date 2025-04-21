@@ -153,7 +153,7 @@ const OrderPage = () => {
         return;
       }
 
-      const response = await axios.post("https://morek99.click/admin/branch/nearestWithStock", {
+      const response = await axios.post("https://morek9.click/admin/branch/nearestWithStock", {
         latitude: latitude,
         longitude: longitude,
         productCodes: productCodes,
@@ -237,7 +237,7 @@ const OrderPage = () => {
           }
         }
       } else {
-        const fallbackResponse = await axios.post("https://morek99.click/admin/branch/nearest", {
+        const fallbackResponse = await axios.post("https://morek9.click/admin/branch/nearest", {
           latitude: latitude,
           longitude: longitude,
         });

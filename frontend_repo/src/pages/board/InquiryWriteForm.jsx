@@ -18,7 +18,7 @@ const InquiryWriteForm = ({ onBack }) => {
     try {
       // 실제 API 엔드포인트
       const response = await axios.post(
-        "https://morek99.click/questions/add", // API 엔드포인트
+        "https://morek9.click/questions/add", // API 엔드포인트
         {
           userId: userId, // 인증된 사용자 ID
           title: title,

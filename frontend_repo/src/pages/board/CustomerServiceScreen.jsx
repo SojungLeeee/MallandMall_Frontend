@@ -23,7 +23,7 @@ export async function getUserQuestions(userId, token) {
 // 질문 삭제하기 함수
 export async function deleteQuestion(questionId, token) {
   try {
-    const response = await axios.delete(`https://morek99.click/questions/delete/${questionId}`, {
+    const response = await axios.delete(`https://morek9.click/questions/delete/${questionId}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     return response.data; // 성공적으로 삭제된 경우 서버의 응답 반환
@@ -61,7 +61,7 @@ const CustomerServiceScreen = () => {
     if (!userId || !token) return;
 
     try {
-      const response = await axios.get(`https://morek99.click/questions/${userId}`, {
+      const response = await axios.get(`https://morek9.click/questions/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

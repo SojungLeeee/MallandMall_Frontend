@@ -28,7 +28,7 @@ export default function ResetPassword() {
     }
 
     try {
-      const response = await axios.post("https://morek99.click/reset-password", {
+      const response = await axios.post("https://morek9.click/reset-password", {
         userId: formData.userId,
         phoneNumber: formData.phone,
         newPassword: formData.newPassword,

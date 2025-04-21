@@ -51,7 +51,7 @@ export default function OrderRedirect() {
           orders,
         };
 
-        await axios.post("https://morek99.click/order/confirm", finalData, {
+        await axios.post("https://morek9.click/order/confirm", finalData, {
           headers: { Authorization: `Bearer ${token}` },
         });
 

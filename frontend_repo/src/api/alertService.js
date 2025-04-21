@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const alertInstance = axios.create({
-  baseURL: "https://morek99.click/api/alertlog",
+  baseURL: "https://morek9.click/api/alertlog",
   timeout: 10000,
   headers: { "Content-Type": "application/json" },
 });

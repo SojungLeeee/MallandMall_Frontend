@@ -19,7 +19,7 @@ const OrderComplete = () => {
     }
 
     axios
-      .get(`https://morek99.click/order/complete/${impUid}`)
+      .get(`https://morek9.click/order/complete/${impUid}`)
       .then((res) => setOrders(res.data)) // 여러 개의 주문을 받기
       .catch(() => setError("결제 정보 조회에 실패했습니다."));
   }, [impUid]);
