@@ -412,6 +412,8 @@ const OrderPage = () => {
   const discountRate = selectedCoupon ? getDiscountRate(selectedCoupon.benefits) : 0;
 
   // 결제 처리 함수
+  // 📄 OrderPage.jsx - 최종 정리본 (모바일 PWA 결제 대응 포함)
+
   const handlePayment = (pgProvider) => {
     if (!formData.receiverName || !formData.post || !formData.addr1 || !formData.addr2 || !formData.phoneNumber) {
       alert("모든 기본 정보를 입력해주세요.");
@@ -421,11 +423,38 @@ const OrderPage = () => {
     const { IMP } = window;
     IMP.init("imp42828803");
 
+    const isMobile = /iPhone|Android/i.test(navigator.userAgent);
+    const token = localStorage.getItem("jwtAuthToken");
     const totalAmount = discountedPrice;
-
     const productName = isFromCart
       ? `${cartItems[0].productName} 외 ${cartItems.length - 1}개`
       : productInfo.productName;
+
+    // 📦 모바일 대응을 위해 localStorage에 주문 관련 정보 저장
+    localStorage.setItem("formData", JSON.stringify(formData));
+    localStorage.setItem(
+      "branchName",
+      useAlternativeBranch && alternativeBranch
+        ? alternativeBranch.branchName
+        : nearestBranch
+        ? nearestBranch.branchName
+        : defaultBranch
+    );
+    localStorage.setItem(
+      "hasStock",
+      useAlternativeBranch ? "true" : nearestBranch ? String(nearestBranch.hasStock) : "false"
+    );
+    localStorage.setItem("isAlternativeBranch", String(useAlternativeBranch));
+    localStorage.setItem("userId", profile.userId);
+    if (selectedCoupon) {
+      localStorage.setItem("selectedCoupon", JSON.stringify(selectedCoupon));
+    }
+    if (isFromCart) {
+      localStorage.setItem("selectedCartItems", JSON.stringify(cartItems));
+    } else {
+      localStorage.setItem("productInfo", JSON.stringify(productInfo));
+    }
+    localStorage.setItem("discountedRate", String(discountRate));
 
     IMP.request_pay(
       {
@@ -439,12 +468,12 @@ const OrderPage = () => {
         buyer_tel: formData.phoneNumber,
         buyer_addr: formData.addr1 + " " + formData.addr2,
         buyer_postcode: formData.post,
-        m_redirect_url: "https://moreandmall.click/order/complete",
+        ...(isMobile && {
+          m_redirect_url: "https://moreandmall.click/order/redirect",
+        }),
       },
-      (rsp) => {
-        if (rsp.success) {
-          const token = localStorage.getItem("jwtAuthToken");
-
+      async (rsp) => {
+        if (!isMobile && rsp.success) {
           const branchName =
             useAlternativeBranch && alternativeBranch
               ? alternativeBranch.branchName
@@ -454,131 +483,74 @@ const OrderPage = () => {
 
           const hasStock = useAlternativeBranch ? true : nearestBranch ? nearestBranch.hasStock : false;
 
-          if (isFromCart) {
-            const multiProductData = {
-              ...formData,
-              userId: profile.userId,
-              impUid: rsp.imp_uid,
-              orders: cartItems.map((item) => ({
-                productCode: item.productCode,
-                quantity: item.quantity,
-              })),
-              discountedPrice: discountRate,
-              branchName: branchName,
-              hasStock: hasStock,
-              isAlternativeBranch: useAlternativeBranch,
-            };
+          const sharedOrderData = {
+            ...formData,
+            userId: profile.userId,
+            impUid: rsp.imp_uid,
+            branchName,
+            hasStock,
+            isAlternativeBranch: useAlternativeBranch,
+          };
 
-            // 🟡 consumeGoods를 cartItems 각각에 대해 호출
-            (async () => {
-              try {
-                for (const item of cartItems) {
-                  await consumeGoods({
-                    productCode: item.productCode,
-                    branchName: branchName,
-                    quantity: item.quantity,
-                  });
-                }
-                console.log("장바구니 모든 상품 차감 완료");
-              } catch (error) {
-                console.error("장바구니 상품 차감 중 오류:", error);
-              }
-            })();
+          try {
+            if (isFromCart) {
+              const multiProductData = {
+                ...sharedOrderData,
+                orders: cartItems.map((item) => ({
+                  productCode: item.productCode,
+                  quantity: item.quantity,
+                })),
+                discountedPrice: discountRate,
+              };
 
-            console.log("전송 데이터:", multiProductData);
+              await sendOrderConfirm(multiProductData, token);
 
-            sendOrderConfirm(multiProductData, token)
-              .then(() => {
-                if (window.innerWidth > 768) {
-                  navigate(`/order/complete?imp_uid=${rsp.imp_uid}`, {
-                    state: {
-                      selectedCoupon,
-                      branchName: branchName,
-                      distance: useAlternativeBranch ? alternativeBranch?.distance : nearestBranch?.distance,
-                      hasStock: hasStock,
-                      isAlternativeBranch: useAlternativeBranch,
-                    },
-                  });
-                }
-
-                const cartIdsToDelete = cartItems.map((item) => item.cartId);
-                console.log(cartIdsToDelete);
-                fetchDeleteCartItems(cartIdsToDelete);
-
-                localStorage.removeItem("selectedCartItems");
-
-                if (selectedCoupon) {
-                  const couponId = selectedCoupon.couponId;
-                  fetchDeleteCoupon(couponId)
-                    .then(() => {
-                      console.log(`쿠폰 ${couponId} 삭제 완료`);
-                    })
-                    .catch(() => alert("쿠폰 삭제 실패"));
-                }
-              })
-              .catch((err) => {
-                console.error("주문 처리 중 오류:", err);
-                alert("장바구니 주문 처리 중 오류가 발생했습니다.");
-              });
-          } else {
-            const singleProductData = {
-              ...formData,
-              userId: profile.userId,
-              productCode: productInfo.productCode,
-              quantity: 1,
-              impUid: rsp.imp_uid,
-              branchName: branchName,
-              hasStock: hasStock,
-              isAlternativeBranch: useAlternativeBranch,
-            };
-
-            console.log("전송 데이터:", singleProductData);
-
-            // 🟡 여기서 consumeGoods 호출
-            (async () => {
-              try {
+              for (const item of cartItems) {
                 await consumeGoods({
-                  productCode: singleProductData.productCode,
-                  branchName: singleProductData.branchName,
-                  quantity: 1,
+                  productCode: item.productCode,
+                  branchName,
+                  quantity: item.quantity,
                 });
-                console.log("상품 차감 완료");
-              } catch (error) {
-                console.error("상품 차감 실패:", error);
               }
-            })();
 
-            sendOrderConfirm(singleProductData, token)
-              .then(() => {
-                if (window.innerWidth > 768) {
-                  navigate(`/order/complete?imp_uid=${rsp.imp_uid}`, {
-                    state: {
-                      selectedCoupon,
-                      branchName: branchName,
-                      distance: useAlternativeBranch ? alternativeBranch?.distance : nearestBranch?.distance,
-                      hasStock: hasStock,
-                      isAlternativeBranch: useAlternativeBranch,
-                    },
-                  });
-                }
+              const cartIdsToDelete = cartItems.map((item) => item.cartId);
+              await fetchDeleteCartItems(cartIdsToDelete);
 
-                localStorage.removeItem("productInfo");
+              if (selectedCoupon) {
+                await fetchDeleteCoupon(selectedCoupon.couponId);
+              }
 
-                if (selectedCoupon) {
-                  const couponId = selectedCoupon.couponId;
-                  fetchDeleteCoupon(couponId)
-                    .then(() => {
-                      console.log(`쿠폰 ${couponId} 삭제 완료`);
-                    })
-                    .catch(() => alert("쿠폰 삭제 실패"));
-                }
-              })
-              .catch((err) => {
-                console.error("주문 처리 중 오류:", err);
-                alert("주문 처리 중 오류가 발생했습니다.");
+              navigate("/order/complete", {
+                state: { impUid: rsp.imp_uid, selectedCoupon },
               });
+            } else {
+              const singleData = {
+                ...sharedOrderData,
+                productCode: productInfo.productCode,
+                quantity: 1,
+              };
+
+              await sendOrderConfirm(singleData, token);
+
+              await consumeGoods({
+                productCode: singleData.productCode,
+                branchName,
+                quantity: 1,
+              });
+
+              if (selectedCoupon) {
+                await fetchDeleteCoupon(selectedCoupon.couponId);
+              }
+
+              navigate("/order/complete", {
+                state: { impUid: rsp.imp_uid, selectedCoupon },
+              });
+            }
+          } catch (err) {
+            console.error("주문 처리 중 오류:", err);
+            alert("결제는 완료되었지만 주문 처리에 실패했습니다.");
           }
-        } else {
+        } else if (!rsp.success) {
           alert("결제 실패: " + rsp.error_msg);
         }
       }

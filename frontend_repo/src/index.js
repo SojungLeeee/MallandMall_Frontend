@@ -23,12 +23,8 @@ import KakaoCallback from "./util/KakaoCallback";
 
 // 마이페이지 관련
 import Mypage, { loader as mypageLoader } from "./pages/mypage/Mypage";
-import EditProfile, {
-  loader as editProfileLoader,
-} from "./pages/mypage/EditProfile";
-import DeleteAccount, {
-  loader as deleteAccountLoader,
-} from "./pages/mypage/DeleteAccount";
+import EditProfile, { loader as editProfileLoader } from "./pages/mypage/EditProfile";
+import DeleteAccount, { loader as deleteAccountLoader } from "./pages/mypage/DeleteAccount";
 import MyOrderInfo from "./pages/mypage/MyOrderInfo";
 import MyReviews from "./pages/mypage/MyReview";
 import EditCategory from "./pages/mypage/EditCategory";
@@ -56,6 +52,7 @@ import MyCart from "./pages/cart/MyCart";
 import OrderPage from "./pages/order/OrderPage";
 import OrderComplete from "./pages/order/OrderComplete";
 import CouponUsePage from "./pages/order/CouponUsePage";
+import OrderRedirect from "./pages/order/OrderRedirect";
 
 // 고객센터/문의 관련
 import CustomerServiceScreen from "./pages/board/CustomerServiceScreen";
@@ -168,6 +165,7 @@ const router = createBrowserRouter([
       { path: "/order", element: <OrderPage /> },
       { path: "/order/complete/:imp_uid", element: <OrderComplete /> },
       { path: "/order/complete", element: <OrderComplete /> },
+      { path: "/order/redirect", element: <OrderRedirect /> },
 
       // 카테고리 및 상품
       { path: "/categoryList", element: <CategoryList /> },
