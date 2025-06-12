@@ -1,4 +1,4 @@
-# 📦 🥇몰앤몰 (Mall & Mall / More & More)🥇
+# 🥇몰앤몰 (Mall & Mall / More & More)🥇
 <br>
 
 <div align="center">
